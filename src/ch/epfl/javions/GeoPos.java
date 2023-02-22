@@ -13,9 +13,9 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
     public double latitude(){return Units.convert(latitudeT32, Units.Angle.T32, Units.Angle.RADIAN);}
     @Override
     public String toString() {
-        return (Units.convertTo(longitude(), Units.Angle.DEGREE)+","+Units.convertTo(latitude(), Units.Angle.DEGREE));
-    } // Dans l'exemple ils disent que  System.out.println(new GeoPos(987654321, 123456789)) retournent
-      // des degres donc j'ai redefini toString jsp si c'est ca qui fallait faire
+        return "("+(Units.convertTo(longitude(), Units.Angle.DEGREE)+
+                ","+Units.convertTo(latitude(), Units.Angle.DEGREE))+")";
+    }
 
 }
 
