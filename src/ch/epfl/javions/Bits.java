@@ -22,6 +22,7 @@ public final class Bits {
 
     public boolean testBits(long value, int index) throws IndexOutOfBoundsException {
         Objects.checkIndex(index, Long.SIZE);
-        return value == 1;
+        short mask = 1;
+        return ((value >>> index) & mask) == 1;
     }
 }
