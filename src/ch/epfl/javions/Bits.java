@@ -20,7 +20,7 @@ public final class Bits {
         return extracted;
     }
 
-    public boolean testBits(long value, int index) throws IndexOutOfBoundsException {
+    public boolean testBit(long value, int index) throws IndexOutOfBoundsException {
         Objects.checkIndex(index, Long.SIZE);
         short mask = 1;
         return ((value >>> index) & mask) == 1;
