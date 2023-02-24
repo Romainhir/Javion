@@ -27,7 +27,7 @@ public final class ByteString {
 
     public int byteAt(int index) throws IndexOutOfBoundsException {
         Objects.checkIndex(index, size());
-        return bytes[index];
+        return Byte.toUnsignedInt(bytes[index]);
     }
 
 
@@ -36,7 +36,8 @@ public final class ByteString {
         Objects.checkIndex(toIndex - fromIndex, Long.SIZE);
         HexFormat hexFormat = HexFormat.of().withUpperCase();
         String value = hexFormat.formatHex(bytes, fromIndex, toIndex);
-        return Long.parseLong(value);
+        System.out.println(value);
+        return Long.decode("0x"+value);
     }
 
     @Override

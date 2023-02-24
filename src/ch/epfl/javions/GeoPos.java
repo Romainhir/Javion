@@ -18,7 +18,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * @return boolean
      */
     public static boolean isValidLatitudeT32(int latitudeT32){
-        return -Math.scalb(1, 30) <= latitudeT32 & latitudeT32 <= Math.scalb(1, 30);
+        return (-(int)Math.scalb(1, 30) <= latitudeT32) && (latitudeT32 <= (int)Math.scalb(1, 30));
     }
 
     /**
@@ -40,7 +40,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
     @Override
     public String toString() {
         return "("+(Units.convertTo(longitude(), Units.Angle.DEGREE)+
-                "°,"+Units.convertTo(latitude(), Units.Angle.DEGREE))+"°)";
+                "°, "+Units.convertTo(latitude(), Units.Angle.DEGREE))+"°)";
     }
 
 }
