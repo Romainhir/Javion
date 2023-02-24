@@ -8,7 +8,8 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * @param latitudeT32 latitude
      */
     public GeoPos{
-        if (!(isValidLatitudeT32(latitudeT32))){ throw new IllegalArgumentException();}
+        if (!(isValidLatitudeT32(latitudeT32))){ throw new
+                IllegalArgumentException("The latitude is not a valid one in T32 format");}
     }
 
     /**
