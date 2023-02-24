@@ -59,8 +59,12 @@ class ByteStringTest {
             allBytes[i] = (byte) i;
 
         var byteString = new ByteString(allBytes);
-        for (var i = 0; i < allBytes.length; i++)
+        for (var i = 0; i < allBytes.length; i++) {
+            if (i != byteString.byteAt(i)) {
+                System.out.println(i);
+            }
             assertEquals(i, byteString.byteAt(i));
+        }
     }
 
     @Test
