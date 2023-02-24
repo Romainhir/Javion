@@ -7,19 +7,14 @@ public final class Bits {
     private Bits() {
     }
 
-    //TODO : A tester avec JUnit
     public static int extractUInt(long value, int start, int size) throws IndexOutOfBoundsException, IllegalArgumentException {
         if (size <= 0 || 32 <= size) {
             throw new IllegalArgumentException("Extraction interrupted, invalid size");
-        }else if(start <= 0){
-            throw new IndexOutOfBoundsException();
         }
-        Objects.checkFromIndexSize(0, size, Long.SIZE);
+        Objects.checkFromIndexSize(start, size, Long.SIZE);
         int extracted = (int) (value >>> start);
-        int mask = 1 >> Long.SIZE - size;
-        int invertedMask = mask ^ (1 >>> (Integer.SIZE-1));
-        extracted = extracted & invertedMask;
-        return extracted;
+        int mask = (1 << size) - 1;
+        return extracted & mask;
     }
 
     public static boolean testBit(long value, int index) throws IndexOutOfBoundsException {
