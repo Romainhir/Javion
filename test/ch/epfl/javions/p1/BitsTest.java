@@ -1,5 +1,6 @@
-package ch.epfl.javions;
+package ch.epfl.javions.p1;
 
+import ch.epfl.javions.Bits;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

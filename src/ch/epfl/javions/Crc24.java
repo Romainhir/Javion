@@ -38,10 +38,9 @@ public final class Crc24 {
             }
         return tab;
     }
-    public static int crc(int generator, byte[] data) {
-        int [] table = buildTable(generator);
+    public static int crc(byte[] data) {
+        int [] table = buildTable(GENERATOR);
         int crc = 0;
-
         for (byte bytes : data) {
             crc = ((crc << 8) |  Byte.toUnsignedInt(bytes)) ^ table[(crc & maskCrc) >>> 16];
         }
