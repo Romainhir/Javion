@@ -1,5 +1,6 @@
-package ch.epfl.javions;
+package ch.epfl.javions.p1;
 
+import ch.epfl.javions.Units;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

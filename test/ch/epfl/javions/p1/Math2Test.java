@@ -1,6 +1,8 @@
-package ch.epfl.javions;
+package ch.epfl.javions.p1;
 
+import ch.epfl.javions.Math2;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class Math2Test {
     private static final double DELTA = 1e-7;
 
-
     @Test
     void math2ClampClampsValueBelowMin() {
         var rng = newRandom();
@@ -21,7 +22,7 @@ class Math2Test {
             var min = rng.nextInt(-100_000, 100_000);
             var max = min + rng.nextInt(100_000);
             var v = min - rng.nextInt(500);
-            assertEquals(min, Math2.clamp(min, v, max));
+            Assertions.assertEquals(min, Math2.clamp(min, v, max));
         }
     }
 
