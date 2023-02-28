@@ -8,7 +8,8 @@ import java.util.Objects;
  * Class represent a byte String. This is basically a array of byte but the byte are unsigned and the object
  * created are immutable.
  *
- * @author Romain Hirschi and Moussab Tasnim Ibrahim
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public final class ByteString {
 
@@ -66,11 +67,11 @@ public final class ByteString {
      * or if the difference between the "toIndex" and the "fromIndex" is bigger than the size of a long.
      *
      * @param fromIndex (int) : the begin index ("fromIndex")
-     * @param toIndex (int) : the end index ("toIndex)
+     * @param toIndex   (int) : the end index ("toIndex)
      * @return (long) : the bytes extracted, stored in a long value
      * @throws IndexOutOfBoundsException if the range of the indexes is out of the bound of the array
-     * @throws IllegalArgumentException if the difference between the "toIndex" and the "fromIndex" is bigger than
-     * the size of a long
+     * @throws IllegalArgumentException  if the difference between the "toIndex" and the "fromIndex" is bigger than
+     *                                   the size of a long
      */
     public long bytesInRange(int fromIndex, int toIndex) throws IndexOutOfBoundsException, IllegalArgumentException {
         Objects.checkFromToIndex(fromIndex, toIndex, size());
@@ -97,12 +98,22 @@ public final class ByteString {
         }
     }
 
+    /**
+     * Redefine hashCode to return the hash code of the array of byte.
+     *
+     * @return (int) : the hash code of the array
+     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(bytes);
     }
 
 
+    /**
+     * Redefine toString to convert the array of byte in a String value.
+     *
+     * @return (String) : a String value of the array of byte
+     */
     @Override
     public String toString() {
         HexFormat hexFormat = HexFormat.of().withUpperCase();
