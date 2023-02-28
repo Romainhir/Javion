@@ -26,6 +26,7 @@ public class IcaoAddressTest {
         assertThrows(IllegalArgumentException.class, () -> {
             new IcaoAddress("SK1 T1");
         });
+
         assertThrows(IllegalArgumentException.class, () -> {
             new IcaoAddress("FFFFFFFFFFFFFF");
         });
