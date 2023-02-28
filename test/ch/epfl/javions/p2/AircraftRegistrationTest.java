@@ -10,10 +10,32 @@ public class AircraftRegistrationTest {
     @Test
     void aircraftRegistrationConstructionSuccess() {
         assertDoesNotThrow(() -> {
-            new AircraftRegistration("A9.?/_+-");
+            new AircraftRegistration("QWERTZUIOPASDFGHJKLYXCVBNM1234566789.?/_+-");
         });
         assertDoesNotThrow(() -> {
-            new AircraftRegistration("J");
+            new AircraftRegistration("JAVAJIVE");
+        });
+        assertDoesNotThrow(() -> {
+            new AircraftRegistration("K");
+        });
+    }
+
+    @Test
+    void aircraftRegistrationConstructionFailure() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AircraftRegistration(null);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AircraftRegistration("%@*°^^");
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AircraftRegistration("çàléèöüä");
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AircraftRegistration("objection");
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AircraftRegistration("");
         });
     }
 }
