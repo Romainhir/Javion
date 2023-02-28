@@ -5,13 +5,11 @@ import java.util.Objects;
 /**
  * Class dedicated for bits manipulation
  *
- * @author Romain Hirschi and Moussab Tasnim Ibrahim
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public final class Bits {
 
-    /**
-     * Private constructor
-     */
     private Bits() {
     }
 
@@ -22,10 +20,10 @@ public final class Bits {
      *
      * @param value (long) : the number targeted for the extraction
      * @param start (int) : the position of the start bit
-     * @param size (int) : the number of bits to extract
+     * @param size  (int) : the number of bits to extract
      * @return (int) : the bits extracted
      * @throws IndexOutOfBoundsException if the range start + size is bigger than the size of a long
-     * @throws IllegalArgumentException if the size is not strictly between 0 and 32
+     * @throws IllegalArgumentException  if the size is not strictly between 0 and 32
      */
     public static int extractUInt(long value, int start, int size) throws IndexOutOfBoundsException, IllegalArgumentException {
         Preconditions.checkArgument((size > 0) && (size < 32));
