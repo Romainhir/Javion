@@ -26,14 +26,18 @@ public class IcaoAddressTest {
         assertThrows(IllegalArgumentException.class, () -> {
             new IcaoAddress("SK1 T1");
         });
-        assertThrows(IllegalArgumentException.class,() -> {
+
+        assertThrows(IllegalArgumentException.class, () -> {
             new IcaoAddress("FFFFFFFFFFFFFF");
         });
-        assertThrows(IllegalArgumentException.class,() -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new IcaoAddress("AMENO");
         });
-        assertThrows(IllegalArgumentException.class,() -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new IcaoAddress("A B CD");
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new IcaoAddress("");
         });
         assertThrows(IllegalArgumentException.class, () -> {
             new IcaoAddress(null);
