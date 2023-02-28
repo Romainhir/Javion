@@ -3,7 +3,7 @@ package ch.epfl.javions;
 public final class Crc24 {
     public static final int GENERATOR = 0xFFF409;
     public static final int CrcLength = 24;
-    private final int[] table;
+    private static int[] table;
     private final static int maskCrc = 0x00FFFFFF;
 
     public Crc24(int generator) {
@@ -39,7 +39,6 @@ public final class Crc24 {
         return tab;
     }
     public static int crc(byte[] data) {
-        int [] table = buildTable(GENERATOR);
         int crc = 0;
         for (byte bytes : data) {
             crc = ((crc << 8) |  Byte.toUnsignedInt(bytes)) ^ table[(crc & maskCrc) >>> 16];
