@@ -1,19 +1,47 @@
 package ch.epfl.javions;
 
+/**
+ * Class used to perform some mathematical operation
+ *
+ * @author Romain Hirschi
+ * @author Romain Hirschi
+ */
 public final class Math2 {
-    private Math2() {}
 
-    public static int clamp(int min, int v, int max){
-        if (min > max){
-            throw new IllegalArgumentException();
-        }
-        if(v < min){
-            return min;
-        }else if (v > max){
-            return max;
-        }else return v;
+    /**
+     * Private constructor
+     */
+    private Math2() {
     }
 
-    public static double asinh(double x){
-        return Math.log(x+Math.sqrt(1+(x*x)));}
+    /**
+     * Compare a given value ("v") with other numbers (one "min" value and one "max" value).
+     * These numbers are provided in parameter. Return the "min" value if "v" is smaller than "min", and
+     * the "max" value if "v" is bigger than "max". Return "v" if this value is between the "min" and the "max".
+     * Throw an Exception if the "min" value is (strictly) bigger than the "max" value.
+     *
+     * @param min (int) : the "min" number
+     * @param v (int) : the number to compare
+     * @param max (int) : the "max" number
+     * @return (int) : "min" if "v" is smaller than "min", "max" if "v" is bigger than "max", "v" otherwise
+     * @throws IllegalArgumentException if "min" is (strictly) bigger than "max"
+     */
+    public static int clamp(int min, int v, int max) throws IllegalArgumentException {
+        Preconditions.checkArgument(max >= min);
+        if (v < min) {
+            return min;
+        } else if (v > max) {
+            return max;
+        } else return v;
+    }
+
+    /**
+     * Return the inverse hyperbolic sine of the value (double) given in parameter.
+     *
+     * @param x (double) : the number to transform
+     * @return (double) : the inverse hyperbolic sine
+     */
+    public static double asinh(double x) {
+        return Math.log(x + Math.sqrt(1 + (x * x)));
+    }
 }

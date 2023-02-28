@@ -1,5 +1,7 @@
-package ch.epfl.javions;
+package ch.epfl.javions.p1;
 
+import ch.epfl.javions.GeoPos;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +13,7 @@ class GeoPosTest {
     void geoPosIsValidLatitudeT32WorksOnPowersOfTwo() {
         for (var i = 0; i <= 30; i += 1) {
             var twoToTheI = 1 << i;
-            assertTrue(GeoPos.isValidLatitudeT32(twoToTheI));
+            Assertions.assertTrue(GeoPos.isValidLatitudeT32(twoToTheI));
             assertTrue(GeoPos.isValidLatitudeT32(-twoToTheI));
         }
         assertFalse(GeoPos.isValidLatitudeT32(1 << 31));
