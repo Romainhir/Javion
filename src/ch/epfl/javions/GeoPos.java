@@ -4,9 +4,9 @@ package ch.epfl.javions;
  * Java Record to store a geographic position in latitude and in longitude.
  *
  * @param longitudeT32 (int) : the longitude coordinate of the position
- * @param latitudeT32 (int) : the latitude coordinate of the position
- *
- * @author Romain Hirschi and Moussab Tasnim Ibrahim
+ * @param latitudeT32  (int) : the latitude coordinate of the position
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public record GeoPos(int longitudeT32, int latitudeT32) {
 
@@ -14,7 +14,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * Constructor of the record
      *
      * @param longitudeT32 (int) : the longitude coordinate of the position
-     * @param latitudeT32 (int) : the latitude coordinate of the position
+     * @param latitudeT32  (int) : the latitude coordinate of the position
      */
     public GeoPos {
         Preconditions.checkArgument(isValidLatitudeT32(latitudeT32));
