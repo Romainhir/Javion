@@ -3,7 +3,7 @@ package ch.epfl.javions;
 public final class Crc24 {
     public static final int GENERATOR = 0xFFF409;
     public static final int CrcLength = 24;
-    private  final int[] table;
+    private final int[] table;
     private final static int maskCrc = 0x00FFFFFF;
 
     public Crc24(int generator) {
