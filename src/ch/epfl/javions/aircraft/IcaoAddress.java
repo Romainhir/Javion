@@ -9,6 +9,6 @@ public record IcaoAddress(String string) {
     private static final Pattern formatOACI = Pattern.compile("[0-9A-F]{6}");
     public IcaoAddress{
       //  Objects.requireNonNull(string);
-        Preconditions.checkArgument(formatOACI.matcher(string).matches());
+        Preconditions.checkArgument(formatOACI.matcher(string).matches() || (string.equals("")));
     }
 }
