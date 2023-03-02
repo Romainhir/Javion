@@ -3,29 +3,89 @@ package ch.epfl.javions.p2;
 import ch.epfl.javions.Crc24;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.HexFormat;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Crc24Test {
     @Test
-    void bitwiseTest(){
-//        Assertions.assertEquals(0x035DB8, Crc24.crc_bitwise(0xFFF409, new byte[]{(byte) 0x8D, 0x39, 0x2A, (byte) 0xE4,
-//                (byte) 0x99, 0x10, 0x7F, (byte) 0xB5, (byte) 0xC0, 0x04, 0x39}));
-//
-//        assertEquals(0, Crc24.crc_bitwise(0xFFF409, new byte[]{(byte) 0x8D, 0x39, 0x2A, (byte) 0xE4,
-//                (byte) 0x99, 0x10, 0x7F, (byte) 0xB5, (byte) 0xC0, 0x04, 0x39, 0x03, 0x5D, (byte) 0xB8}));
-//
-//        assertEquals(0xEE2EC6, Crc24.crc_bitwise(Crc24.GENERATOR, new byte[]{(byte) 0x8D, 0x4D, 0x22,
-//                (byte) 0x86, (byte) 0xEA, 0x42, (byte) 0x88, 0x67, 0x29, 0x1C, 0x08}));
+    void CrcTestS1(){
+        Crc24 crc24 = new Crc24(Crc24.GENERATOR);
+        String mS = "8D392AE499107FB5C00439";
+        String cS = "035DB8";
+        int c = Integer.parseInt(cS, 16); // == 0x035DB8
+
+        byte[] mAndC = HexFormat.of().parseHex(mS + cS);
+        assertEquals(0, crc24.crc(mAndC));
+
+        byte[] mOnly = HexFormat.of().parseHex(mS);
+        assertEquals(c, crc24.crc(mOnly));
+    }
+    @Test
+    void CrcTestS2(){
+        Crc24 crc24 = new Crc24(Crc24.GENERATOR);
+        String mS = "8D4D2286EA428867291C08";
+        String cS = "EE2EC6";
+        int c = Integer.parseInt(cS, 16); // == 0x035DB8
+
+        byte[] mAndC = HexFormat.of().parseHex(mS + cS);
+        assertEquals(0, crc24.crc(mAndC));
+
+        byte[] mOnly = HexFormat.of().parseHex(mS);
+        assertEquals(c, crc24.crc(mOnly));
+    }
+    @Test
+    void CrcTestS3(){
+        Crc24 crc24 = new Crc24(Crc24.GENERATOR);
+        String mS = "8D3950C69914B232880436";
+        String cS = "BC63D3";
+        int c = Integer.parseInt(cS, 16); // == 0x035DB8
+
+        byte[] mAndC = HexFormat.of().parseHex(mS + cS);
+        assertEquals(0, crc24.crc(mAndC));
+
+        byte[] mOnly = HexFormat.of().parseHex(mS);
+        assertEquals(c, crc24.crc(mOnly));
+    }
+    @Test
+    void CrcTestS4(){
+        Crc24 crc24 = new Crc24(Crc24.GENERATOR);
+        String mS = "8D4B17E399893E15C09C21";
+        String cS = "9FC014";
+        int c = Integer.parseInt(cS, 16); // == 0x035DB8
+
+        byte[] mAndC = HexFormat.of().parseHex(mS + cS);
+        assertEquals(0, crc24.crc(mAndC));
+
+        byte[] mOnly = HexFormat.of().parseHex(mS);
+        assertEquals(c, crc24.crc(mOnly));
+    }
+    @Test
+    void CrcTestS5(){
+        Crc24 crc24 = new Crc24(Crc24.GENERATOR);
+        String mS = "8D4B18F4231445F2DB63A0";
+        String cS = "DEEB82";
+        int c = Integer.parseInt(cS, 16); // == 0x035DB8
+
+        byte[] mAndC = HexFormat.of().parseHex(mS + cS);
+        assertEquals(0, crc24.crc(mAndC));
+
+        byte[] mOnly = HexFormat.of().parseHex(mS);
+        assertEquals(c, crc24.crc(mOnly));
+    }
+    @Test
+    void CrcTestS6(){
+        Crc24 crc24 = new Crc24(Crc24.GENERATOR);
+        String mS = "8D495293F82300020049B8";
+        String cS = "111203";
+        int c = Integer.parseInt(cS, 16); // == 0x035DB8
+
+        byte[] mAndC = HexFormat.of().parseHex(mS + cS);
+        assertEquals(0, crc24.crc(mAndC));
+
+        byte[] mOnly = HexFormat.of().parseHex(mS);
+        assertEquals(c, crc24.crc(mOnly));
     }
 
-    @Test
-    void crcTest(){
-//        assertEquals(0x035DB8, Crc24.crc(0xFFF409, new byte[]{(byte) 0x8D, 0x39, 0x2A, (byte) 0xE4,
-//                (byte) 0x99, 0x10, 0x7F, (byte) 0xB5, (byte) 0xC0, 0x04, 0x39}));
-//
-//        assertEquals(0, Crc24.crc(0xFFF409, new byte[]{(byte) 0x8D, 0x39, 0x2A, (byte) 0xE4,
-//                (byte) 0x99, 0x10, 0x7F, (byte) 0xB5, (byte) 0xC0, 0x04, 0x39, 0x03, 0x5D, (byte) 0xB8}));
-//        assertEquals(0xEE2EC6, Crc24.crc(new byte[]{(byte) 0x8D, 0x4D, 0x22,
-//                (byte) 0x86, (byte) 0xEA, 0x42, (byte) 0x88, 0x67, 0x29, 0x1C, 0x08}));
-    }
 }
