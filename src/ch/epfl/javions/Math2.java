@@ -4,7 +4,7 @@ package ch.epfl.javions;
  * Class used to perform some mathematical operation
  *
  * @author Romain Hirschi
- * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public final class Math2 {
 
