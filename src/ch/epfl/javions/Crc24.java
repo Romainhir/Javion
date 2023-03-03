@@ -1,5 +1,11 @@
 package ch.epfl.javions;
 
+/**
+ * Class represent a calculator of a CRC of 24 bits.
+ *
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
+ */
 public final class Crc24 {
     public static final int GENERATOR = 0xFFF409;
     public static final int CRC_LENGTH = 24;
