@@ -34,7 +34,6 @@ public final class Crc24 {
             for (int j = 7; 0 <= j; --j) {
                 crc = ((crc << 1) | (Bits.testBit(bytes, j) ? 1 : 0))
                         ^ tab[Bits.testBit(crc, CRC_LENGTH - 1) ? 1 : 0];
-
             }
         }
         // Add 24 bits zero at the end of the message
