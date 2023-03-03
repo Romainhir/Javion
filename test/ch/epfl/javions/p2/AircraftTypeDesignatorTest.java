@@ -13,7 +13,7 @@ public class AircraftTypeDesignatorTest {
             new AircraftTypeDesignator("AB");
         });
         assertDoesNotThrow(() -> {
-            new AircraftTypeDesignator("12Y");
+            new AircraftTypeDesignator("12JY");
         });
         assertDoesNotThrow(() -> {
             new AircraftTypeDesignator("TIF");
@@ -22,7 +22,7 @@ public class AircraftTypeDesignatorTest {
 
     @Test
     void typeDesignatorCreationFailure() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             new AircraftTypeDesignator(null);
         });
         assertThrows(IllegalArgumentException.class, () -> {

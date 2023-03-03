@@ -78,7 +78,6 @@ public final class ByteString {
         Objects.checkIndex(toIndex - fromIndex, Long.SIZE);
         HexFormat hexFormat = HexFormat.of().withUpperCase();
         String value = hexFormat.formatHex(bytes, fromIndex, toIndex);
-        System.out.println(value);
         return Long.decode("0x" + value);
     }
 
