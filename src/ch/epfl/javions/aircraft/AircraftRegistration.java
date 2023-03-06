@@ -20,6 +20,6 @@ public record AircraftRegistration(String string) {
      * @param string (String) : the aircraft registration
      */
     public AircraftRegistration {
-        Preconditions.checkArgument(formatOACI.matcher(string).matches() || (string.equals("")));
+        Preconditions.checkArgument(formatOACI.matcher(string).matches());
     }
 }
