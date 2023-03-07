@@ -20,6 +20,6 @@ public record IcaoAddress(String string) {
      * @param string (String) : the ICAO address
      */
     public IcaoAddress {
-        Preconditions.checkArgument(formatOACI.matcher(string).matches() || (string.equals("")));
+        Preconditions.checkArgument(formatOACI.matcher(string).matches());
     }
 }

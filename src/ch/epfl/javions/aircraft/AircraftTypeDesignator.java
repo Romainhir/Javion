@@ -20,6 +20,6 @@ public record AircraftTypeDesignator(String string) {
      * @param string (String) : the aircraft type designator
      */
     public AircraftTypeDesignator {
-        Preconditions.checkArgument(formatOACI.matcher(string).matches());
+        Preconditions.checkArgument(formatOACI.matcher(string).matches() || (string.equals("")));
     }
 }

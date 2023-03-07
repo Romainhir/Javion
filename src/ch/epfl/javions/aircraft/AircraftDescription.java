@@ -18,6 +18,6 @@ public record AircraftDescription(String string) {
      * @param string (String) : the aircraft description
      */
     public AircraftDescription {
-        Preconditions.checkArgument(formatOACI.matcher(string).matches());
+        Preconditions.checkArgument(formatOACI.matcher(string).matches() || (string.equals("")));
     }
 }
