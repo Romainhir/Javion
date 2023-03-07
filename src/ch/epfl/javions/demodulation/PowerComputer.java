@@ -10,7 +10,7 @@ public final class PowerComputer {
     private short[] sample_data;
 
     public PowerComputer(InputStream stream, int batchSize) throws Exception {
-        Preconditions.checkArgument(batchSize > 0 && batchSize % 8 == 0);
+        Preconditions.checkArgument((batchSize > 0) && (batchSize % 8 == 0));
         batch = new short[batchSize];
         decoder = new SamplesDecoder(stream, batchSize);
         sample_data = new short[8];
