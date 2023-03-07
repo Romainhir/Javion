@@ -10,9 +10,10 @@ public final class SamplesDecoder {
 
     private final InputStream stream;
     private byte[] data;
-    SamplesDecoder(InputStream stream, int batchSize)throws Exception{
+
+    public SamplesDecoder(InputStream stream, int batchSize) throws Exception {
         Preconditions.checkArgument(batchSize > 0);
-        if(stream == null){
+        if (stream == null) {
             throw new NullPointerException("the stream is null");
         }
         this.stream = stream;
@@ -22,10 +23,10 @@ public final class SamplesDecoder {
     public int readBatch(short[] batch) throws IOException {
         Preconditions.checkArgument(batch.length == data.length / 2);
         int read = 0;
-        try(stream){
+        try (stream) {
             read = stream.readNBytes(data, 0, data.length);
             // Unsigned the byte is useful because since byte are signed if the last byte the first one would be "crushed" by 1s
-            for(int i = 0; i < data.length; i += 2){
+            for (int i = 0; i < data.length; i += 2) {
                 batch[i / 2] = (short) (((Byte.toUnsignedInt(data[i])) | (data[i + 1] << 8)) - 2048);
             }
         }
