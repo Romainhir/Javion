@@ -10,7 +10,7 @@ public final class SamplesDecoder {
 
     private final InputStream stream;
     private byte[] data;
-    public SamplesDecoder(InputStream stream, int batchSize)throws Exception{
+    public SamplesDecoder(InputStream stream, int batchSize) throws Exception{
         Preconditions.checkArgument(batchSize > 0);
         if(stream == null){
             throw new NullPointerException("the stream is null");
