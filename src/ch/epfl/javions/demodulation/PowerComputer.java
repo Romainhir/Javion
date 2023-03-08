@@ -25,7 +25,7 @@ public final class PowerComputer {
 
         }
 
-       return (int)(Math.pow(reel, 2) + Math.pow(imaginary, 2));
+        return (int)(Math.pow(reel, 2) + Math.pow(imaginary, 2));
     }
 
     /**
@@ -43,25 +43,29 @@ public final class PowerComputer {
 
     public int readBatch(int[] batch) throws IOException {
         Preconditions.checkArgument(batch.length == this.batch.length);
-        decoder.readBatch(this.batch);
-        for(int j = 0; j < this.batch.length; j += 2){
+        int decodedNumber = decoder.readBatch(this.batch);
+        for(int j = 0; j < decodedNumber; j += 2){
             for(int i = 0; i < 2; ++i){
                 addFirst(sample_data ,this.batch[j+i]);
             }
             batch[j/2] = calculatePower(sample_data);
         }
 
-
-        return this.batch.length;
+        System.out.println("decodedNumber: " + decodedNumber/2);
+        return decodedNumber / 2;
     }
 
     public static void main(String[] args) throws Exception {
-        int [] oui = new int[1200];
+        short [] oui1 = new short[2404];
+
+        int [] oui = new int[2800];
         try(InputStream in = new FileInputStream("resources/samples.bin")) {
-            SamplesDecoder s = new SamplesDecoder(in, 1201);
-            PowerComputer p = new PowerComputer(in, 1200);
+            SamplesDecoder s = new SamplesDecoder(in, 2404);
+            PowerComputer p = new PowerComputer(in, 2800);
+            s.readBatch(oui1);
             p.readBatch(oui);
             for (int i = 0; i < 10; i++) {
+                //System.out.println(oui1[i]);
                 System.out.println(oui[i]);
             }
         }

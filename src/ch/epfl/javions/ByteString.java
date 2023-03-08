@@ -5,7 +5,7 @@ import java.util.HexFormat;
 import java.util.Objects;
 
 /**
- * Class represent a byte String. This is basically a array of byte but the byte are unsigned and the object
+ * Class represent a byte String. This is basically an array of bytes but bytes are unsigned and the objects
  * created are immutable.
  *
  * @author Romain Hirschi
