@@ -10,33 +10,25 @@ public final class PowerWindow {
     private final int TAB_LENGTH = (1 << 16);
 
     private int batchSize;
-    private int[] window;
+    private int windowsSize;
     private int index;
 
     private int[] windowHelper;
     private int[] windowMain;
     private PowerComputer computer;
 
+    //TODO Taille tableau ??
     public PowerWindow(InputStream stream, int windowSize) throws Exception {
         Preconditions.checkArgument((windowSize > 0) && (windowSize <= TAB_LENGTH));
         computer = new PowerComputer(stream, windowSize);
-        windowMain = new int[TAB_LENGTH];
+        windowMain = new int[8];
         windowHelper = new int[TAB_LENGTH];
         batchSize = computer.readBatch(windowMain);
-        if (isFull()) {
-            batchSize = computer.readBatch(windowHelper);
-        }
-        window = new int[windowSize];
-        for (index = 0; index < windowSize; index++) {
-            if (index >= windowSize) {
-                switchTab();
-            }
-            window[index] = windowMain[index];
-        }
+        this.windowsSize = windowSize;
     }
 
     public int size() {
-        return window.length;
+        return batchSize;
     }
 
     public long position() {
@@ -44,25 +36,33 @@ public final class PowerWindow {
     }
 
     public boolean isFull() {
-        if (batchSize < TAB_LENGTH) {
+        if (batchSize < windowsSize) {
             return false;
         }
         return true;
     }
 
-    //TODO
-    public int get(int i) {
-        throw new UnsupportedOperationException("TODO");
+    public int get(int i) throws IndexOutOfBoundsException {
+        if ((i <= 0) || (i > batchSize - 1)) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (index >= TAB_LENGTH) {
+            return windowHelper[index + 1 - TAB_LENGTH];
+        } else {
+            return windowMain[index + i];
+        }
     }
 
     private void switchTab() throws IOException {
         windowMain = windowHelper;
-        computer.readBatch(windowHelper);
         index = 0;
     }
 
     public void advance() throws IOException {
         index++;
+        if (index + batchSize >= TAB_LENGTH) {
+            computer.readBatch(windowHelper);
+        }
         if (index >= TAB_LENGTH) {
             switchTab();
         }
