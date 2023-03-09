@@ -10,6 +10,7 @@ public final class SamplesDecoder {
 
     private final InputStream stream;
     private byte[] data;
+    private final static short mask = 0x0fff;
 
     public SamplesDecoder(InputStream stream, int batchSize) throws Exception {
         Preconditions.checkArgument(batchSize > 0);
@@ -23,13 +24,11 @@ public final class SamplesDecoder {
     public int readBatch(short[] batch) throws IOException {
         Preconditions.checkArgument(batch.length == data.length / 2);
         int read = 0;
-        try(stream){
             read = stream.readNBytes(data, 0, data.length);
             // Unsigned the byte is useful because since byte are signed if the last byte the first one would be "crushed" by 1s
             for(int i = 0; i < data.length; i += 2){
-                batch[i / 2] = (short) (((Byte.toUnsignedInt(data[i])) | (data[i + 1] << 8)) - 2048);
+                batch[i / 2] = (short) ((Byte.toUnsignedInt(data[i]) | ((Byte.toUnsignedInt(data[i + 1]) << 8))) & mask  - 2048);
             }
-        }
         return read / 2;
     }
 }
