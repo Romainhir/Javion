@@ -25,13 +25,12 @@ public final class AircraftDatabase {
      * @param fileName (String) : the name of the resource of the database
      */
     public AircraftDatabase(String fileName) {
-        Objects.requireNonNull(fileName);
-        this.fileName = fileName;
+        this.fileName = Objects.requireNonNull(fileName);
     }
 
     /**
      * Get the information of a specific aircraft in the database that match the ICAO adress given in parameter.
-     * The informations are stored in an "AircraftData" object.
+     * The information are stored in an "AircraftData" object.
      * Throw an Exception if an error occur while reading the database files.
      *
      * @param address (IcaoAddress) : the ICAO address to match
@@ -40,8 +39,7 @@ public final class AircraftDatabase {
      */
     public AircraftData get(IcaoAddress address) throws IOException {
         AircraftData aircraftData = null;
-        String file = getClass().getResource(fileName).getFile();
-        file = URLDecoder.decode(file, StandardCharsets.UTF_8);
+        String file = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
         try (ZipFile zip = new ZipFile(file); InputStream in = zip.getInputStream(zip.getEntry(address.string().substring(4) + ".csv"));
              BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             String value;

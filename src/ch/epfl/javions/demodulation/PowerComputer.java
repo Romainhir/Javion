@@ -10,7 +10,7 @@ public final class PowerComputer {
     private short[] sample_data;
 
     public PowerComputer(InputStream stream, int batchSize) throws Exception {
-        Preconditions.checkArgument(batchSize > 0 && batchSize % 8 == 0);
+        Preconditions.checkArgument((batchSize > 0) && (batchSize % 8 == 0));
         batch = new short[batchSize];
         decoder = new SamplesDecoder(stream, batchSize);
         sample_data = new short[8];
@@ -51,7 +51,7 @@ public final class PowerComputer {
             batch[j/2] = calculatePower(sample_data);
         }
 
-        System.out.println("decodedNumber: " + decodedNumber/2);
+        //System.out.println("decodedNumber: " + decodedNumber/2);
         return decodedNumber / 2;
     }
 
@@ -67,6 +67,7 @@ public final class PowerComputer {
             for (int i = 0; i < 10; i++) {
                 System.out.println(oui1[i]);
                 System.out.println(oui[i]);
+
             }
         }
     }
