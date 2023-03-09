@@ -1,5 +1,6 @@
 package ch.epfl.javions.adsb;
 
+import ch.epfl.javions.Bits;
 import ch.epfl.javions.ByteString;
 import ch.epfl.javions.Crc24;
 import ch.epfl.javions.Preconditions;
@@ -30,7 +31,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
 
     public static int typeCode(long payload){
         int i = (int)(payload >>> 51);
-        return (int)(payload >>> 51);
+        return Bits.extractUInt(payload, 51, 5);
     }
 
     public int downLinkFormat(){
@@ -38,7 +39,14 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     public IcaoAddress icaoAddress(){
-        //TODO
-        return null;
+        return new IcaoAddress(Long.toHexString(bytes.bytesInRange(1, 3)));
     }
+
+    public long payload(){
+        return bytes.bytesInRange(3, 56);
+    }
+
+    /*public int typeCode(){
+        return typeCode(payload);
+    }*/
 }
