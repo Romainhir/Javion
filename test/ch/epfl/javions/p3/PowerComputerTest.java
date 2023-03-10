@@ -12,7 +12,9 @@ public class PowerComputerTest {
     @Test
     public void testReadBatch() throws Exception {
         // Prepare input stream
-        byte[] inputBytes = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+        byte[] inputBytes = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
         ByteArrayInputStream inputStream = new ByteArrayInputStream(inputBytes);
 
         // Create PowerComputer object and read batch
@@ -24,6 +26,9 @@ public class PowerComputerTest {
         // Verify results
         assertEquals(2, numBatches);
         assertEquals(4844548, batch[0]);
+        assertEquals(2113568, batch[1]);
+        assertEquals(2113568, batch[8]);
+
     }
 
     @Test

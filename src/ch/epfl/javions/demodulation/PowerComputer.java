@@ -11,8 +11,8 @@ public final class PowerComputer {
 
     public PowerComputer(InputStream stream, int batchSize) throws IOException {
         Preconditions.checkArgument((batchSize > 0) && (batchSize % 8 == 0));
-        batch = new short[batchSize];
-        decoder = new SamplesDecoder(stream, batchSize);
+        batch = new short[2 * batchSize];
+        decoder = new SamplesDecoder(stream, 2 * batchSize);
         sample_data = new short[8];
     }
 
@@ -42,7 +42,7 @@ public final class PowerComputer {
     }
 
     public int readBatch(int[] batch) throws IOException {
-        Preconditions.checkArgument(batch.length == this.batch.length);
+        Preconditions.checkArgument(batch.length == this.batch.length / 2);
         int decodedNumber = decoder.readBatch(this.batch);
         for(int j = 0; j < decodedNumber; j += 2){
             for(int i = 0; i < 2; ++i){
