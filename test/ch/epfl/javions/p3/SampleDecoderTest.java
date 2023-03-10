@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class SamplesDecoderTest {
 
     @Test
-    void testReadBatch() throws Exception {
+    void testReadBatch() throws IOException {
         InputStream stream = new ByteArrayInputStream(new byte[]{0x00, 0x00, (byte) 0xff, (byte) 0xff});
         SamplesDecoder decoder = new SamplesDecoder(stream, 2);
         short[] batch = new short[2];
         int bytesRead = decoder.readBatch(batch);
         assertEquals(2, bytesRead);
-        assertEquals(0, batch[0]);
+        assertEquals(-2048, batch[0]);
         assertEquals(2047, batch[1]);
     }
 
