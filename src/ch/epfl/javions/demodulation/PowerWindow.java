@@ -7,9 +7,10 @@ import java.io.InputStream;
 
 public final class PowerWindow {
 
-    private final int TAB_LENGTH = (1 << 16);
+    private final int TAB_LENGTH = 8;
 
     private int batchSize;
+    private int batchSize2;
     private int windowsSize;
     private int index;
 
@@ -17,7 +18,6 @@ public final class PowerWindow {
     private int[] windowMain;
     private PowerComputer computer;
 
-    //TODO Taille tableau ??
     public PowerWindow(InputStream stream, int windowSize) throws IOException {
         Preconditions.checkArgument((windowSize > 0) && (windowSize <= TAB_LENGTH));
         computer = new PowerComputer(stream, TAB_LENGTH);
@@ -25,6 +25,7 @@ public final class PowerWindow {
         windowHelper = new int[TAB_LENGTH];
         batchSize = computer.readBatch(windowMain);
         this.windowsSize = windowSize;
+        batchSize2 = 0;
     }
 
     public int size() {
@@ -36,34 +37,37 @@ public final class PowerWindow {
     }
 
     public boolean isFull() {
-        if (batchSize < windowsSize) {
+        if (batchSize + batchSize2 < index + windowsSize) {
             return false;
         }
         return true;
     }
 
     public int get(int i) throws IndexOutOfBoundsException {
-        if ((i <= 0) || (i > batchSize - 1)) {
+        if ((i < 0) || (i >= windowsSize)) {
             throw new IndexOutOfBoundsException();
         }
-        if (index >= TAB_LENGTH) {
-            return windowHelper[index + 1 - TAB_LENGTH];
+        if (index + i >= TAB_LENGTH) {
+            return windowHelper[index + i - TAB_LENGTH];
         } else {
             return windowMain[index + i];
         }
     }
 
-    private void switchTab() throws IOException {
+    private void switchTab() {
+        int[] tab = windowMain;
         windowMain = windowHelper;
+        windowHelper = tab;
         index = 0;
+        batchSize = batchSize2;
+        batchSize2 = 0;
     }
 
     public void advance() throws IOException {
         index++;
-        if (index + batchSize >= TAB_LENGTH) {
-            computer.readBatch(windowHelper);
-        }
-        if (index >= TAB_LENGTH) {
+        if (index + windowsSize - 1 == TAB_LENGTH) {
+            batchSize2 = computer.readBatch(windowHelper);
+        } else if (index > TAB_LENGTH) {
             switchTab();
         }
     }
