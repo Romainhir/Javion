@@ -37,4 +37,13 @@ public class PowerWindowTest {
         PowerWindow window = new PowerWindow(stream, 8);
         assertTrue(window.isFull());
     }
+
+    @Test
+    void powerWindowGetFirstTable() throws Exception{
+        byte[] tab = new byte[8];
+        tab[1] = 9;
+        InputStream in = new ByteArrayInputStream(tab);
+        PowerWindow powerWindow = new PowerWindow(in, 8);
+        assertEquals(9, powerWindow.get(1));
+    }
 }

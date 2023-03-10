@@ -20,8 +20,8 @@ public final class PowerWindow {
     //TODO Taille tableau ??
     public PowerWindow(InputStream stream, int windowSize) throws Exception {
         Preconditions.checkArgument((windowSize > 0) && (windowSize <= TAB_LENGTH));
-        computer = new PowerComputer(stream, windowSize);
-        windowMain = new int[8];
+        computer = new PowerComputer(stream, TAB_LENGTH);
+        windowMain = new int[TAB_LENGTH];
         windowHelper = new int[TAB_LENGTH];
         batchSize = computer.readBatch(windowMain);
         this.windowsSize = windowSize;
