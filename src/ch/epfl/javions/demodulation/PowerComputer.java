@@ -56,17 +56,18 @@ public final class PowerComputer {
     }
 
     public static void main(String[] args) throws Exception {
-        short [] oui1 = new short[10];
+        short [] oui1 = new short[2402];
 
         int [] oui = new int[2800];
         try(InputStream in = new FileInputStream("resources/samples.bin")) {
-            SamplesDecoder s = new SamplesDecoder(in, 10);
+            SamplesDecoder s = new SamplesDecoder(in, 2800);
             PowerComputer p = new PowerComputer(in, 2800);
-            s.readBatch(oui1);
-            p.readBatch(oui);
+            int k = s.readBatch(oui1);
+            //p.readBatch(oui);
+            System.out.println(k);
             for (int i = 0; i < 10; i++) {
                 System.out.println(oui1[i]);
-                System.out.println(oui[i]);
+                //System.out.println(oui[i]);
 
             }
         }
