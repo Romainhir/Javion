@@ -9,7 +9,7 @@ public final class AdsbDemodulator {
 
     private final InputStream samplesStream;
     private final PowerWindow powerWindow;
-    AdsbDemodulator(InputStream samplesStream) throws Exception {
+    AdsbDemodulator(InputStream samplesStream) throws IOException {
         this.samplesStream = samplesStream;
         powerWindow = new PowerWindow(samplesStream, 1200);
 
