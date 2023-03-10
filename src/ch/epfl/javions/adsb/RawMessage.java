@@ -46,7 +46,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
         return bytes.bytesInRange(3, 56);
     }
 
-    /*public int typeCode(){
-        return typeCode(payload);
-    }*/
+    public int typeCode(){
+        return typeCode(payload());
+    }
 }
