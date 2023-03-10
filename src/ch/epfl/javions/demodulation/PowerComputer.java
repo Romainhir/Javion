@@ -13,6 +13,7 @@ public final class PowerComputer {
         Preconditions.checkArgument((batchSize > 0) && (batchSize % 8 == 0));
         batch = new short[2 * batchSize];
         decoder = new SamplesDecoder(stream, batchSize * 2);
+
         sample_data = new short[8];
     }
 
@@ -51,26 +52,7 @@ public final class PowerComputer {
             }
             batch[j / 2] = calculatePower(sample_data);
         }
-
-        //System.out.println("decodedNumber: " + decodedNumber/2);
         return decodedNumber / 2;
     }
 
-//    public static void main(String[] args) throws Exception {
-//        short[] oui1 = new short[2402];
-//
-//        int[] oui = new int[2800];
-//        try (InputStream in = new FileInputStream("resources/samples.bin")) {
-//            SamplesDecoder s = new SamplesDecoder(in, 2800);
-//            PowerComputer p = new PowerComputer(in, 2800);
-//            int k = s.readBatch(oui1);
-//            //p.readBatch(oui);
-//            System.out.println(k);
-//            for (int i = 0; i < 10; i++) {
-//                System.out.println(oui1[i]);
-//                //System.out.println(oui[i]);
-//
-//            }
-//        }
-//    }
 }
