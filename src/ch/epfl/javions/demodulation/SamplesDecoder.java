@@ -26,7 +26,7 @@ public final class SamplesDecoder {
         int read = 0;
             read = stream.readNBytes(data, 0, data.length);
             // Unsigned the byte is useful because since byte are signed if the last byte the first one would be "crushed" by 1s
-            for(int i = 0; i < data.length; i += 2){
+            for(int i = 0; i < read; i += 2){
                 batch[i / 2] = (short) (((Byte.toUnsignedInt(data[i]) |
                         ((Byte.toUnsignedInt(data[i + 1]) << 8))) & mask) - 2048);
 
