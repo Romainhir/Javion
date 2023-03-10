@@ -12,7 +12,7 @@ public final class SamplesDecoder {
     private byte[] data;
     private final static short mask = 0x0fff;
 
-    public SamplesDecoder(InputStream stream, int batchSize) throws Exception {
+    public SamplesDecoder(InputStream stream, int batchSize) throws IOException {
         Preconditions.checkArgument(batchSize > 0);
         if (stream == null) {
             throw new NullPointerException("the stream is null");
