@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 public final class PowerWindow {
 
-    private final int TAB_LENGTH = 8;
+    private final int TAB_LENGTH = (1 << 16);
 
     private int batchSize;
     private int batchSize2;
@@ -29,7 +29,7 @@ public final class PowerWindow {
     }
 
     public int size() {
-        return batchSize;
+        return windowsSize;
     }
 
     public long position() {
