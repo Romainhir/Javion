@@ -13,7 +13,7 @@ public final class AdsbDemodulator {
     private final PowerWindow powerWindow;
 
     public final static int WINDOWSIZE = 1200;
-    AdsbDemodulator(InputStream samplesStream) throws IOException {
+    public AdsbDemodulator(InputStream samplesStream) throws IOException {
         this.samplesStream = samplesStream;
         powerWindow = new PowerWindow(samplesStream, WINDOWSIZE);
 
