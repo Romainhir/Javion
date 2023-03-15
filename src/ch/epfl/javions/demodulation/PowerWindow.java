@@ -4,6 +4,7 @@ import ch.epfl.javions.Preconditions;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public final class PowerWindow {
 
@@ -12,7 +13,7 @@ public final class PowerWindow {
     private int batchSize;
     private int batchSize2;
     private int windowsSize;
-    private int index;
+    private long index;
 
     private int[] windowHelper;
     private int[] windowMain;
@@ -37,20 +38,18 @@ public final class PowerWindow {
     }
 
     public boolean isFull() {
-        if (batchSize + batchSize2 < index + windowsSize) {
+        if (batchSize + batchSize2 < index % TAB_LENGTH + windowsSize) {
             return false;
         }
         return true;
     }
 
     public int get(int i) throws IndexOutOfBoundsException {
-        if ((i < 0) || (i >= windowsSize)) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (index + i >= TAB_LENGTH) {
-            return windowHelper[index + i - TAB_LENGTH];
+        Objects.checkIndex(i, windowsSize);
+        if ((int) ((index + i) / (TAB_LENGTH)) % 2 == 0) {
+            return windowMain[(int) ((index % TAB_LENGTH) + i)];
         } else {
-            return windowMain[index + i];
+            return windowHelper[(int) ((index + i) % TAB_LENGTH)];
         }
     }
 
@@ -58,21 +57,21 @@ public final class PowerWindow {
         int[] tab = windowMain;
         windowMain = windowHelper;
         windowHelper = tab;
-        index = 0;
         batchSize = batchSize2;
         batchSize2 = 0;
     }
 
     public void advance() throws IOException {
         index++;
-        if (index + windowsSize - 1 == TAB_LENGTH) {
+        if (index % TAB_LENGTH + windowsSize - 1 == TAB_LENGTH) {
             batchSize2 = computer.readBatch(windowHelper);
-        } else if (index > TAB_LENGTH) {
+        } else if (index % TAB_LENGTH == 0) {
             switchTab();
         }
     }
 
     public void advanceBy(int offset) throws IOException {
+        Preconditions.checkArgument(offset >= 0);
         for (int i = 0; i < offset; i++) {
             advance();
         }
