@@ -70,7 +70,6 @@ class PowerWindowTest {
     @Test
     void powerWindowAdvanceByCanAdvanceOverSeveralBatches() throws IOException {
         var bytes = bytesForZeroSamples(16);
-
         var batchesToSkipOver = 2;
         var inBatchOffset = 37;
         var offset = batchesToSkipOver * BATCH_SIZE + inBatchOffset;
@@ -133,8 +132,9 @@ class PowerWindowTest {
         try (var s = new ByteArrayInputStream(bytes)) {
             var w = new PowerWindow(s, STANDARD_WINDOW_SIZE);
             w.advanceBy(BATCH_SIZE - firstBatchSamples);
-            for (int i = 0; i < STANDARD_WINDOW_SIZE; i += 1)
+            for (int i = 0; i < STANDARD_WINDOW_SIZE; i += 1) {
                 assertEquals(PowerComputerTest.POWER_SAMPLES[i], w.get(i));
+            }
         }
     }
 
