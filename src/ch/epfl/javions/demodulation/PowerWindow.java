@@ -1,3 +1,4 @@
+
 package ch.epfl.javions.demodulation;
 
 import ch.epfl.javions.Preconditions;
@@ -46,7 +47,7 @@ public final class PowerWindow {
 
     public int get(int i) throws IndexOutOfBoundsException {
         Objects.checkIndex(i, windowsSize);
-        if (index % TAB_LENGTH + i < TAB_LENGTH) {
+        if (((int) ((index + i) / (TAB_LENGTH)) == (index / TAB_LENGTH))) {
             return windowMain[(int) ((index % TAB_LENGTH) + i)];
         } else {
             return windowHelper[(int) ((index + i) % TAB_LENGTH)];
@@ -76,5 +77,5 @@ public final class PowerWindow {
             advance();
         }
     }
-
+    
 }
