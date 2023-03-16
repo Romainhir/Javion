@@ -46,7 +46,7 @@ public final class PowerWindow {
 
     public int get(int i) throws IndexOutOfBoundsException {
         Objects.checkIndex(i, windowsSize);
-        if ((int) ((index + i) / (TAB_LENGTH)) % 2 == 0) {
+        if (index % TAB_LENGTH + i < TAB_LENGTH) {
             return windowMain[(int) ((index % TAB_LENGTH) + i)];
         } else {
             return windowHelper[(int) ((index + i) % TAB_LENGTH)];
