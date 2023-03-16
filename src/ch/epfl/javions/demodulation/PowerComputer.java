@@ -17,15 +17,11 @@ public final class PowerComputer {
     }
 
     private int calculatePower(short[] data) {
-        int reel = 0;
-        int imaginary = 0;
-        for (int i = 0; i < data.length; i += 2) {
-            reel += data[i + 1] * (int) (Math.pow(-1, i / 2));
-            imaginary += data[i] * (int) (Math.pow(-1, i / 2));
+        int reel = data[1] - data[3] + data[5] - data[7];
+        int imaginary = data[0] - data[2] + data[4] - data[6];
 
-        }
 
-        return (int) (Math.pow(reel, 2) + Math.pow(imaginary, 2));
+        return reel * reel + imaginary * imaginary;
     }
 
     /**
