@@ -5,7 +5,7 @@ import ch.epfl.javions.adsb.RawMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.util.Arrays;
 
 
 public final class AdsbDemodulator {
@@ -47,22 +47,23 @@ public final class AdsbDemodulator {
                 messageBytes[i/Byte.SIZE] = (byte)((messageBytes[i/Byte.SIZE] << 1) | 1);
             }
         }
-
     }
+
     public RawMessage nextMessage() throws IOException{
         int[] peaksSample = {0, peakSample(0), peakSample(1)};
-        byte[] messageBytes = new byte[MESSAGE_SIZE];
+        byte[] messageBytes = new byte[RawMessage.LENGTH];
         while (powerWindow.isFull()) {
             if (preambleFound(peaksSample)) {
+                Arrays.fill(messageBytes, (byte) 0);
                 decodeMessage(messageBytes);
-                if (RawMessage.size(messageBytes[0]) == RawMessage.LENGTH){
-                    return RawMessage.of(powerWindow.position() ,messageBytes);
+                if ((RawMessage.size(messageBytes[0]) == RawMessage.LENGTH) &&
+                RawMessage.of(powerWindow.position(), messageBytes) != null) {
+                    powerWindow.advanceBy(WINDOWSIZE);
+                    return RawMessage.of((powerWindow.position() - WINDOWSIZE) * 100 ,messageBytes);
                 }
-            }else {
-                powerWindow.advance();
-                addLastPeak(peaksSample);
-                    }
-
+            }
+            powerWindow.advance();
+            addLastPeak(peaksSample);
         }
         return null;
     }
