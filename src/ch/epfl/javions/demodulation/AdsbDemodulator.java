@@ -12,6 +12,8 @@ public final class AdsbDemodulator {
 
     private final InputStream samplesStream;
     private final PowerWindow powerWindow;
+    private final byte[] messageBytes = new byte[RawMessage.LENGTH];
+
 
     public final static int WINDOWSIZE = 1200;
     private final static int MESSAGE_SIZE = 112;
@@ -51,7 +53,6 @@ public final class AdsbDemodulator {
 
     public RawMessage nextMessage() throws IOException{
         int[] peaksSample = {0, peakSample(0), peakSample(1)};
-        byte[] messageBytes = new byte[RawMessage.LENGTH];
         while (powerWindow.isFull()) {
             if (preambleFound(peaksSample)) {
                 Arrays.fill(messageBytes, (byte) 0);
@@ -59,7 +60,7 @@ public final class AdsbDemodulator {
                 if ((RawMessage.size(messageBytes[0]) == RawMessage.LENGTH) &&
                 RawMessage.of(powerWindow.position(), messageBytes) != null) {
                     powerWindow.advanceBy(WINDOWSIZE);
-                    return RawMessage.of((powerWindow.position() - WINDOWSIZE) * 100 ,messageBytes);
+                    return new RawMessage((powerWindow.position() - WINDOWSIZE)*100, new ByteString(messageBytes));
                 }
             }
             powerWindow.advance();
