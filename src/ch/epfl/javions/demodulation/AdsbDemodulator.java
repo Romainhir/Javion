@@ -1,3 +1,4 @@
+
 package ch.epfl.javions.demodulation;
 
 import ch.epfl.javions.ByteString;
@@ -33,7 +34,6 @@ public final class AdsbDemodulator {
         peaksSample[2] = peakSample(1);
     }
     private boolean preambleFound(int[] peaksSample) {
-
        int valleySample = powerWindow.get(5) + powerWindow.get(15) + powerWindow.get(20)
                + powerWindow.get(25) + powerWindow.get(30) + powerWindow.get(40);
 

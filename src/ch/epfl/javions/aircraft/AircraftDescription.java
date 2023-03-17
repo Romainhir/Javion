@@ -5,7 +5,7 @@ import ch.epfl.javions.Preconditions;
 import java.util.regex.Pattern;
 
 /**
- * Recrod that store a valid aircraft description
+ * Record that store a valid aircraft description
  *
  * @param string (String) : the aircraft description
  */
