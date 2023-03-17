@@ -30,7 +30,6 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     public static int typeCode(long payload){
-        int i = (int)(payload >>> 51);
         return Bits.extractUInt(payload, 51, 5);
     }
 
@@ -39,11 +38,11 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     public IcaoAddress icaoAddress(){
-        return new IcaoAddress(Long.toHexString(bytes.bytesInRange(1, 3)));
+        return new IcaoAddress(Long.toHexString(bytes.bytesInRange(1, 4)));
     }
 
     public long payload(){
-        return bytes.bytesInRange(3, 56);
+        return bytes.bytesInRange(4, 11);
     }
 
     public int typeCode(){
