@@ -37,7 +37,7 @@ public final class AdsbDemodulator {
        int valleySample = powerWindow.get(5) + powerWindow.get(15) + powerWindow.get(20)
                + powerWindow.get(25) + powerWindow.get(30) + powerWindow.get(40);
 
-       return (peaksSample[1] > 2 * valleySample) && (peaksSample[1] > peaksSample[0])
+       return (peaksSample[1] >= 2 * valleySample) && (peaksSample[1] > peaksSample[0])
                && (peaksSample[1] > peaksSample[2]);
     }
 
