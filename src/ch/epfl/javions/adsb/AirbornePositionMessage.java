@@ -29,7 +29,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
         int format = Bits.extractUInt(payload, 34, 1);
         double alt = decodeAltitude(Bits.extractUInt(payload, 36, 12));
 
-        if (alt < 0 ){
+        if (alt < 0 || !isValidAlt(alt)) {
             return null;
         }
         return new  AirbornePositionMessage(rawMessage.timeStampNs(),
@@ -50,18 +50,44 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
             return Units.convert(reformated * 25 - 1000, Units.Length.FOOT, Units.Length.METER);
         } else {
-            int sort = 0;
-            byte[] index = {4, 10, 5, 11};
-            for (int i = 0; i < index.length; i++) {
-                int j = index[i];
-                for (int k = j; k < j + 6; k += 2) {
-                    sort = sort & (rawAlt >>> k);
-                    sort = sort << 1;
-                }
+            int sorted = rearrange(rawAlt);
+            int mostWeightBits = grayToBinary(Bits.extractUInt(sorted, 3, 9), 9);
+            int leastWeightBits = grayToBinary(Bits.extractUInt(sorted, 0, 3), 3);
+
+            if(leastWeightBits == 0 || leastWeightBits == 5 || leastWeightBits == 6){
+                return Double.MAX_VALUE;
+            } else if (leastWeightBits == 7) {
+                leastWeightBits = 5;
             }
-            
+            return Units.convert(-1300 + leastWeightBits * 100 + mostWeightBits * 500,
+                    Units.Length.FOOT, Units.Length.METER);
         }
-        return 0;
+
+    }
+
+    private static boolean isValidAlt(double alt){
+        return alt != Double.MAX_VALUE;
+    }
+
+    private static int rearrange(int rawAlt) {
+        int sorted = 0;
+        byte[] index = {4, 10, 5, 11};
+        for (int i = 0; i < index.length; i++) {
+            int j = index[i];
+            for (int k = j; j - 4 <= k; k -= 2) {
+                sorted = sorted << 1;
+                sorted = sorted | Bits.extractUInt(rawAlt, k, 1);
+            }
+        }
+        return sorted;
+    }
+
+    private static int grayToBinary(int gray, int size) {
+        int binary = gray;
+        for (int i = 1; i < size; ++i) {
+            binary = binary ^ (binary >>> i);
+        }
+        return binary;
     }
 
     @Override

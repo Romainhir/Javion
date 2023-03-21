@@ -1,5 +1,6 @@
 package ch.epfl.javions.p4;
 
+import ch.epfl.javions.ByteString;
 import ch.epfl.javions.adsb.AirbornePositionMessage;
 import ch.epfl.javions.adsb.AircraftIdentificationMessage;
 import ch.epfl.javions.adsb.CprDecoder;
@@ -33,5 +34,17 @@ public class TestAdsbDemodulator {
                     0.830574, 0.591721, 0));
             assertEquals(384, k);
         }
+    }
+
+    @Test
+    void test2(){
+        RawMessage m = new RawMessage(0L,
+                ByteString.ofHexadecimalString("8D39203559B225F07550ADBE328F"));
+
+        RawMessage n = new RawMessage(0L,
+                ByteString.ofHexadecimalString("8DAE02C85864A5F5DD4975A1A3F5"));
+
+        System.out.println(AirbornePositionMessage.of(m));
+        System.out.println(AirbornePositionMessage.of(n));
     }
 }
