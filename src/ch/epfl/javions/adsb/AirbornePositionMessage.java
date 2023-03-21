@@ -11,6 +11,8 @@ import java.util.Objects;
 public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress, double altitude, int parity, double x,
                                       double y) implements Message {
 
+
+    private final static int POSITION_SIZE = (1 << 17);
     public AirbornePositionMessage {
         Objects.requireNonNull(icaoAddress);
         Preconditions.checkArgument((timeStampNs >= 0) && ((parity == 0) || (parity == 1)) &&
@@ -19,24 +21,34 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
     public static AirbornePositionMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
-        int lat_cpr = Bits.extractUInt(payload, 0, 17);
-        int lon_cpr = Bits.extractUInt(payload, 17, 17);
-        int format = Bits.extractUInt(payload, 34, 1);
-        int alt = Bits.extractUInt(payload, 36, 12);
-        try {
-//            AirbornePositionMessage apm = new AirbornePositionMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(),
-//                    )
-        } catch (Exception e) {
-
+        if (!isPositioningMessage(payload)) {
+            return null;
         }
-        return null;
+        double lat_cpr = (double) Bits.extractUInt(payload, 0, 17) / POSITION_SIZE;
+        double lon_cpr = (double) Bits.extractUInt(payload, 17, 17) / POSITION_SIZE;
+        int format = Bits.extractUInt(payload, 34, 1);
+        double alt = decodeAltitude(Bits.extractUInt(payload, 36, 12));
+
+        if (alt < 0 ){
+            return null;
+        }
+        return new  AirbornePositionMessage(rawMessage.timeStampNs(),
+                rawMessage.icaoAddress(), alt, format, lat_cpr, lon_cpr);
     }
 
-    private double decodeAltitude(int rawAlt) {
+    private static boolean isPositioningMessage(long payload){
+        long typecode = RawMessage.typeCode(payload);
+        return (9 <= typecode  && typecode <= 18) || (20 <= typecode && typecode <= 22);
+    }
+
+    private static double decodeAltitude(int rawAlt) {
         byte q = (byte) ((rawAlt >>> 4) & 1);
+        byte tmp = (byte) (rawAlt & 0xf);
         if (q == 1) {
-            rawAlt = rawAlt ^ 8;
-            return Units.convert(rawAlt * 25 - 1000, Units.Length.FOOT, Units.Length.METER);
+            rawAlt = (rawAlt >>> 5);
+            int reformated = (tmp | (rawAlt << 4)) & 0x7ff;
+
+            return Units.convert(reformated * 25 - 1000, Units.Length.FOOT, Units.Length.METER);
         } else {
             int sort = 0;
             byte[] index = {4, 10, 5, 11};
