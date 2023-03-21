@@ -1,5 +1,6 @@
 package ch.epfl.javions.adsb;
 
+import ch.epfl.javions.Bits;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
@@ -15,16 +16,29 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     }
 
     public static AircraftIdentificationMessage of(RawMessage rawMessage) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        long payload = rawMessage.payload();
+        int category = Bits.extractUInt(payload, 48, 8);
+        String callString = "";
+        for (int i = 42; i >= 0; i -= 6) {
+            callString = callString + "" + Bits.extractUInt(payload, i, 6);
+        }
+        CallSign sign = new CallSign(callString);
+        try {
+            AircraftIdentificationMessage aim = new AircraftIdentificationMessage(rawMessage.timeStampNs(),
+                    rawMessage.icaoAddress(), category, sign);
+            return aim;
+        } catch (Exception n) {
+            return null;
+        }
     }
 
     @Override
     public long timeStampNs() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return timeStampNs;
     }
 
     @Override
     public IcaoAddress icaoAddress() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return icaoAddress;
     }
 }
