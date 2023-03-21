@@ -1,5 +1,7 @@
 package ch.epfl.javions.adsb;
 
+import ch.epfl.javions.Bits;
+import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
@@ -15,8 +17,14 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
     }
 
     public static AirbornePositionMessage of(RawMessage rawMessage) {
-        throw new UnsupportedOperationException();
+        long payload = rawMessage.payload();
+        int lat_cpr = Bits.extractUInt(payload, 0, 17);
+        int lon_cpr = Bits.extractUInt(payload, 17, 17);
+        int format = Bits.extractUInt(payload, 34, 1);
+        int alt = Bits.extractUInt(payload, 36, 12);
+        return null;
     }
+
 
     @Override
     public long timeStampNs() {
@@ -27,4 +35,5 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
     public IcaoAddress icaoAddress() {
         return icaoAddress;
     }
+
 }
