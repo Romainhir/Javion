@@ -17,6 +17,9 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
 
     public static AircraftIdentificationMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
+        if(!isIdentificationMessage(payload)){
+            return null;
+        }
         int category = Bits.extractUInt(payload, 48, 8);
         String callString = "";
         for (int i = 42; i >= 0; i -= 6) {
@@ -30,6 +33,11 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         } catch (Exception n) {
             return null;
         }
+    }
+
+    private static boolean isIdentificationMessage(long payload){
+        long typecode = RawMessage.typeCode(payload);
+        return (typecode == 1) || (typecode == 2) || (typecode == 3) || (typecode == 4);
     }
 
     @Override

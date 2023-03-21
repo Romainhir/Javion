@@ -1,5 +1,8 @@
 package ch.epfl.javions.p4;
 
+import ch.epfl.javions.adsb.AirbornePositionMessage;
+import ch.epfl.javions.adsb.AircraftIdentificationMessage;
+import ch.epfl.javions.adsb.CprDecoder;
 import ch.epfl.javions.adsb.RawMessage;
 import ch.epfl.javions.demodulation.AdsbDemodulator;
 import org.junit.jupiter.api.Test;
@@ -20,8 +23,14 @@ public class TestAdsbDemodulator {
             int k = 0;
             while ((m = d.nextMessage()) != null) {
                 k++;
-                System.out.println(m);
+                if (AirbornePositionMessage.of(m) != null)
+                    System.out.println(AirbornePositionMessage.of(m));
+
+                /*if (AircraftIdentificationMessage.of(m) != null)
+                    System.out.println(AircraftIdentificationMessage.of(m));*/
             }
+            System.out.println(CprDecoder.decodePosition(0.851440, 0.720558,
+                    0.830574, 0.591721, 0));
             assertEquals(384, k);
         }
     }
