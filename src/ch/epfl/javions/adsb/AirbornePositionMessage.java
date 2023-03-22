@@ -85,7 +85,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
     private static int grayToBinary(int gray, int size) {
         int binary = gray;
         for (int i = 1; i < size; ++i) {
-            binary = binary ^ (binary >>> i);
+            binary = binary ^ (gray >>> i);
         }
         return binary;
     }
