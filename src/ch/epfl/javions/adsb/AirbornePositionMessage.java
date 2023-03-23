@@ -58,6 +58,8 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
                 return Double.MAX_VALUE;
             } else if (leastWeightBits == 7) {
                 leastWeightBits = 5;
+            }else {
+                leastWeightBits = 6 - leastWeightBits;
             }
             return Units.convert(-1300 + leastWeightBits * 100 + mostWeightBits * 500,
                     Units.Length.FOOT, Units.Length.METER);
