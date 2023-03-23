@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
  * Record that store a valid aircraft description
  *
  * @param string (String) : the aircraft description
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public record AircraftDescription(String string) {
     private static final Pattern formatOACI = Pattern.compile("[ABDGHLPRSTV-][0123468][EJPT-]");
