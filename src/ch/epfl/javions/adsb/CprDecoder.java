@@ -58,8 +58,24 @@ public class CprDecoder {
             lambda_one -= 1;
         }
 
-        return new GeoPos( (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32),
-                (int) Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32));
+        if (mostRecent == 0) {
+            if (-90 <= Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.DEGREE) &&
+                    Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.DEGREE) <= 90) {
+                return null;
+            }
+
+            return new GeoPos( (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32),
+                    (int) Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32));
+        }else{
+            if (-90 <= Units.convert(phi_one, Units.Angle.TURN, Units.Angle.DEGREE) &&
+                    Units.convert(phi_one, Units.Angle.TURN, Units.Angle.DEGREE) <= 90) {
+                return null;
+            }
+
+            return new GeoPos( (int) Units.convert(lambda_one, Units.Angle.TURN, Units.Angle.T32),
+                    (int) Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32));
+        }
+
     }
 
 }
