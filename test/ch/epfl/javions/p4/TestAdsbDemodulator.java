@@ -22,16 +22,20 @@ public class TestAdsbDemodulator {
             AdsbDemodulator d = new AdsbDemodulator(s);
             RawMessage m;
             int k = 0;
+            int j = 0;
             while ((m = d.nextMessage()) != null) {
                 k++;
-                if (AirbornePositionMessage.of(m) != null)
+                /*if (AirbornePositionMessage.of(m) != null) {
                     System.out.println(AirbornePositionMessage.of(m));
+                    ++j;
+                }*/
 
-                /*if (AircraftIdentificationMessage.of(m) != null)
-                    System.out.println(AircraftIdentificationMessage.of(m));*/
+                if (AircraftIdentificationMessage.of(m) != null) {
+                    System.out.println(AircraftIdentificationMessage.of(m));
+                    ++j;
+                }
             }
-            System.out.println(CprDecoder.decodePosition(0.851440, 0.720558,
-                    0.830574, 0.591721, 0));
+            System.out.println(j);
             assertEquals(384, k);
         }
     }
