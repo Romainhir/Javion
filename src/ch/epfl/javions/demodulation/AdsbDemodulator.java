@@ -9,19 +9,32 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 
+/**
+ * Class that represent an ADSB message demodulator
+ *
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
+ */
 public final class AdsbDemodulator {
 
-    private final InputStream samplesStream;
     private final PowerWindow powerWindow;
     private final byte[] messageBytes = new byte[RawMessage.LENGTH];
-
-
-    public final static int WINDOWSIZE = 1200;
     private final static int MESSAGE_SIZE = 112;
-    public AdsbDemodulator(InputStream samplesStream) throws IOException {
-        this.samplesStream = samplesStream;
-        powerWindow = new PowerWindow(samplesStream, WINDOWSIZE);
 
+    /**
+     * The size of a window of power sample
+     */
+    public final static int WINDOWSIZE = 1200;
+
+    /**
+     * Constructor of the ADSB demodulator. Take in parameter the input stream of the data to be decoded, to give it
+     * at the PowerWindow  attribute. Throw an Exception if something went wrong during the creation of the power window
+     *
+     * @param samplesStream (InputStream) : The input stream of the data
+     * @throws IOException if something went wrong during the creation of the power window
+     */
+    public AdsbDemodulator(InputStream samplesStream) throws IOException {
+        powerWindow = new PowerWindow(samplesStream, WINDOWSIZE);
     }
 
     private int peakSample(int i) {
@@ -51,6 +64,13 @@ public final class AdsbDemodulator {
         }
     }
 
+    /**
+     * Return the next ADSB message (in RawMessage) in the input stream given in constructor or null if there is no more message.
+     * Throw an Exception if something went wrong during the reading of the power samples.
+     *
+     * @return (RawMessage) : the next ADSB message in the input stream of null if there is no more message
+     * @throws IOException if something went wrong during the reading of the power samples
+     */
     public RawMessage nextMessage() throws IOException{
         int[] peaksSample = {0, peakSample(0), peakSample(1)};
         while (powerWindow.isFull()) {
