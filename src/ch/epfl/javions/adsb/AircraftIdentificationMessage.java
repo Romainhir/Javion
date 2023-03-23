@@ -20,18 +20,34 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         if(!isIdentificationMessage(payload)){
             return null;
         }
-        int category = Bits.extractUInt(payload, 48, 8);
-        String callString = "";
+        int typeCode = RawMessage.typeCode(payload);
+        typeCode = 14 - typeCode;
+        int category = (typeCode << 4) + Bits.extractUInt(payload, 48, 3);
+        StringBuilder callString = new StringBuilder();
+        char extractedChar = ' ';
         for (int i = 42; i >= 0; i -= 6) {
-            callString = callString + "" + Bits.extractUInt(payload, i, 6);
+            if (extractedChar == 0) {
+                return null;
+            }
+            extractedChar = AircraftIdentificationMessage.fromSixBitsToChar(Bits.extractUInt(payload, i, 6));
+            if (extractedChar != ' '){
+                callString.append(extractedChar);
+
+            }
         }
-        CallSign sign = new CallSign(callString);
-        try {
-            AircraftIdentificationMessage aim = new AircraftIdentificationMessage(rawMessage.timeStampNs(),
-                    rawMessage.icaoAddress(), category, sign);
-            return aim;
-        } catch (Exception n) {
-            return null;
+        CallSign sign = new CallSign(callString.toString());
+    return new AircraftIdentificationMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), category, sign);
+    }
+
+    private static char fromSixBitsToChar(int sixBits){
+        if(sixBits <= 26){
+            return (char) (sixBits + 64);
+        } else if (sixBits == 32){
+            return ' ';
+        } else if (sixBits >= 48 && sixBits <= 57){
+            return (char) sixBits ;
+        } else {
+            return (char) 0;
         }
     }
 
