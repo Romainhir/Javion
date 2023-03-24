@@ -22,9 +22,9 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
     public static AirbornePositionMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
-        if (!isPositioningMessage(payload)) {
+        /*if (!isPositioningMessage(payload)) {
             return null;
-        }
+        }*/
         double lat_cpr = (double) Bits.extractUInt(payload, 0, 17) / POSITION_SIZE;
         double lon_cpr = (double) Bits.extractUInt(payload, 17, 17) / POSITION_SIZE;
         int format = Bits.extractUInt(payload, 34, 1);
