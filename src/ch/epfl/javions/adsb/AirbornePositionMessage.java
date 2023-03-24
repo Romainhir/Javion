@@ -13,6 +13,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
 
     private final static int POSITION_SIZE = (1 << 17);
+
     public AirbornePositionMessage {
         Objects.requireNonNull(icaoAddress);
         Preconditions.checkArgument((timeStampNs >= 0) && ((parity == 0) || (parity == 1)) &&
@@ -32,13 +33,13 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
         if (alt < 0 || !isValidAlt(alt)) {
             return null;
         }
-        return new  AirbornePositionMessage(rawMessage.timeStampNs(),
+        return new AirbornePositionMessage(rawMessage.timeStampNs(),
                 rawMessage.icaoAddress(), alt, format, lat_cpr, lon_cpr);
     }
 
-    private static boolean isPositioningMessage(long payload){
+    private static boolean isPositioningMessage(long payload) {
         long typecode = RawMessage.typeCode(payload);
-        return (9 <= typecode  && typecode <= 18) || (20 <= typecode && typecode <= 22);
+        return (9 <= typecode && typecode <= 18) || (20 <= typecode && typecode <= 22);
     }
 
     private static double decodeAltitude(int rawAlt) {
@@ -54,11 +55,11 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
             int mostWeightBits = grayToBinary(Bits.extractUInt(sorted, 3, 9), 9);
             int leastWeightBits = grayToBinary(Bits.extractUInt(sorted, 0, 3), 3);
 
-            if(leastWeightBits == 0 || leastWeightBits == 5 || leastWeightBits == 6){
+            if (leastWeightBits == 0 || leastWeightBits == 5 || leastWeightBits == 6) {
                 return Double.MAX_VALUE;
             } else if (leastWeightBits == 7) {
                 leastWeightBits = 5;
-            }else {
+            } else {
                 leastWeightBits = 6 - leastWeightBits;
             }
             return Units.convert(-1300 + leastWeightBits * 100 + mostWeightBits * 500,
@@ -67,7 +68,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
     }
 
-    private static boolean isValidAlt(double alt){
+    private static boolean isValidAlt(double alt) {
         return alt != Double.MAX_VALUE;
     }
 
