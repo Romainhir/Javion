@@ -82,19 +82,19 @@ public class CprDecoder {
             if (checkLatitude(phi_zero)) {
                 return null;
             }
-           /* int a = (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32);
+            int a = (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32);
             int b = (int) Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32);
             double k =  Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32);
-            double l =  Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32);*/
-            return new GeoPos( (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32),
-                    (int) Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32));
+            double l =  Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32);
+            return new GeoPos( (int) Math.rint(Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32)),
+                    (int) Math.rint(Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32)));
         }else{
             if (checkLatitude(phi_one)) {
                 return null;
             }
 
-            return new GeoPos( (int) Units.convert(lambda_one, Units.Angle.TURN, Units.Angle.T32),
-                    (int) Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32));
+            return new GeoPos( (int) Math.rint(Units.convert(lambda_one, Units.Angle.TURN, Units.Angle.T32)),
+                    (int) Math.rint(Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32)));
         }
 
     }
@@ -108,7 +108,7 @@ public class CprDecoder {
                 (Math.cos(Units.convertFrom(phi, Units.Angle.TURN)) *
                         Math.cos(Units.convertFrom(phi, Units.Angle.TURN)))));
         if (Double.isNaN(A))
-            A = 1;
+            return 1;
 
         return Math.floor(2 * Math.PI / A);
     }

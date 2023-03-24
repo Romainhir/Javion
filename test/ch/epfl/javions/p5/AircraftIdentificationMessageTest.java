@@ -73,13 +73,10 @@ public class AircraftIdentificationMessageTest {
 
     @Test
     void cprTest(){
-        System.out.println(CprDecoder.decodePosition(0.851440d, 0.720558d, 0.830574d, 0.591721d, 0));
-        double longitude = Units.convert((1 / 41.0) * (0 + 0.851440d), Units.Angle.TURN, Units.Angle.T32);
-        double latitude = Units.convert((1 / 60.0) * (7 + 0.720558d), Units.Angle.TURN, Units.Angle.T32);
-        GeoPos expectedMostRecent0 = new GeoPos((int) Math.rint(longitude), (int) Math.rint(latitude));
-        GeoPos expectedMostRecent1 = new GeoPos((int) longitude, (int) latitude);
-        System.out.println(expectedMostRecent1);
-        System.out.println(expectedMostRecent0);
+        GeoPos pos = CprDecoder.decodePosition(0.8514404296875, 0.7205581665039062, 0.8305740356445312, 0.5917205810546875, 0);
+        System.out.println(pos);
+        assertEquals("(7.476062346249819°, 46.323349038138986°)", pos.toString());
+
     }
 
 
