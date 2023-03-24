@@ -32,7 +32,6 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
             extractedChar = AircraftIdentificationMessage.fromSixBitsToChar(Bits.extractUInt(payload, i, 6));
             if (extractedChar != ' '){
                 callString.append(extractedChar);
-
             }
         }
         CallSign sign = new CallSign(callString.toString());
