@@ -82,10 +82,7 @@ public class CprDecoder {
             if (checkLatitude(phi_zero)) {
                 return null;
             }
-            int a = (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32);
-            int b = (int) Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32);
-            double k =  Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32);
-            double l =  Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32);
+
             return new GeoPos( (int) Math.rint(Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32)),
                     (int) Math.rint(Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32)));
         }else{
