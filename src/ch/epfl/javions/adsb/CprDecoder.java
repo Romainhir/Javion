@@ -29,7 +29,8 @@ public class CprDecoder {
         double z_phi_zero = Math.rint(((Z_PHI_ZERO-1) * y0 - Z_PHI_ZERO * y1));
         double z_phi_one;
         if (z_phi_zero < 0) {
-            z_phi_one = z_phi_zero + Z_PHI_ZERO;
+            z_phi_one = z_phi_zero + Z_PHI_ZERO - 1;
+            z_phi_zero += Z_PHI_ZERO;
         }else{
             z_phi_one = z_phi_zero;
         }
@@ -57,8 +58,8 @@ public class CprDecoder {
         double z_lambda_zero =  Math.rint((Z_lambda_one * x0 - longitudeNbzero * x1));
         double z_lambda_one;
         if (z_lambda_zero < 0) {
-            z_lambda_zero += longitudeNbzero;
             z_lambda_one = z_lambda_zero + Z_lambda_one;
+            z_lambda_zero += longitudeNbzero;
         }else{
             z_lambda_one = z_lambda_zero;
         }
@@ -97,7 +98,8 @@ public class CprDecoder {
     }
 
     private static boolean checkLatitude(double phi){
-        return 90 <= Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) &&
+        double k = Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE);
+        return 90 <= Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) ||
                 Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) <= -90;
     }
     private static double findLongitudeZone(double phi){
