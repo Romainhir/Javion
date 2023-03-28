@@ -70,9 +70,9 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
         ySpeed = (Bits.extractUInt(payload, 31, 1) == 1) ? -ySpeed : ySpeed;
         double track;
         if (xSpeed < 0 && ySpeed > 0) {
-            track = 450 - (Math.atan2(ySpeed, xSpeed)) / Math.PI * 180;
+            track = (Math.PI * 450 / 180) - (Math.atan2(ySpeed, xSpeed)) ;
         }else {
-            track = 90 - (Math.atan2(ySpeed, xSpeed)) / Math.PI * 180;
+            track = (Math.PI * 90 / 180) - (Math.atan2(ySpeed, xSpeed));
 
         }
         return new double [] {Math.hypot(xSpeed, ySpeed), track};
