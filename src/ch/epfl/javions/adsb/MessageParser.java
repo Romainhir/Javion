@@ -6,6 +6,7 @@ public class MessageParser {
     }
 
     public static Message parse(RawMessage rawMessage) {
+        //TODO Moche xd
         switch (rawMessage.typeCode()) {
             case 1, 2, 3, 4:
                 return AircraftIdentificationMessage.of(rawMessage);
