@@ -22,13 +22,13 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
     public static AirbornePositionMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
-        if (!isPositioningMessage(payload)) {
+        /*if (!isPositioningMessage(payload)) {
             return null;
-        }
+        }*/
         double lat_cpr = (double) Bits.extractUInt(payload, 0, 17) / POSITION_SIZE;
         double lon_cpr = (double) Bits.extractUInt(payload, 17, 17) / POSITION_SIZE;
         int format = Bits.extractUInt(payload, 34, 1);
-        double alt = decodeAltitude(Bits.extractUInt(payload, 36, 12));
+        double alt = decodeAltitude( Bits.extractUInt(payload, 36, 12));
 
         if (alt < 0 || !isValidAlt(alt)) {
             return null;
@@ -57,9 +57,11 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
             if (leastWeightBits == 0 || leastWeightBits == 5 || leastWeightBits == 6) {
                 return Double.MAX_VALUE;
-            } else if (leastWeightBits == 7) {
+            }
+            if (leastWeightBits == 7) {
                 leastWeightBits = 5;
-            } else {
+            }
+            if(mostWeightBits % 2 == 1) {
                 leastWeightBits = 6 - leastWeightBits;
             }
             return Units.convert(-1300 + leastWeightBits * 100 + mostWeightBits * 500,

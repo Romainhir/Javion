@@ -29,7 +29,8 @@ public class CprDecoder {
         double z_phi_zero = Math.rint(((Z_PHI_ZERO-1) * y0 - Z_PHI_ZERO * y1));
         double z_phi_one;
         if (z_phi_zero < 0) {
-            z_phi_one = z_phi_zero + Z_PHI_ZERO;
+            z_phi_one = z_phi_zero + Z_PHI_ZERO - 1;
+            z_phi_zero += Z_PHI_ZERO;
         }else{
             z_phi_one = z_phi_zero;
         }
@@ -57,8 +58,8 @@ public class CprDecoder {
         double z_lambda_zero =  Math.rint((Z_lambda_one * x0 - longitudeNbzero * x1));
         double z_lambda_one;
         if (z_lambda_zero < 0) {
-            z_lambda_zero += longitudeNbzero;
             z_lambda_one = z_lambda_zero + Z_lambda_one;
+            z_lambda_zero += longitudeNbzero;
         }else{
             z_lambda_one = z_lambda_zero;
         }
@@ -82,25 +83,23 @@ public class CprDecoder {
             if (checkLatitude(phi_zero)) {
                 return null;
             }
-           /* int a = (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32);
-            int b = (int) Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32);
-            double k =  Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32);
-            double l =  Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32);*/
-            return new GeoPos( (int) Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32),
-                    (int) Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32));
+
+            return new GeoPos( (int) Math.rint(Units.convert(lambda_zero, Units.Angle.TURN, Units.Angle.T32)),
+                    (int) Math.rint(Units.convert(phi_zero, Units.Angle.TURN, Units.Angle.T32)));
         }else{
             if (checkLatitude(phi_one)) {
                 return null;
             }
 
-            return new GeoPos( (int) Units.convert(lambda_one, Units.Angle.TURN, Units.Angle.T32),
-                    (int) Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32));
+            return new GeoPos( (int) Math.rint(Units.convert(lambda_one, Units.Angle.TURN, Units.Angle.T32)),
+                    (int) Math.rint(Units.convert(phi_one, Units.Angle.TURN, Units.Angle.T32)));
         }
 
     }
 
     private static boolean checkLatitude(double phi){
-        return 90 <= Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) &&
+        double k = Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE);
+        return 90 <= Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) ||
                 Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) <= -90;
     }
     private static double findLongitudeZone(double phi){
@@ -108,7 +107,7 @@ public class CprDecoder {
                 (Math.cos(Units.convertFrom(phi, Units.Angle.TURN)) *
                         Math.cos(Units.convertFrom(phi, Units.Angle.TURN)))));
         if (Double.isNaN(A))
-            A = 1;
+            return 1;
 
         return Math.floor(2 * Math.PI / A);
     }

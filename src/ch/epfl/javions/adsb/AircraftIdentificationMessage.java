@@ -17,19 +17,19 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
 
     public static AircraftIdentificationMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
-        if(!isIdentificationMessage(payload)){
+        /*if(!isIdentificationMessage(payload)){
             return null;
-        }
+        }*/
         int typeCode = RawMessage.typeCode(payload);
         typeCode = 14 - typeCode;
         int category = (typeCode << 4) + Bits.extractUInt(payload, 48, 3);
         StringBuilder callString = new StringBuilder();
         char extractedChar = ' ';
         for (int i = 42; i >= 0; i -= 6) {
+            extractedChar = AircraftIdentificationMessage.fromSixBitsToChar(Bits.extractUInt(payload, i, 6));
             if (extractedChar == 0) {
                 return null;
             }
-            extractedChar = AircraftIdentificationMessage.fromSixBitsToChar(Bits.extractUInt(payload, i, 6));
             if (extractedChar != ' '){
                 callString.append(extractedChar);
             }
@@ -39,7 +39,7 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     }
 
     private static char fromSixBitsToChar(int sixBits){
-        if(sixBits <= 26){
+        if( 0 < sixBits && sixBits <= 26){
             return (char) (sixBits + 64);
         } else if (sixBits == 32){
             return ' ';
