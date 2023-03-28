@@ -99,7 +99,6 @@ public class CprDecoder {
     }
 
     private static boolean checkLatitude(double phi) {
-        double k = Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE);//TODO Inutile ??
         return 90 <= Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) ||
                 Units.convert(phi, Units.Angle.TURN, Units.Angle.DEGREE) <= -90;
     }
