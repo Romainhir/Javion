@@ -2,6 +2,7 @@ package ch.epfl.javions.adsb;
 
 import ch.epfl.javions.Bits;
 import ch.epfl.javions.Preconditions;
+import ch.epfl.javions.Units;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
 import java.util.Objects;
@@ -57,15 +58,13 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
             }
         }
         return new AirborneVelocityMessage(rawMessage.timeStampNs(),
-                rawMessage.icaoAddress(), speed, trackOrHeading);
+                rawMessage.icaoAddress(), Units.convertFrom(speed, Units.Speed.KNOT), trackOrHeading);
     }
 
     private static double [] calculateGroundSpeedAndTrack(long payload) {
         int xSpeed = Bits.extractUInt(payload, 32, 10) - 1;
         int ySpeed = Bits.extractUInt(payload, 21, 10) - 1;
-        if ((xSpeed <= 0) || (ySpeed <= 0)) {
-            return null;
-        }
+
         xSpeed = (Bits.extractUInt(payload, 42, 1) == 1) ? -xSpeed : xSpeed;
         ySpeed = (Bits.extractUInt(payload, 31, 1) == 1) ? -ySpeed : ySpeed;
         double track;
@@ -75,12 +74,19 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
             track = (Math.PI * 90 / 180) - (Math.atan2(ySpeed, xSpeed));
 
         }
-        return new double [] {Math.hypot(xSpeed, ySpeed), track};
+        double speed = Math.hypot(xSpeed, ySpeed);
+        if (speed <= 0 || !(Double.isFinite(speed)) || !(Double.isFinite(track))){
+            return null;
+        }
+        return new double [] {speed, track};
     }
 
     private static double[] calculateAirSpeedAndHeading(long payload){
         double speed = Bits.extractUInt(payload, 21, 10) - 1;
-        double heading = Bits.extractUInt(payload, 32, 10) / Math.scalb(2.d, 10);
+        double heading = Units.convertFrom(
+                Bits.extractUInt(payload, 32, 10) / Math.scalb(1, 10),
+                Units.Angle.TURN);
+
         if (speed <= 0 || Bits.extractUInt(payload, 42, 1) == 0){
             return null;
         }
