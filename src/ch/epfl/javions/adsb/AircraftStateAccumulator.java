@@ -18,9 +18,8 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
     }
 
     public void update(Message message) {
-        //TODO Nécessaire ??
-        Objects.requireNonNull(message);
 
+        Objects.requireNonNull(message);
         stateSetter.setLastMessageTimeStampNs(message.timeStampNs());
         switch (message) {
             case AircraftIdentificationMessage aim -> {
@@ -52,8 +51,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                 stateSetter.setVelocity(avm.speed());
                 stateSetter.setTrackOrHeading(avm.trackOrHeading());
             }
-            //TODO Throw une exception ?
-            default -> throw new Error("Unexpected case" );
+            default -> throw new IllegalArgumentException("Unexpected case" );
         }
     }
 }
