@@ -13,6 +13,8 @@ import ch.epfl.javions.aircraft.IcaoAddress;
  *
  * @param timeStampNs (long) : the timestamp of the decoding
  * @param bytes       (ByteString) : the data of the raw message
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public record RawMessage(long timeStampNs, ByteString bytes) {
 

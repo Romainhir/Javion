@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
  * Record that store a valid aircraft call sign
  *
  * @param string (String) : the aircraft call sign
+ *
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public record CallSign(String string) {
     private static final Pattern formatOACI = Pattern.compile("[A-Z0-9 ]{0,8}");
