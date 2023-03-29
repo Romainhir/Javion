@@ -21,7 +21,7 @@ public final class Math2 {
      * Throw an Exception if the "min" value is (strictly) bigger than the "max" value.
      *
      * @param min (int) : the "min" number
-     * @param v (int) : the number to compare
+     * @param v   (int) : the number to compare
      * @param max (int) : the "max" number
      * @return (int) : "min" if "v" is smaller than "min", "max" if "v" is bigger than "max", "v" otherwise
      * @throws IllegalArgumentException if "min" is (strictly) bigger than "max"

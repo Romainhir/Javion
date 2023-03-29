@@ -24,7 +24,7 @@ public final class SamplesDecoder {
      * the size of a batch, given in parameter too. Throw an Exception if the batch size is not (strictly) positive
      * of if the stream is null.
      *
-     * @param stream (InputStream) : The input stream
+     * @param stream    (InputStream) : The input stream
      * @param batchSize (int) : The size of a batch
      */
     public SamplesDecoder(InputStream stream, int batchSize) {
@@ -48,13 +48,13 @@ public final class SamplesDecoder {
     public int readBatch(short[] batch) throws IOException {
         Preconditions.checkArgument(batch.length == data.length / 2);
         int read;
-            read = stream.readNBytes(data, 0, data.length);
-            // Unsigned the byte is useful because since byte are signed if the last byte the first one would be "crushed" by 1s
-            for(int i = 0; i < read; i += 2){
-                batch[i / 2] = (short) (((Byte.toUnsignedInt(data[i]) |
-                        ((Byte.toUnsignedInt(data[i + 1]) << 8))) & mask) - 2048);
+        read = stream.readNBytes(data, 0, data.length);
+        // Unsigned the byte is useful because since byte are signed if the last byte the first one would be "crushed" by 1s
+        for (int i = 0; i < read; i += 2) {
+            batch[i / 2] = (short) (((Byte.toUnsignedInt(data[i]) |
+                    ((Byte.toUnsignedInt(data[i + 1]) << 8))) & mask) - 2048);
 
-            }
+        }
         return read / 2;
     }
 }
