@@ -17,27 +17,75 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
     public static AirborneVelocityMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
         int subType = Bits.extractUInt(payload, 48, 3);
+        double speed = 0;
+        double trackOrHeading = 0;
         switch (subType) {
+            case 0 -> {
+                return null;
+            }
             case 1 -> {
-                int xSpeed = Bits.extractUInt(payload, 11, 10) - 1;
-                int ySpeed = Bits.extractUInt(payload, 0, 10) - 1;
-                if ((xSpeed <= 0) || (ySpeed <= 0)) {
+                double [] speedAndTrackArray = calculateGroundSpeedAndTrack(payload);
+                if (speedAndTrackArray == null){
                     return null;
                 }
-                xSpeed = (Bits.extractUInt(payload, 21, 1) == 1) ? -xSpeed : xSpeed;
-                ySpeed = (Bits.extractUInt(payload, 21, 1) == 1) ? -ySpeed : ySpeed;
-                double speed = Math.hypot(xSpeed, ySpeed);
-                //TODO
-                // double track = Math.atan2(ySpeed, xSpeed);
+                speed = speedAndTrackArray[0];
+                trackOrHeading = speedAndTrackArray[1];
+            }
+            case 2 -> {
+                double [] speedAndTrackArray = calculateGroundSpeedAndTrack(payload);
+                if (speedAndTrackArray == null){
+                    return null;
+                }
+                speed = 4 * speedAndTrackArray[0];
+                trackOrHeading = speedAndTrackArray[1];
+            }
+            case 3 -> {
+                double [] speedAndHeadingArray = calculateAirSpeedAndHeading(payload);
+                if (speedAndHeadingArray == null){
+                    return null;
+                }
+                speed = speedAndHeadingArray[0];
+                trackOrHeading = speedAndHeadingArray[1];
+            }
+            case 4 -> {
+                double [] speedAndHeadingArray = calculateAirSpeedAndHeading(payload);
+                if (speedAndHeadingArray == null){
+                    return null;
+                }
+                speed = 4 * speedAndHeadingArray[0];
+                trackOrHeading = speedAndHeadingArray[1];
             }
         }
-        return null;
+        return new AirborneVelocityMessage(rawMessage.timeStampNs(),
+                rawMessage.icaoAddress(), speed, trackOrHeading);
     }
 
-//    private static double calculateSpeed(long payload) {
-//        int xSpeed = Bits.extractUInt(payload, 11, 10) - 1;
-//        int ySpeed = Bits.extractUInt(payload, 0, 10) - 1;
-//    }
+    private static double [] calculateGroundSpeedAndTrack(long payload) {
+        int xSpeed = Bits.extractUInt(payload, 32, 10) - 1;
+        int ySpeed = Bits.extractUInt(payload, 21, 10) - 1;
+        if ((xSpeed <= 0) || (ySpeed <= 0)) {
+            return null;
+        }
+        xSpeed = (Bits.extractUInt(payload, 42, 1) == 1) ? -xSpeed : xSpeed;
+        ySpeed = (Bits.extractUInt(payload, 31, 1) == 1) ? -ySpeed : ySpeed;
+        double track;
+        if (xSpeed < 0 && ySpeed > 0) {
+            track = (Math.PI * 450 / 180) - (Math.atan2(ySpeed, xSpeed)) ;
+        }else {
+            track = (Math.PI * 90 / 180) - (Math.atan2(ySpeed, xSpeed));
+
+        }
+        return new double [] {Math.hypot(xSpeed, ySpeed), track};
+    }
+
+    private static double[] calculateAirSpeedAndHeading(long payload){
+        double speed = Bits.extractUInt(payload, 21, 10) - 1;
+        double heading = Bits.extractUInt(payload, 32, 10) / Math.scalb(2.d, 10);
+        if (speed <= 0 || Bits.extractUInt(payload, 42, 1) == 0){
+            return null;
+        }
+        return new double [] {speed, heading};
+    }
 
     @Override
     public long timeStampNs() {

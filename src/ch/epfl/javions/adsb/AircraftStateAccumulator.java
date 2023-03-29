@@ -21,7 +21,6 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
         //TODO Nécessaire ??
         Objects.requireNonNull(message);
 
-        boolean isEven = (message.timeStampNs() % 2 == 0);
         stateSetter.setLastMessageTimeStampNs(message.timeStampNs());
         switch (message) {
             case AircraftIdentificationMessage aim -> {
@@ -30,14 +29,21 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
             }
             case AirbornePositionMessage apm -> {
                 stateSetter.setAltitude(apm.altitude());
-                if (isEven) {
-                    if ((message.timeStampNs() - odd.timeStampNs() <= 1e9) && (even != null)) {
-                        stateSetter.setPosition(CprDecoder.decodePosition(apm.x(), apm.y(), odd.x(), odd.y(), 0));
+                if (apm.parity() == 0) {
+                    if(even == null){
+                        even = apm;
+                    }
+                    if ((odd != null) && (message.timeStampNs() - odd.timeStampNs() <= 1e10)) {
+                        stateSetter.setPosition(CprDecoder.decodePosition(apm.x(), apm.y(), odd.x(), odd.y(), apm.parity()));
                     }
                     even = apm;
-                } else {
-                    if ((message.timeStampNs() - even.timeStampNs() <= 10) && (odd != null)) {
-                        stateSetter.setPosition(CprDecoder.decodePosition(even.x(), even.y(), apm.x(), apm.y(), 1));
+                }
+                if (apm.parity() == 1){
+                    if(odd == null){
+                        odd = apm;
+                    }
+                    if ((even != null) && (message.timeStampNs() - even.timeStampNs() <= 1e10)) {
+                        stateSetter.setPosition(CprDecoder.decodePosition(even.x(), even.y(), apm.x(), apm.y(), apm.parity()));
                     }
                     odd = apm;
                 }
@@ -47,7 +53,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                 stateSetter.setTrackOrHeading(avm.trackOrHeading());
             }
             //TODO Throw une exception ?
-            default -> System.out.println("OPPEENNN");
+            default -> throw new Error("Unexpected case" );
         }
     }
 }
