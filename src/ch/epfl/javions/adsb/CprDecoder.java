@@ -6,7 +6,10 @@ import ch.epfl.javions.Units;
 
 
 /**
- * Class that decode the CPR encoded position
+ * Class that decode the CPR encoded position.
+ *
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
  */
 public class CprDecoder {
 
@@ -17,12 +20,14 @@ public class CprDecoder {
     }
 
     /**
-     * Decode the position of an aircraft
+     * Decode and return the position of an aircraft. It needs two position to decode it, the local position stored
+     * in an even message and in an odd message. It needs also to know which is the latest message given
+     * (if it's the odd one, the value must be 1, or 0 otherwise).
      *
-     * @param x0
-     * @param y0
-     * @param x1
-     * @param y1
+     * @param x0         (double) : the local x position of the even message
+     * @param y0         (double) : the local y position of the even message
+     * @param x1         (double) : the local x position of the odd message
+     * @param y1         (double) : the local y position of the odd message
      * @param mostRecent (int) : 0 if the position is the most recent, 1 if the position is the second most recent
      * @return (GeoPos) : the position of the aircraft
      */

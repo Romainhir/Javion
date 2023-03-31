@@ -27,7 +27,7 @@ public class WebMercator {
      * Return the Y value of a position, specifically a latitude coordinate and a level of zoom.
      *
      * @param zoomLevel (int) : the zoom level
-     * @param latitude (int) : the longitude coordinate
+     * @param latitude  (int) : the longitude coordinate
      * @return (double) : the Y coordinate
      */
     public static double y(int zoomLevel, double latitude) {

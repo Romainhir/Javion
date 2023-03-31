@@ -2,10 +2,17 @@ package ch.epfl.javions.adsb;
 
 import java.util.Objects;
 
+/**
+ * Class that represent the aircraft state accumulator. Precisely, it stacks messages from an aircraft to update
+ * his state, with an aircraft state setter (generic, given in parameter).
+ *
+ * @param <T> (AircraftStateSetter) : the state setter of the aircraft
+ */
 public class AircraftStateAccumulator<T extends AircraftStateSetter> {
 
     private T stateSetter;
     private AirbornePositionMessage even;
+
     private AirbornePositionMessage odd;
 
     private final static long MAX_TIME_DIFF = 10_000_000_000L;
@@ -15,10 +22,20 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
         this.stateSetter = stateSetter;
     }
 
+    /**
+     * Return the aircraft state setter given in the constructor.
+     *
+     * @return (<T extends AircraftStateSetter>) : the aircraft state setter
+     */
     public T stateSetter() {
         return stateSetter;
     }
 
+    /**
+     * Update the state of the aircraft with the information provided in the message in parameter.
+     *
+     * @param message (Message) : the message containing the information to update
+     */
     public void update(Message message) {
 
         Objects.requireNonNull(message);
