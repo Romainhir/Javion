@@ -15,11 +15,8 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
 
     private AirbornePositionMessage odd;
 
-    /**
-     * Constructor of the aircraft state accumulator. In parameter is given the aircraft state setter.
-     *
-     * @param stateSetter (<T extends AircraftStateSetter>) : the aircraft state setter
-     */
+    private final static long MAX_TIME_DIFF = 10_000_000_000L;
+
     public AircraftStateAccumulator(T stateSetter) {
         Objects.requireNonNull(stateSetter);
         this.stateSetter = stateSetter;
@@ -54,7 +51,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                     if(even == null){
                         even = apm;
                     }
-                    if ((odd != null) && (message.timeStampNs() - odd.timeStampNs() <= 1e10)) {
+                    if ((odd != null) && (message.timeStampNs() - odd.timeStampNs() <= MAX_TIME_DIFF)) {
                         stateSetter.setPosition(CprDecoder.decodePosition(apm.x(), apm.y(), odd.x(), odd.y(), apm.parity()));
                     }
                     even = apm;
@@ -63,7 +60,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                     if(odd == null){
                         odd = apm;
                     }
-                    if ((even != null) && (message.timeStampNs() - even.timeStampNs() <= 1e10)) {
+                    if ((even != null) && (message.timeStampNs() - even.timeStampNs() <= MAX_TIME_DIFF)) {
                         stateSetter.setPosition(CprDecoder.decodePosition(even.x(), even.y(), apm.x(), apm.y(), apm.parity()));
                     }
                     odd = apm;
