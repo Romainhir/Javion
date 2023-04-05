@@ -14,6 +14,7 @@ public final class Crc24 {
 
     /**
      * Constructor of the CRC24 calculator with a given generator
+     *
      * @param generator (int)
      */
     public Crc24(int generator) {
@@ -23,8 +24,9 @@ public final class Crc24 {
 
     /**
      * Calculate the CRC24 of a message bit per bit with a given generator
+     *
      * @param generator (int) generator of 24 bit
-     * @param data (data[]) the message stored in a tab of byte
+     * @param data      (data[]) the message stored in a tab of byte
      * @return (int) CRC24
      */
     private static int crc_bitwise(int generator, byte[] data) {
@@ -45,6 +47,7 @@ public final class Crc24 {
 
     /**
      * Build a table with a given generator, and it is used in the method crc below
+     *
      * @param generator (int)
      * @return (int[]) the table
      */
@@ -58,6 +61,7 @@ public final class Crc24 {
 
     /**
      * Calculate the CRC24 of a message byte per byte with a given data
+     *
      * @param data (byte[]) the message stored in a tab of byte
      * @return (int) CRC24
      */
