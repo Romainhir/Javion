@@ -17,6 +17,12 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
 
     private final static long MAX_TIME_DIFF = 10_000_000_000L;
 
+    /**
+     * Constructor of the aircraft state accumulator. In parameter is given the aircraft state setter.
+     *
+     * @param stateSetter (<T extends AircraftStateSetter>) : the aircraft state setter
+     */
+
     public AircraftStateAccumulator(T stateSetter) {
         Objects.requireNonNull(stateSetter);
         this.stateSetter = stateSetter;
