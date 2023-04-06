@@ -23,6 +23,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public static final int LENGTH = 14;
     private static final Crc24 calculator = new Crc24(Crc24.GENERATOR);
+    private static final int ME_SIZE = 5;
 
     /**
      * Constructor of the raw message. In parameter are passed the data in ByteString and the timestamp of the decoding
@@ -72,7 +73,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      * @return (int) : the type code of the payload
      */
     public static int typeCode(long payload) {
-        return Bits.extractUInt(payload, 51, 5);
+        return Bits.extractUInt(payload, 51, ME_SIZE);
     }
 
     /**

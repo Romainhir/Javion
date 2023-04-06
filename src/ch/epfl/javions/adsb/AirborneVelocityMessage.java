@@ -16,7 +16,7 @@ import java.util.Objects;
  * @param speed          (double) : the speed of the aircraft
  * @param trackOrHeading (double) : the heading/track of the aircraft
  * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Moussab Ibrahim
  */
 public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress, double speed,
                                       double trackOrHeading) implements Message {

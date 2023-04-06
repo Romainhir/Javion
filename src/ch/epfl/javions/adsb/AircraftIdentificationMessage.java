@@ -20,6 +20,10 @@ import java.util.Objects;
 public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress, int category,
                                             CallSign callSign) implements Message {
 
+    private static final int MESSAGE_SIZE = 48;
+    private static final int CATEGORY_SIZE = 3;
+    private static final int CALLSIGN_CHAR_SIZE = 6;
+
     /**
      * Constructor of the record. In parameter is given he record the timestamp of the message,
      * the ICAO address, the category and the calldign of the aircraft.
@@ -43,16 +47,13 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
      */
     public static AircraftIdentificationMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
-        /*if(!isIdentificationMessage(payload)){
-            return null;
-        }*/
         int typeCode = RawMessage.typeCode(payload);
         typeCode = 14 - typeCode;
-        int category = (typeCode << 4) + Bits.extractUInt(payload, 48, 3);
+        int category = (typeCode << 4) + Bits.extractUInt(payload, MESSAGE_SIZE, CATEGORY_SIZE);
         StringBuilder callString = new StringBuilder();
         char extractedChar = ' ';
-        for (int i = 42; i >= 0; i -= 6) {
-            extractedChar = AircraftIdentificationMessage.fromSixBitsToChar(Bits.extractUInt(payload, i, 6));
+        for (int i = MESSAGE_SIZE - CALLSIGN_CHAR_SIZE; i >= 0; i -= CALLSIGN_CHAR_SIZE) {
+            extractedChar = AircraftIdentificationMessage.fromSixBitsToChar(Bits.extractUInt(payload, i, CALLSIGN_CHAR_SIZE));
             if (extractedChar == 0) {
                 return null;
             }
@@ -74,11 +75,6 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         } else {
             return (char) 0;
         }
-    }
-
-    private static boolean isIdentificationMessage(long payload) {
-        long typecode = RawMessage.typeCode(payload);
-        return (typecode == 1) || (typecode == 2) || (typecode == 3) || (typecode == 4);
     }
 
     /**
