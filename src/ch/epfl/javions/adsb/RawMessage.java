@@ -13,6 +13,7 @@ import ch.epfl.javions.aircraft.IcaoAddress;
  *
  * @param timeStampNs (long) : the timestamp of the decoding
  * @param bytes       (ByteString) : the data of the raw message
+ *
  * @author Romain Hirschi
  * @author Moussab Tasnim Ibrahim
  */
@@ -23,7 +24,9 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public static final int LENGTH = 14;
     private static final Crc24 calculator = new Crc24(Crc24.GENERATOR);
-    private static final int ME_SIZE = 5;
+    private static final int TYPECODE_SIZE = 5;
+    private static final int DF_VALUE = 17;
+    private static final int CA_SIZE = 3;
 
     /**
      * Constructor of the raw message. In parameter are passed the data in ByteString and the timestamp of the decoding
@@ -59,7 +62,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      * @return (int) : the size of the raw message if the DF is known (is equal to 17) or 0 otherwise
      */
     public static int size(byte byte0) {
-        if ((Byte.toUnsignedInt(byte0) >>> 3) == 17) {
+        if ((Byte.toUnsignedInt(byte0) >>> CA_SIZE) == DF_VALUE) {
             return LENGTH;
         } else {
             return 0;
@@ -73,7 +76,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      * @return (int) : the type code of the payload
      */
     public static int typeCode(long payload) {
-        return Bits.extractUInt(payload, 51, ME_SIZE);
+        return Bits.extractUInt(payload, 51, TYPECODE_SIZE);
     }
 
     /**
@@ -82,7 +85,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      * @return (int) : the DF attribute of the data
      */
     public int downLinkFormat() {
-        return (bytes.byteAt(0) >>> 3);
+        return (bytes.byteAt(0) >>> CA_SIZE);
     }
 
     /**
