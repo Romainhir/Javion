@@ -99,6 +99,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
     private static int rearrange(int rawAlt) {
         int sorted = 0;
+        //These indexes are the one of the MSB of the 3 bits groups
         byte[] index = {4, 10, 5, 11};
         for (int i = 0; i < index.length; i++) {
             int j = index[i];
