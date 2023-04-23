@@ -19,11 +19,14 @@ import java.util.Objects;
  * @param x           (double) : the x local position of the aircraft
  * @param y           (double) : the y local position of the aircraft
  * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Moussab Ibrahim
  */
 public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress, double altitude, int parity, double x,
                                       double y) implements Message {
-    private final static int POSITION_SIZE = (1 << 17);
+    private final static int POSITION_SIZE = 17;
+    private final static int PARITY_SIZE = 1;
+    private final static int ALTITUDE_SIZE = 12;
+
 
     /**
      * Constructor of the record. In parameter is given the timestamp of the message,
@@ -50,24 +53,16 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
      */
     public static AirbornePositionMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
-        /*if (!isPositioningMessage(payload)) {
-            return null;
-        }*/
-        double lat_cpr = (double) Bits.extractUInt(payload, 0, 17) / POSITION_SIZE;
-        double lon_cpr = (double) Bits.extractUInt(payload, 17, 17) / POSITION_SIZE;
-        int format = Bits.extractUInt(payload, 34, 1);
-        double alt = decodeAltitude(Bits.extractUInt(payload, 36, 12));
+        double lat_cpr = (double) Bits.extractUInt(payload, 0, POSITION_SIZE) / (1 << POSITION_SIZE);
+        double lon_cpr = (double) Bits.extractUInt(payload, POSITION_SIZE, POSITION_SIZE) / (1 << POSITION_SIZE);
+        int format = Bits.extractUInt(payload, 34, PARITY_SIZE);
+        double alt = decodeAltitude(Bits.extractUInt(payload, 36, ALTITUDE_SIZE));
 
         if (alt < 0 || !isValidAlt(alt)) {
             return null;
         }
         return new AirbornePositionMessage(rawMessage.timeStampNs(),
                 rawMessage.icaoAddress(), alt, format, lat_cpr, lon_cpr);
-    }
-
-    private static boolean isPositioningMessage(long payload) {
-        long typecode = RawMessage.typeCode(payload);
-        return (9 <= typecode && typecode <= 18) || (20 <= typecode && typecode <= 22);
     }
 
     private static double decodeAltitude(int rawAlt) {
@@ -104,6 +99,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
 
     private static int rearrange(int rawAlt) {
         int sorted = 0;
+        //These indexes are the one of the MSB of the 3 bits groups
         byte[] index = {4, 10, 5, 11};
         for (int i = 0; i < index.length; i++) {
             int j = index[i];

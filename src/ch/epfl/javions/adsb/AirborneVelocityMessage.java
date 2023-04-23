@@ -16,7 +16,7 @@ import java.util.Objects;
  * @param speed          (double) : the speed of the aircraft
  * @param trackOrHeading (double) : the heading/track of the aircraft
  * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Moussab Ibrahim
  */
 public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress, double speed,
                                       double trackOrHeading) implements Message {
@@ -47,9 +47,6 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
         double speed = 0;
         double trackOrHeading = 0;
         switch (subType) {
-            case 0 -> {
-                return null;
-            }
             case 1 -> {
                 double[] speedAndTrackArray = calculateGroundSpeedAndTrack(payload);
                 if (speedAndTrackArray == null) {
@@ -81,6 +78,9 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
                 }
                 speed = 4 * speedAndHeadingArray[0];
                 trackOrHeading = speedAndHeadingArray[1];
+            }
+            default -> {
+                return null;
             }
         }
         return new AirborneVelocityMessage(rawMessage.timeStampNs(),

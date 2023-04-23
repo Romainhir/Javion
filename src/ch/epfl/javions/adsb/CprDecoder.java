@@ -20,8 +20,10 @@ public class CprDecoder {
     }
 
     /**
-     * Decode and return the position of an aircraft. It needs two position to decode it, the local position stored
-     * in an even message and in an odd message. It needs also to know which is the latest message given
+     * Decode and return the position of an aircraft with a precision of 5 meters. It needs two position to decode it, the local position stored
+     * in an even message and in an odd message. It uses the superposition of two locales positions
+     * to decode the global position of the aircraft.
+     * It needs also to know which is the latest message given
      * (if it's the odd one, the value must be 1, or 0 otherwise).
      *
      * @param x0         (double) : the local x position of the even message
