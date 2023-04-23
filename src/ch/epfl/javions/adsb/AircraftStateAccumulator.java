@@ -1,5 +1,7 @@
 package ch.epfl.javions.adsb;
 
+import ch.epfl.javions.GeoPos;
+
 import java.util.Objects;
 
 /**
@@ -15,11 +17,14 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
 
     private AirbornePositionMessage odd;
 
+    private final static long MAX_TIME_DIFF = 10_000_000_000L;
+
     /**
      * Constructor of the aircraft state accumulator. In parameter is given the aircraft state setter.
      *
      * @param stateSetter (<T extends AircraftStateSetter>) : the aircraft state setter
      */
+
     public AircraftStateAccumulator(T stateSetter) {
         Objects.requireNonNull(stateSetter);
         this.stateSetter = stateSetter;
@@ -51,22 +56,22 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
             case AirbornePositionMessage apm -> {
                 stateSetter.setAltitude(apm.altitude());
                 if (apm.parity() == 0) {
-                    if(even == null){
-                        even = apm;
-                    }
-                    if ((odd != null) && (message.timeStampNs() - odd.timeStampNs() <= 1e10)) {
-                        stateSetter.setPosition(CprDecoder.decodePosition(apm.x(), apm.y(), odd.x(), odd.y(), apm.parity()));
-                    }
                     even = apm;
+                    if ((odd != null) && (message.timeStampNs() - odd.timeStampNs() <= MAX_TIME_DIFF)) {
+                        GeoPos position = CprDecoder.decodePosition(apm.x(), apm.y(), odd.x(), odd.y(), apm.parity());
+                        if (position != null){
+                            stateSetter.setPosition(position);
+                        }
+                    }
                 }
                 if (apm.parity() == 1){
-                    if(odd == null){
-                        odd = apm;
-                    }
-                    if ((even != null) && (message.timeStampNs() - even.timeStampNs() <= 1e10)) {
-                        stateSetter.setPosition(CprDecoder.decodePosition(even.x(), even.y(), apm.x(), apm.y(), apm.parity()));
-                    }
                     odd = apm;
+                    if ((even != null) && (message.timeStampNs() - even.timeStampNs() <= MAX_TIME_DIFF)) {
+                        GeoPos position = CprDecoder.decodePosition(even.x(), even.y(), apm.x(), apm.y(), apm.parity());
+                        if (position != null){
+                            stateSetter.setPosition(position);
+                        }
+                    }
                 }
             }
             case AirborneVelocityMessage avm -> {
