@@ -16,8 +16,8 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private IntegerProperty category;
     private ObjectProperty<CallSign> callSign;
     private ObjectProperty<GeoPos> position;
-    private final ObservableList<Object> airbornePos = FXCollections.observableArrayList();
-    private ObservableList<Object> airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+    private final ObservableList<AirbornePos> airbornePos = FXCollections.observableArrayList();
+    private ObservableList<AirbornePos> airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
 
 
     private DoubleProperty altitude;
@@ -26,7 +26,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
 
     public ObservableAircraftState(IcaoAddress icaoAddress) {
-
     }
 
     public ReadOnlyLongProperty lastMessageTimeStampNsProperty() {
@@ -45,7 +44,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         return position;
     }
 
-    public ObservableList<Object> airbornePosProperty() {
+    public ObservableList<AirbornePos> airbornePosProperty() {
         return airbornePosSecond;
     }
 
@@ -78,11 +77,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     }
 
     public List<AirbornePos> getAirbornePos() {
-        List<AirbornePos> list = new ArrayList<>();
-        for (Object o : airbornePos) {
-            list.add((AirbornePos) o);
-        }
-        return list;
+        return new ArrayList<>(airbornePos);
     }
 
     public double getAltitude() {
@@ -99,6 +94,11 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
     @Override
     public void setLastMessageTimeStampNs(long timeStampNs) {
+        if(this.lastMessageTimeStampNs.get() == timeStampNs){
+            airbornePos.set( airbornePos.size() - 1, new AirbornePos(position.get(), altitude.get()));
+            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+        }
+
         this.lastMessageTimeStampNs.set(timeStampNs);
     }
 
