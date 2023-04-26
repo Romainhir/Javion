@@ -9,6 +9,7 @@ import javafx.beans.property.ReadOnlyLongProperty;
 import javafx.beans.property.SimpleLongProperty;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Class used to manage the state of all aircraft depending on the messages received.
@@ -18,13 +19,16 @@ import java.util.*;
  */
 public final class AircraftStateManager {
 
-    private Map<IcaoAddress, AircraftStateAccumulator> stateAccumulatorMap;
+    private Map<IcaoAddress, AircraftStateAccumulator<ObservableAircraftState>> stateAccumulatorMap;
     private Set<ObservableAircraftState> aircraftStateSet;
 
     private AircraftDatabase db;
+    private long lastMessageTimeStampNs = 0;
+    public final static long ONEMIN = 60000000000L;
 
     public AircraftStateManager(AircraftDatabase db) {
-        //TODO Wtf
+        stateAccumulatorMap = new HashMap<>();
+        aircraftStateSet = new HashSet<>();
         this.db = db;
     }
 
@@ -34,13 +38,7 @@ public final class AircraftStateManager {
      * @return (Set < ObservableAircraftState >) : the set of the aircraft observable state
      */
     public Set<ObservableAircraftState> getStates() {
-        Set<ObservableAircraftState> posState = new HashSet<>();
-        for (ObservableAircraftState obs : aircraftStateSet) {
-            if (obs.getPosition() != null) {
-                posState.add(obs);
-            }
-        }
-        return posState;
+        return Set.copyOf(aircraftStateSet);
     }
 
     /**
@@ -49,26 +47,25 @@ public final class AircraftStateManager {
      * @param message
      */
     public void update(Message message) {
-        AircraftStateAccumulator asa = stateAccumulatorMap.get(message.icaoAddress());
-        if (asa == null) {
-            ObservableAircraftState ass = new ObservableAircraftState(message.icaoAddress());
-            asa = new AircraftStateAccumulator<>(ass);
-            aircraftStateSet.add(ass);
-            stateAccumulatorMap.put(message.icaoAddress(), asa);
+        if(stateAccumulatorMap.containsKey(message.icaoAddress())){
+            stateAccumulatorMap.get(message.icaoAddress()).update(message);
+            if(stateAccumulatorMap.get(message.icaoAddress()).stateSetter().getPosition() != null){
+
+                aircraftStateSet.add(stateAccumulatorMap.get(message.icaoAddress()).stateSetter());
+            }
+        }else {
+            stateAccumulatorMap.put(message.icaoAddress(),
+                    new AircraftStateAccumulator<>(new ObservableAircraftState(message.icaoAddress())));
         }
-        asa.update(message);
+        lastMessageTimeStampNs = message.timeStampNs();
+
     }
 
     /**
      * Delete all observable state of aircraft that have not sent a new message in the last minute.
      */
     public void purge() {
-        //constante ?
-        long min = 60000000000L;
-        for (ObservableAircraftState observ : aircraftStateSet) {
-            if (observ.getLastMessageTimeStampNs() > min) {
-                aircraftStateSet.remove(observ);
-            }
-        }
+        aircraftStateSet.removeIf
+                (observableAircraftState -> lastMessageTimeStampNs - observableAircraftState.getLastMessageTimeStampNs() > ONEMIN);
     }
 }

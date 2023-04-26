@@ -23,17 +23,25 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private IntegerProperty category;
     private ObjectProperty<CallSign> callSign;
     private ObjectProperty<GeoPos> position;
-    private final ObservableList<Object> airbornePos = FXCollections.observableArrayList();
-    private ObservableList<Object> airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+    private final ObservableList<AirbornePos> airbornePos = FXCollections.observableArrayList();
+    private ObservableList<AirbornePos> airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
 
 
     private DoubleProperty altitude;
     private DoubleProperty velocity;
     private DoubleProperty trackOrHeading;
 
+    private long addProvokedMessTimeStamp = -1;
+
 
     public ObservableAircraftState(IcaoAddress icaoAddress) {
-
+        lastMessageTimeStampNs = new SimpleLongProperty(0);
+        category = new SimpleIntegerProperty(0);
+        callSign = new SimpleObjectProperty<>(null);
+        position = new SimpleObjectProperty<>(null);
+        altitude = new SimpleDoubleProperty(0);
+        velocity = new SimpleDoubleProperty(0);
+        trackOrHeading = new SimpleDoubleProperty(0);
     }
 
     /**
@@ -73,12 +81,14 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         return position;
     }
 
+
     /**
      * Return the list of airborne positions of the aircraft. The list is observable.
      *
      * @return (ObservableList < AirbornePos >) : the list of airborne positions of the aircraft
      */
-    public ObservableList<Object> airbornePosProperty() {
+    public ObservableList<AirbornePos> airbornePosProperty() {
+
         return airbornePosSecond;
     }
 
@@ -151,11 +161,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      * @return (List < AirbornePos >) : the airborne positions
      */
     public List<AirbornePos> getAirbornePos() {
-        List<AirbornePos> list = new ArrayList<>();
-        for (Object o : airbornePos) {
-            list.add((AirbornePos) o);
-        }
-        return list;
+        return new ArrayList<>(airbornePos);
     }
 
     /**
@@ -222,10 +228,21 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setPosition(GeoPos position) {
-        if (!(this.position.get().equals(position))) {
-            airbornePos.add(new AirbornePos(position, altitude.get()));
+
+        if (lastMessageTimeStampNs.get() == addProvokedMessTimeStamp){
+            airbornePos.set(airbornePos.size() - 1, new AirbornePos(position, altitude.get()));
             airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
         }
+
+        if ((this.getPosition() == null ||
+                !(this.position.get().equals(position))) &&
+                lastMessageTimeStampNs.get() != addProvokedMessTimeStamp) {
+
+            airbornePos.add(new AirbornePos(position, altitude.get()));
+            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+            addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
+        }
+
         this.position.set(position);
 
     }
@@ -237,9 +254,17 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setAltitude(double altitude) {
-        if (this.altitude.get() != altitude) {
+
+        if (addProvokedMessTimeStamp == lastMessageTimeStampNs.get()){
+            airbornePos.set(airbornePos.size() - 1, new AirbornePos(position.get(), altitude));
+            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+        }
+        if (this.altitude.get() != altitude &&
+                addProvokedMessTimeStamp != lastMessageTimeStampNs.get()) {
+
             airbornePos.add(new AirbornePos(position.get(), altitude));
             airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+            addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
         }
         this.altitude.set(altitude);
     }
