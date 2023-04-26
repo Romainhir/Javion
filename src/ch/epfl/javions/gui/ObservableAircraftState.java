@@ -31,8 +31,17 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private DoubleProperty velocity;
     private DoubleProperty trackOrHeading;
 
+    private long addProvokedMessTimeStamp = -1;
+
 
     public ObservableAircraftState(IcaoAddress icaoAddress) {
+        lastMessageTimeStampNs = new SimpleLongProperty(0);
+        category = new SimpleIntegerProperty(0);
+        callSign = new SimpleObjectProperty<>(null);
+        position = new SimpleObjectProperty<>(null);
+        altitude = new SimpleDoubleProperty(0);
+        velocity = new SimpleDoubleProperty(0);
+        trackOrHeading = new SimpleDoubleProperty(0);
     }
 
     /**
@@ -189,11 +198,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setLastMessageTimeStampNs(long timeStampNs) {
-        if(this.lastMessageTimeStampNs.get() == timeStampNs){
-            airbornePos.set( airbornePos.size() - 1, new AirbornePos(position.get(), altitude.get()));
-            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
-        }
-
         this.lastMessageTimeStampNs.set(timeStampNs);
     }
 
@@ -224,10 +228,21 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setPosition(GeoPos position) {
-        if (!(this.position.get().equals(position))) {
-            airbornePos.add(new AirbornePos(position, altitude.get()));
+
+        if (lastMessageTimeStampNs.get() == addProvokedMessTimeStamp){
+            airbornePos.set(airbornePos.size() - 1, new AirbornePos(position, altitude.get()));
             airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
         }
+
+        if ((this.getPosition() == null ||
+                !(this.position.get().equals(position))) &&
+                lastMessageTimeStampNs.get() != addProvokedMessTimeStamp) {
+
+            airbornePos.add(new AirbornePos(position, altitude.get()));
+            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+            addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
+        }
+
         this.position.set(position);
 
     }
@@ -239,9 +254,17 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setAltitude(double altitude) {
-        if (this.altitude.get() != altitude) {
+
+        if (addProvokedMessTimeStamp == lastMessageTimeStampNs.get()){
+            airbornePos.set(airbornePos.size() - 1, new AirbornePos(position.get(), altitude));
+            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+        }
+        if (this.altitude.get() != altitude &&
+                addProvokedMessTimeStamp != lastMessageTimeStampNs.get()) {
+
             airbornePos.add(new AirbornePos(position.get(), altitude));
             airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+            addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
         }
         this.altitude.set(altitude);
     }
