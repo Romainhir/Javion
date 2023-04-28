@@ -24,7 +24,7 @@ public final class TileManager {
 
     public TileManager(Path cachePath, String serverName) {
         this.serverName = serverName;
-        this.diskCachePath = cachePath;
+        diskCachePath = cachePath;
         memoryCache = new LinkedHashMap<>();
     }
 

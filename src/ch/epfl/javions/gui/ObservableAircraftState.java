@@ -19,6 +19,7 @@ import java.util.List;
  * @author Moussab Tasnim Ibrahim
  */
 public final class ObservableAircraftState implements AircraftStateSetter {
+    private final IcaoAddress icaoAddress;
     private LongProperty lastMessageTimeStampNs;
     private IntegerProperty category;
     private ObjectProperty<CallSign> callSign;
@@ -35,6 +36,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
 
     public ObservableAircraftState(IcaoAddress icaoAddress) {
+        this.icaoAddress = icaoAddress;
         lastMessageTimeStampNs = new SimpleLongProperty(0);
         category = new SimpleIntegerProperty(0);
         callSign = new SimpleObjectProperty<>(null);
@@ -118,6 +120,8 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     public ReadOnlyDoubleProperty trackOrHeadingProperty() {
         return trackOrHeading;
     }
+
+    public IcaoAddress getIcaoAddress() {return icaoAddress;}
 
     /**
      * Get the value of the property containing the timestamp of the last message sent by the aircraft.
