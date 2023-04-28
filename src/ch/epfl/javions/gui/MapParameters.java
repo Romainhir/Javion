@@ -1,9 +1,15 @@
 package ch.epfl.javions.gui;
 
+
 import ch.epfl.javions.Math2;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.WebMercator;
 import javafx.beans.property.*;
+
+import ch.epfl.javions.Preconditions;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+
 
 public final class MapParameters {
 
