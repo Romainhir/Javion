@@ -66,7 +66,7 @@ public final class TileManager {
         memoryCache.put(id, value);
         return value;
     }
-    public record TileId(int zoom, double x, double y) {
+    public record TileId(int zoom, int x, int y) {
 
         public static boolean isValid(int zoom, double x, double y) {
             return (zoom >= 6) && (zoom <= 19) && (x < Math.pow(2, zoom))
