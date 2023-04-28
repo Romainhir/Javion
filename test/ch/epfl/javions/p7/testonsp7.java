@@ -31,7 +31,7 @@ public class testonsp7 {
                 /*System.out.printf("%13d: %s\n", timeStampNs, message);*/
                 System.out.println("-----------------------------Tableau de bord-----------------------------");
                 for (ObservableAircraftState state : asm.getStates()) {
-                    System.out.println(state.getCallSign() + "  "
+                    System.out.println(state.getIcaoAddress().string() + " " +state.getCallSign().string() + "  "
                             + state.getPosition() + "  " + (3.6*Math.rint(state.getVelocity()))
                             + "  " + Math.rint(state.getAltitude()));
                 }
