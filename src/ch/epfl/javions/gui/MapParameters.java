@@ -18,7 +18,7 @@ public final class MapParameters {
     private DoubleProperty minY;
 
     public MapParameters(int zoom, double minX, double minY) {
-        Preconditions.checkArgument(TileManager.TileId.isValid(zoom, minX, minY));
+        /*Preconditions.checkArgument(TileManager.TileId.isValid(zoom, minX, minY));*/
         this.zoom = new SimpleIntegerProperty(zoom);
         this.minX = new SimpleDoubleProperty(minX);
         this.minY = new SimpleDoubleProperty(minY);
