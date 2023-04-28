@@ -8,6 +8,7 @@ import ch.epfl.javions.aircraft.IcaoAddress;
 import javafx.beans.property.ReadOnlyLongProperty;
 import javafx.beans.property.SimpleLongProperty;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -46,7 +47,7 @@ public final class AircraftStateManager {
      *
      * @param message
      */
-    public void update(Message message) {
+    public void update(Message message) throws IOException {
         if(stateAccumulatorMap.containsKey(message.icaoAddress())){
             stateAccumulatorMap.get(message.icaoAddress()).update(message);
             if(stateAccumulatorMap.get(message.icaoAddress()).stateSetter().getPosition() != null){
@@ -55,7 +56,7 @@ public final class AircraftStateManager {
             }
         }else {
             stateAccumulatorMap.put(message.icaoAddress(),
-                    new AircraftStateAccumulator<>(new ObservableAircraftState(message.icaoAddress())));
+                    new AircraftStateAccumulator<>(new ObservableAircraftState(message.icaoAddress(), db)));
         }
         lastMessageTimeStampNs = message.timeStampNs();
 

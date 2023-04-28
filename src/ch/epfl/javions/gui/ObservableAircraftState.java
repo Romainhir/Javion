@@ -3,11 +3,14 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.adsb.AircraftStateSetter;
 import ch.epfl.javions.adsb.CallSign;
+import ch.epfl.javions.aircraft.AircraftData;
+import ch.epfl.javions.aircraft.AircraftDatabase;
 import ch.epfl.javions.aircraft.IcaoAddress;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,7 @@ import java.util.List;
  */
 public final class ObservableAircraftState implements AircraftStateSetter {
     private final IcaoAddress icaoAddress;
+    private final AircraftData aircraftData;
     private LongProperty lastMessageTimeStampNs;
     private IntegerProperty category;
     private ObjectProperty<CallSign> callSign;
@@ -35,8 +39,9 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private long addProvokedMessTimeStamp = -1;
 
 
-    public ObservableAircraftState(IcaoAddress icaoAddress) {
+    public ObservableAircraftState(IcaoAddress icaoAddress, AircraftDatabase database) throws IOException {
         this.icaoAddress = icaoAddress;
+        this.aircraftData = database.get(icaoAddress);
         lastMessageTimeStampNs = new SimpleLongProperty(0);
         category = new SimpleIntegerProperty(0);
         callSign = new SimpleObjectProperty<>(null);
@@ -122,6 +127,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     }
 
     public IcaoAddress getIcaoAddress() {return icaoAddress;}
+    public AircraftData getAircraftData() {return aircraftData;}
 
     /**
      * Get the value of the property containing the timestamp of the last message sent by the aircraft.

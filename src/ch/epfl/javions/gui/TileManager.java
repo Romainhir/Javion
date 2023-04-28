@@ -4,10 +4,7 @@ import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.WebMercator;
 import javafx.scene.image.Image;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -34,36 +31,43 @@ public final class TileManager {
             return value;
         }
 
-        String param = "/" + id.zoom + "/" + id.x + "/";
-        String imageLocation = id.y + ".png";
-        String filePath = diskCachePath.toString() + param + imageLocation;
+        String zoomFolder ="/" + id.zoom;
+        String imageFolder = "/" + (int)id.x;
+        String imageLocation = "/" + (int) id.y + ".png";
+        String filePath = diskCachePath.toString() + zoomFolder + imageFolder + imageLocation;
         if (Files.exists(Path.of(filePath))) {
-            return new Image(filePath);
+            return new Image(new FileInputStream(filePath));
         }
 
-        URLConnection connection = new URL("https://" + serverName + imageLocation).openConnection();
+        URLConnection connection = new URL("https://" + serverName + zoomFolder +
+                imageFolder + imageLocation).openConnection();
         connection.setRequestProperty("User-Agent", "Javions");
         byte[] imageByte;
-        try (InputStream in = connection.getInputStream();
-             OutputStream out = new FileOutputStream(filePath)) {
+        try (InputStream in = connection.getInputStream()) {
             imageByte = in.readAllBytes();
             if (!Files.exists(diskCachePath)) {
                 Files.createDirectory(diskCachePath);
             }
-            if (!Files.exists(Path.of(diskCachePath.toString(), param))) {
-                Files.createDirectory(Path.of(diskCachePath.toString() + param));
+            if (!Files.exists(Path.of(diskCachePath.toString() + zoomFolder))) {
+                Files.createDirectory(Path.of(diskCachePath.toString() + zoomFolder));
             }
-            out.write(imageByte);
+            if (!Files.exists(Path.of(diskCachePath.toString() + zoomFolder + imageFolder))) {
+                Files.createDirectory(Path.of(diskCachePath.toString() + zoomFolder + imageFolder));
+            }
+
+            try(OutputStream out = new FileOutputStream(filePath)) {
+                out.write(imageByte);
+            }
         }
-        value = new Image(filePath);
+        value = new Image(new FileInputStream(filePath));
+        if (memoryCache.size() >= 100) {
+            memoryCache.remove(memoryCache.keySet().iterator().next());
+        }
         memoryCache.put(id, value);
         return value;
     }
-
-    //double ???
     public record TileId(int zoom, double x, double y) {
 
-        //Ca qu'il faut faire ?
         public static boolean isValid(int zoom, double x, double y) {
             return (zoom >= 6) && (zoom <= 19) && (x < Math.pow(2, zoom))
                     && (0 <= x) && (y < Math.pow(2, zoom)) && (0 <= y);
