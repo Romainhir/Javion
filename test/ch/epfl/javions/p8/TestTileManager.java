@@ -1,5 +1,6 @@
 package ch.epfl.javions.p8;
 
+import ch.epfl.javions.WebMercator;
 import ch.epfl.javions.gui.TileManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -11,7 +12,7 @@ import java.nio.file.Path;
 import static javafx.application.Application.launch;
 
 public final class TestTileManager extends Application {
-    public static void main(String[] args) { launch(args); }
+    public static void main(String[] args) {launch(args); }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
