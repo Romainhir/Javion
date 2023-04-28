@@ -24,7 +24,7 @@ public final class TileManager {
 
     public TileManager(Path cachePath, String serverName) {
         this.serverName = serverName;
-        this.diskCachePath = cachePath;
+        diskCachePath = cachePath;
         memoryCache = new LinkedHashMap<>();
     }
 
@@ -65,7 +65,8 @@ public final class TileManager {
 
         //Ca qu'il faut faire ?
         public static boolean isValid(int zoom, double x, double y) {
-            return (zoom >= 6) && (x >= 0) && (y >= 0);
+            return (zoom >= 6) && (zoom <= 19) && (x < Math.pow(2, zoom))
+                    && (0 <= x) && (y < Math.pow(2, zoom)) && (0 <= y);
         }
 
     }
