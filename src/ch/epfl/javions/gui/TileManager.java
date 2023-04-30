@@ -32,8 +32,8 @@ public final class TileManager {
         }
 
         String zoomFolder ="/" + id.zoom;
-        String imageFolder = "/" + (int)id.x;
-        String imageLocation = "/" + (int) id.y + ".png";
+        String imageFolder = "/" + id.x;
+        String imageLocation = "/" + id.y + ".png";
         String filePath = diskCachePath.toString() + zoomFolder + imageFolder + imageLocation;
         if (Files.exists(Path.of(filePath))) {
             return new Image(new FileInputStream(filePath));
