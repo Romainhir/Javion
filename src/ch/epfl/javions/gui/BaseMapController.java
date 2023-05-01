@@ -75,8 +75,7 @@ public final class BaseMapController {
                                             (int) ((mp.getMinY() + h)/ TILE_SIZE))), w, h);
                 }
             }
-           /* System.out.println(canvas.getHeight());
-            System.out.println(canvas.getWidth());*/
+
         }catch (IOException e) {
             System.out.println("Missing tile");
         }
