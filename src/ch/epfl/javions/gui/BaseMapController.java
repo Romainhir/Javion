@@ -2,6 +2,8 @@ package ch.epfl.javions.gui;
 
 import ch.epfl.javions.GeoPos;
 import javafx.application.Platform;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
@@ -40,14 +42,23 @@ public final class BaseMapController {
 
     public Pane pane(){
 
-        canvas.setOnScroll(s ->{
+        LongProperty minScrollTime = new SimpleLongProperty();
+        pane.setOnScroll(s -> {
+            int zoomDelta = (int) Math.signum(s.getDeltaY());
+            if (zoomDelta == 0) return;
+
+            long currentTime = System.currentTimeMillis();
+            if (currentTime < minScrollTime.get()) return;
+            minScrollTime.set(currentTime + 200);
+
             if (s.getDeltaY() > 0) {
                 mp.changeZoomLevel(1);
-            } else {
+                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
+            } if (s.getDeltaY() < 0){
                 mp.changeZoomLevel(-1);
+                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
             }
             redrawOnNextPulse();
-
         });
 
         canvas.setOnMousePressed(e1 -> {

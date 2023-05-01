@@ -43,8 +43,7 @@ public final class TileManager {
                 imageFolder + imageLocation).openConnection();
         connection.setRequestProperty("User-Agent", "Javions");
         byte[] imageByte;
-        try (InputStream in = connection.getInputStream();
-        OutputStream out = new FileOutputStream(filePath)) {
+        try (InputStream in = connection.getInputStream()) {
             imageByte = in.readAllBytes();
             if (!Files.exists(diskCachePath)) {
                 Files.createDirectory(diskCachePath);
@@ -55,7 +54,10 @@ public final class TileManager {
             if (!Files.exists(Path.of(diskCachePath.toString() + zoomFolder + imageFolder))) {
                 Files.createDirectory(Path.of(diskCachePath.toString() + zoomFolder + imageFolder));
             }
+
+            try(OutputStream out = new FileOutputStream(filePath)) {
                 out.write(imageByte);
+            }
         }
         value = new Image(new FileInputStream(filePath));
         if (memoryCache.size() >= 100) {
