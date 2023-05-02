@@ -18,7 +18,7 @@ public final class MapParameters {
     private DoubleProperty minY;
 
     public MapParameters(int zoom, double minX, double minY) {
-        Preconditions.checkArgument(TileManager.TileId.isValid(zoom, minX, minY));
+        /*Preconditions.checkArgument(TileManager.TileId.isValid(zoom, minX, minY));*/
         this.zoom = new SimpleIntegerProperty(zoom);
         this.minX = new SimpleDoubleProperty(minX);
         this.minY = new SimpleDoubleProperty(minY);
@@ -26,9 +26,10 @@ public final class MapParameters {
 
     //TODO Constante
     public void changeZoomLevel(int dZoom) {
-        zoom.set(Math2.clamp(6, getZoom() + dZoom, 19));
-        minX.set(WebMercator.x(getZoom(), getMinX()));
-        minY.set(WebMercator.y(getZoom(), getMinY()));
+        /*zoom.set(Math2.clamp(6, getZoom() + dZoom, 19));*/
+        zoom.set(getZoom() + dZoom);
+        minX.set(minX.get() * (Math.pow(2, dZoom)));
+        minY.set(minY.get() * (Math.pow(2, dZoom)));
     }
 
     public void scroll(double dX, double dY) {
