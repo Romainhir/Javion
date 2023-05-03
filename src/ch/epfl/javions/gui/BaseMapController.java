@@ -78,19 +78,19 @@ public final class BaseMapController {
 
     private void draw(){
         GraphicsContext context = canvas.getGraphicsContext2D();
-        try {
-            for (double h = -mp.getMinY() % TILE_SIZE; h < canvas.getHeight() ; h += TILE_SIZE) {
-                for (double w = -mp.getMinX() % TILE_SIZE; w < canvas.getWidth(); w += TILE_SIZE) {
-                    context.drawImage(tm.getTileImageAt(new TileManager.TileId
-                                    (mp.getZoom(), (int) ((mp.getMinX() + w) / TILE_SIZE),
-                                            (int) ((mp.getMinY() + h)/ TILE_SIZE))), w, h);
+
+        for (double h = -mp.getMinY() % TILE_SIZE; h < canvas.getHeight() ; h += TILE_SIZE) {
+            for (double w = -mp.getMinX() % TILE_SIZE; w < canvas.getWidth(); w += TILE_SIZE) {
+
+                try {
+                            context.drawImage(tm.getTileImageAt(new TileManager.TileId
+                                            (mp.getZoom(), (int) ((mp.getMinX() + w) / TILE_SIZE),
+                                                    (int) ((mp.getMinY() + h)/ TILE_SIZE))), w, h);
+                }catch (IOException e) {
+                    System.out.println("Missing tile");
                 }
             }
-
-        }catch (IOException e) {
-            System.out.println("Missing tile");
         }
-
     }
     public void centerOn(GeoPos pos){
 
