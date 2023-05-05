@@ -18,7 +18,7 @@ public final class TestTileManager extends Application {
     public void start(Stage primaryStage) throws Exception {
         new TileManager(Path.of("tile-cache"),
                 "tile.openstreetmap.org")
-                .getTileImageAt(new TileManager.TileId(17, 67927, 46357));
+                .getTileImageAt(new TileManager.TileId(18, (int)(3.4778654E7 / 256), (int)(2.373486E7/256)));
         Platform.exit();
     }
 }
