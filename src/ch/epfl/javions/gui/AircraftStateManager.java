@@ -6,7 +6,10 @@ import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.aircraft.AircraftDatabase;
 import ch.epfl.javions.aircraft.IcaoAddress;
 import javafx.beans.property.ReadOnlyLongProperty;
+import javafx.beans.property.ReadOnlySetProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 
 import java.io.IOException;
 import java.util.*;
@@ -21,7 +24,7 @@ import java.util.function.Predicate;
 public final class AircraftStateManager {
 
     private Map<IcaoAddress, AircraftStateAccumulator<ObservableAircraftState>> stateAccumulatorMap;
-    private Set<ObservableAircraftState> aircraftStateSet;
+    private ObservableSet<ObservableAircraftState> aircraftStateSet;
 
     private AircraftDatabase db;
     private long lastMessageTimeStampNs = 0;
@@ -29,7 +32,7 @@ public final class AircraftStateManager {
 
     public AircraftStateManager(AircraftDatabase db) {
         stateAccumulatorMap = new HashMap<>();
-        aircraftStateSet = new HashSet<>();
+        aircraftStateSet = FXCollections.observableSet();
         this.db = db;
     }
 
@@ -38,8 +41,8 @@ public final class AircraftStateManager {
      *
      * @return (Set < ObservableAircraftState >) : the set of the aircraft observable state
      */
-    public Set<ObservableAircraftState> getStates() {
-        return Set.copyOf(aircraftStateSet);
+    public ObservableSet<ObservableAircraftState> getStates() {
+        return FXCollections.unmodifiableObservableSet(aircraftStateSet);
     }
 
     /**
