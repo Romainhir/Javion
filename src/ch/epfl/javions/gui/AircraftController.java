@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleSetProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -27,12 +28,12 @@ public final class AircraftController {
     private ObjectProperty<ObservableAircraftState> selectedAircraft;
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
 
-    public AircraftController(MapParameters parameters, AircraftStateManager manager,
+    public AircraftController(MapParameters parameters, ObservableSet<ObservableAircraftState> aircraftStateSet,
                               ObjectProperty<ObservableAircraftState> aircraftStateProperty) {
         Objects.requireNonNull(parameters);
         Objects.requireNonNull(aircraftStateSet);
         this.parameters = parameters;
-        this.aircraftStateSet = new SimpleSetProperty<>(manager.getStates());
+        this.aircraftStateSet = new SimpleSetProperty<>(aircraftStateSet);
         selectedAircraft = aircraftStateProperty;
         aircraftPane = new Pane();
         aircraftPane.setPickOnBounds(false);
@@ -57,9 +58,8 @@ public final class AircraftController {
             selectedAircraft = new SimpleObjectProperty<>(state);
         });
         Node n = path;
-        this.aircraftStateSet.addListener((ChangeListener<? super ObservableSet<ObservableAircraftState>>) (c, el0, el1)
-                -> {
-            if (el0.contains(state) && !el1.contains(state)) {
+        this.aircraftStateSet.addListener((SetChangeListener<? super ObservableAircraftState>) change -> {
+            if (!aircraftStateSet.contains(state)) {
                 pane().getChildren().remove(n);
             }
         });
