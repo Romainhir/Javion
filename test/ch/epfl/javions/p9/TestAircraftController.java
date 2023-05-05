@@ -1,5 +1,6 @@
 package ch.epfl.javions.p9;
 
+import ch.epfl.javions.ByteString;
 import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.adsb.MessageParser;
 import ch.epfl.javions.adsb.RawMessage;
@@ -7,6 +8,7 @@ import ch.epfl.javions.aircraft.AircraftDatabase;
 import ch.epfl.javions.demodulation.AdsbDemodulator;
 import ch.epfl.javions.demodulation.PowerWindow;
 import ch.epfl.javions.gui.*;
+import com.sun.source.tree.IfTree;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
@@ -15,13 +17,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import javax.imageio.IIOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestAircraftController extends Application {
@@ -32,11 +33,24 @@ public class TestAircraftController extends Application {
 
     static List<RawMessage> readAllMessages(String fileName)
             throws IOException {
-        AdsbDemodulator adsb = new AdsbDemodulator(
-                new FileInputStream(fileName));
         List<RawMessage> list = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            list.add(adsb.nextMessage());
+        byte[] bytes = new byte[RawMessage.LENGTH];
+        try (DataInputStream s = new DataInputStream(
+                new BufferedInputStream(
+                        new FileInputStream("resources/messages_20230318_0915.bin")))) {
+            RawMessage temp;
+            int i = 0;
+            while (i < 100) {
+                i++;
+                long stamp = s.readLong();
+                int bytesRead = s.readNBytes(bytes, 0, bytes.length);
+                assert bytesRead == RawMessage.LENGTH;
+                ByteString message = new ByteString(bytes);
+                temp = new RawMessage(stamp, message);
+                list.add(temp);
+            }
+        } catch (IIOException e) {
+            System.out.println("bite");
         }
         return list;
     }
