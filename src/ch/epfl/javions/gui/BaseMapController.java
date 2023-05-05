@@ -40,7 +40,7 @@ public final class BaseMapController {
         redrawOnNextPulse();
     }
 
-    public Pane pane(){
+    public Pane pane() {
 
         LongProperty minScrollTime = new SimpleLongProperty();
         pane.setOnScroll(s -> {
@@ -54,7 +54,8 @@ public final class BaseMapController {
             if (s.getDeltaY() > 0) {
                 mp.changeZoomLevel(1);
                 System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
-            } if (s.getDeltaY() < 0){
+            }
+            if (s.getDeltaY() < 0) {
                 mp.changeZoomLevel(-1);
                 System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
             }
@@ -66,7 +67,7 @@ public final class BaseMapController {
             canvas.setOnMouseDragged(e2 -> {
                 /*System.out.println("e1 " + e1.getX() + " " + e1.getY());*/
                 System.out.println("e2 " + e2.getX() + " " + e2.getY());
-                mp.scroll( difference[0] - e2.getX() ,difference[1] - e2.getY());
+                mp.scroll(difference[0] - e2.getX(), difference[1] - e2.getY());
                 difference[0] = e2.getX();
                 difference[1] = e2.getY();
                 redrawOnNextPulse();
@@ -76,27 +77,28 @@ public final class BaseMapController {
         return pane;
     }
 
-    private void draw(){
+    private void draw() {
         GraphicsContext context = canvas.getGraphicsContext2D();
 
-        for (double h = -mp.getMinY() % TILE_SIZE; h < canvas.getHeight() ; h += TILE_SIZE) {
+        for (double h = -mp.getMinY() % TILE_SIZE; h < canvas.getHeight(); h += TILE_SIZE) {
             for (double w = -mp.getMinX() % TILE_SIZE; w < canvas.getWidth(); w += TILE_SIZE) {
 
                 try {
-                            context.drawImage(tm.getTileImageAt(new TileManager.TileId
-                                            (mp.getZoom(), (int) ((mp.getMinX() + w) / TILE_SIZE),
-                                                    (int) ((mp.getMinY() + h)/ TILE_SIZE))), w, h);
-                }catch (IOException e) {
+                    context.drawImage(tm.getTileImageAt(new TileManager.TileId
+                            (mp.getZoom(), (int) ((mp.getMinX() + w) / TILE_SIZE),
+                                    (int) ((mp.getMinY() + h) / TILE_SIZE))), w, h);
+                } catch (IOException e) {
                     System.out.println("Missing tile");
                 }
             }
         }
     }
-    public void centerOn(GeoPos pos){
+
+    public void centerOn(GeoPos pos) {
 
     }
 
-    private void redrawIfNeeded(){
+    private void redrawIfNeeded() {
         if (!redrawNeeded) return;
         redrawNeeded = false;
         draw();
