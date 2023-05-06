@@ -57,7 +57,7 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
             if (extractedChar == 0) {
                 return null;
             }
-            if (extractedChar != ' ' && callString.charAt(callString.length() - 1) == ' ') {
+            if (extractedChar != ' ') {
                 callString.append(extractedChar);
             }
         }
