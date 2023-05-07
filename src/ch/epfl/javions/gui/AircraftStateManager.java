@@ -51,13 +51,13 @@ public final class AircraftStateManager {
      * @param message
      */
     public void update(Message message) throws IOException {
-        if(stateAccumulatorMap.containsKey(message.icaoAddress())){
+        if (stateAccumulatorMap.containsKey(message.icaoAddress())) {
             stateAccumulatorMap.get(message.icaoAddress()).update(message);
-            if(stateAccumulatorMap.get(message.icaoAddress()).stateSetter().getPosition() != null){
+            if (stateAccumulatorMap.get(message.icaoAddress()).stateSetter().getPosition() != null) {
 
                 aircraftStateSet.add(stateAccumulatorMap.get(message.icaoAddress()).stateSetter());
             }
-        }else {
+        } else {
             stateAccumulatorMap.put(message.icaoAddress(),
                     new AircraftStateAccumulator<>(new ObservableAircraftState(message.icaoAddress(), db)));
         }

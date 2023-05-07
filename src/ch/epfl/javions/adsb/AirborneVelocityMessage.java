@@ -87,10 +87,10 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
                 rawMessage.icaoAddress(), Units.convertFrom(speed, Units.Speed.KNOT), trackOrHeading);
     }
 
-    private static double [] calculateGroundSpeedAndTrack(long payload) {
-        int xSpeed = Bits.extractUInt(payload, 32, 10) ;
+    private static double[] calculateGroundSpeedAndTrack(long payload) {
+        int xSpeed = Bits.extractUInt(payload, 32, 10);
         int ySpeed = Bits.extractUInt(payload, 21, 10);
-        if (xSpeed == 0 || ySpeed == 0){
+        if (xSpeed == 0 || ySpeed == 0) {
             return null;
         }
         xSpeed -= 1;
@@ -107,25 +107,25 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
 
         }
         double speed = Math.hypot(xSpeed, ySpeed);
-        if (!(Double.isFinite(speed)) || !(Double.isFinite(track))){
+        if (!(Double.isFinite(speed)) || !(Double.isFinite(track))) {
 
             return null;
         }
         return new double[]{speed, track};
     }
 
-    private static double[] calculateAirSpeedAndHeading(long payload){
+    private static double[] calculateAirSpeedAndHeading(long payload) {
         double speed = Bits.extractUInt(payload, 21, 10);
 
         double heading = Units.convertFrom(
                 Bits.extractUInt(payload, 32, 10) / Math.scalb(1, 10),
                 Units.Angle.TURN);
 
-        if (speed == 0 || Bits.extractUInt(payload, 42, 1) == 0){
+        if (speed == 0 || Bits.extractUInt(payload, 42, 1) == 0) {
             return null;
         }
         speed -= 1;
-        return new double [] {speed, heading};
+        return new double[]{speed, heading};
 
     }
 
