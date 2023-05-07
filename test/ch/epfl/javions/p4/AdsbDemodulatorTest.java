@@ -39,7 +39,7 @@ public class AdsbDemodulatorTest {
 
     @Test
     void readCorrectNumberOfMessageInSample() throws IOException {
-        String url = getClass().getResource("resources/samples_20230304_1442.bin").getFile();
+        String url = "resources/samples_20230304_1442.bin";
         try (InputStream s = new FileInputStream(url)) {
             AdsbDemodulator d = new AdsbDemodulator(s);
             RawMessage m;

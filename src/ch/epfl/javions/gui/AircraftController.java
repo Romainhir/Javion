@@ -50,7 +50,7 @@ public final class AircraftController {
 
     private void addAircraft(ObservableAircraftState state) {
         AircraftData data = state.getAircraftData();
-        AircraftIcon icon = AircraftIcon.iconFor(data.typeDesignator(), data.description(),
+        /*AircraftIcon icon = AircraftIcon.iconFor(data.typeDesignator(), data.description(),
                 state.getCategory(), data.wakeTurbulenceCategory());
         SVGPath path = new SVGPath();
         path.setContent(icon.svgPath());
@@ -63,7 +63,7 @@ public final class AircraftController {
                 pane().getChildren().remove(n);
             }
         });
-        pane().getChildren().add(n);
+        pane().getChildren().add(n);*/
     }
 
     private void changeSelectedAircraft() {

@@ -16,7 +16,7 @@ public class testonsp7 {
                 new BufferedInputStream(
                         new FileInputStream("resources/messages_20230318_0915.bin")))){
             byte[] bytes = new byte[RawMessage.LENGTH];
-            AircraftStateManager asm = new AircraftStateManager(new AircraftDatabase("/aircraft.zip"));
+            AircraftStateManager asm = new AircraftStateManager(new AircraftDatabase("resources/aircraft.zip"));
             int i = 0;
             while (i < 100) {
                 i++;
@@ -31,7 +31,7 @@ public class testonsp7 {
                 /*System.out.printf("%13d: %s\n", timeStampNs, message);*/
                 System.out.println("-----------------------------Tableau de bord-----------------------------");
                 for (ObservableAircraftState state : asm.getStates()) {
-                    System.out.println(state.getIcaoAddress().string() + " " +state.getCallSign().string() + "  "
+                    System.out.println(state.getIcaoAddress().string() +  "  "
                             + state.getPosition() + "  " + (3.6*Math.rint(state.getVelocity()))
                             + "  " + Math.rint(state.getAltitude()));
                 }

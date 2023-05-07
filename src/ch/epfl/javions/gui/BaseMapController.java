@@ -63,6 +63,7 @@ public final class BaseMapController {
         });
 
         canvas.setOnMousePressed(e1 -> {
+            // Use an array because it has to be final so the use of double is not convenient there
             double[] difference = {e1.getX(), e1.getY()};
             canvas.setOnMouseDragged(e2 -> {
                 /*System.out.println("e1 " + e1.getX() + " " + e1.getY());*/
