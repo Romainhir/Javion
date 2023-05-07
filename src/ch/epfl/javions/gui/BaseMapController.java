@@ -53,11 +53,11 @@ public final class BaseMapController {
 
             if (s.getDeltaY() > 0) {
                 mp.changeZoomLevel(1);
-                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
+//                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
             }
             if (s.getDeltaY() < 0) {
                 mp.changeZoomLevel(-1);
-                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
+//                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
             }
             redrawOnNextPulse();
         });
@@ -67,7 +67,7 @@ public final class BaseMapController {
             double[] difference = {e1.getX(), e1.getY()};
             canvas.setOnMouseDragged(e2 -> {
                 /*System.out.println("e1 " + e1.getX() + " " + e1.getY());*/
-                System.out.println("e2 " + e2.getX() + " " + e2.getY());
+//                System.out.println("e2 " + e2.getX() + " " + e2.getY());
                 mp.scroll(difference[0] - e2.getX(), difference[1] - e2.getY());
                 difference[0] = e2.getX();
                 difference[1] = e2.getY();

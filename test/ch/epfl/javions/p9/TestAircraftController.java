@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/*
+
 public class TestAircraftController extends Application {
 
     public static void main(String[] args) {
@@ -35,13 +35,14 @@ public class TestAircraftController extends Application {
     static List<RawMessage> readAllMessages(String fileName)
             throws IOException {
         List<RawMessage> list = new ArrayList<>();
-        byte[] bytes = new byte[RawMessage.LENGTH];
+
         try (DataInputStream s = new DataInputStream(
                 new BufferedInputStream(
                         new FileInputStream("resources/messages_20230318_0915.bin")))) {
             RawMessage temp;
+            byte[] bytes = new byte[RawMessage.LENGTH];
             int i = 0;
-            while (i < 100) {
+            while (i < s.available()) {
                 i++;
                 long stamp = s.readLong();
                 int bytesRead = s.readNBytes(bytes, 0, bytes.length);
@@ -99,4 +100,4 @@ public class TestAircraftController extends Application {
     }
 }
 
-*/
+
