@@ -66,7 +66,7 @@ public final class TestAircrafttablecontroller extends Application {
         ObjectProperty<ObservableAircraftState> sap =
                 new SimpleObjectProperty<>();
         AircraftTableController ac =
-                new AircraftTableController(asm.getStates(), sap.get());
+                new AircraftTableController(asm.getStates(), sap);
         primaryStage.setScene(new Scene(ac.pane()));
         primaryStage.show();
 
@@ -78,7 +78,7 @@ public final class TestAircrafttablecontroller extends Application {
             @Override
             public void handle(long now) {
                 try {
-                    for (int i = 0; i < 10; i += 1) {
+                    for (int i = 0; i < 2; i += 1) {
                         Message m = MessageParser.parse(mi.next());
                         if (m != null) asm.update(m);
                     }
