@@ -36,7 +36,12 @@ public final class TileManager {
         String imageLocation = "/" + id.y + ".png";
         String filePath = diskCachePath.toString() + zoomFolder + imageFolder + imageLocation;
         if (Files.exists(Path.of(filePath))) {
-            return new Image(new FileInputStream(filePath));
+            value = new Image(new FileInputStream(filePath));
+            if (memoryCache.size() >= 100) {
+                memoryCache.remove(memoryCache.keySet().iterator().next());
+            }
+            memoryCache.put(id, value);
+            return value;
         }
 
         URLConnection connection = new URL("https://" + serverName + zoomFolder +
