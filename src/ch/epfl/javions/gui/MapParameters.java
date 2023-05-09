@@ -26,10 +26,14 @@ public final class MapParameters {
 
     //TODO Constante
     public void changeZoomLevel(int dZoom) {
-        /*zoom.set(Math2.clamp(6, getZoom() + dZoom, 19));*/
-        zoom.set(getZoom() + dZoom);
-        minX.set(minX.get() * (Math.pow(2, dZoom)));
-        minY.set(minY.get() * (Math.pow(2, dZoom)));
+        if((6 <= getZoom() && getZoom() <= 19)) {
+            if((getZoom() == 6 && dZoom < 0) || (getZoom() == 19 && dZoom > 0)){
+                return;
+            }
+            minX.set(Math.scalb(getMinX(), dZoom));
+            minY.set(Math.scalb(getMinY(), dZoom));
+        }
+        zoom.set(Math2.clamp(6, getZoom() + dZoom, 19));
     }
 
     public void scroll(double dX, double dY) {

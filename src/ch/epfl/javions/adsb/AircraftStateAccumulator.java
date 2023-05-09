@@ -54,7 +54,6 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                 stateSetter.setCallSign(aim.callSign());
             }
             case AirbornePositionMessage apm -> {
-                stateSetter.setAltitude(apm.altitude());
                 if (apm.parity() == 0) {
                     even = apm;
                     if ((odd != null) && (message.timeStampNs() - odd.timeStampNs() <= MAX_TIME_DIFF)) {
@@ -73,6 +72,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                         }
                     }
                 }
+                stateSetter.setAltitude(apm.altitude());
             }
             case AirborneVelocityMessage avm -> {
                 stateSetter.setVelocity(avm.speed());

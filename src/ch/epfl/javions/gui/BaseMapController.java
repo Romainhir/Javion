@@ -52,12 +52,15 @@ public final class BaseMapController {
             minScrollTime.set(currentTime + 200);
 
             if (s.getDeltaY() > 0) {
+                mp.scroll(s.getX(), s.getY());
                 mp.changeZoomLevel(1);
-//                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
+                System.out.println(mp.getZoom());
+                mp.scroll(-s.getX(), -s.getY());
             }
             if (s.getDeltaY() < 0) {
+                mp.scroll(s.getX(), s.getY());
                 mp.changeZoomLevel(-1);
-//                System.out.println(mp.getZoom() + " " + mp.getMinX() + " " + mp.getMinY());
+                mp.scroll(-s.getX(), -s.getY());
             }
             redrawOnNextPulse();
         });
