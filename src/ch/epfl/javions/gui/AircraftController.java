@@ -21,6 +21,8 @@ import javafx.collections.SetChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
@@ -36,7 +38,8 @@ public final class AircraftController {
     private MapParameters parameters;
     private ObjectProperty<ObservableAircraftState> selectedAircraft;
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
-    private Set<AircraftIcon> iconDisplayed;
+    private Node currentSelected;
+
 
     public AircraftController(MapParameters parameters, ObservableSet<ObservableAircraftState> aircraftStateSet,
                               ObjectProperty<ObservableAircraftState> aircraftStateProperty) {
@@ -44,7 +47,6 @@ public final class AircraftController {
         Objects.requireNonNull(aircraftStateSet);
         this.parameters = parameters;
         this.aircraftStateSet = new SimpleSetProperty<>(aircraftStateSet);
-        iconDisplayed = new HashSet<>();
         selectedAircraft = aircraftStateProperty;
         aircraftPane = new Pane();
         aircraftPane.setPickOnBounds(false);
@@ -73,13 +75,12 @@ public final class AircraftController {
         path.viewOrderProperty().bind(state.altitudeProperty().negate());
         path.setLayoutX(setXPosition(state.getPosition()));
         path.setLayoutY(setYPosition(state.getPosition()));
-        path.setRotate(Units.convertTo(state.getTrackOrHeading(), Units.Angle.DEGREE));
         state.trackOrHeadingProperty().addListener((observable, oldValue, newValue) -> {
-            path.setRotate(newValue.doubleValue());
+            path.setRotate(Units.convertTo(newValue.doubleValue(), Units.Angle.DEGREE));
         });
         path.setOnMouseClicked(event -> {
             selectedAircraft = new SimpleObjectProperty<>(state);
-            changeSelectedAircraft(icon);
+            changeSelectedAircraft();
         });
         state.positionProperty().addListener((observable, oldValue, newValue) -> {
             path.setLayoutX(setXPosition(newValue));
@@ -92,7 +93,6 @@ public final class AircraftController {
             path.setLayoutY(setYPosition(state.getPosition()));
         });
         pane().getChildren().add(path);
-        iconDisplayed.add(icon);
     }
 
     private double setXPosition(GeoPos g) {
@@ -110,7 +110,6 @@ public final class AircraftController {
         SVGPath path = new SVGPath();
         path.setContent(icon.svgPath());
         pane().getChildren().remove(path);
-        iconDisplayed.remove(icon);
     }
 
     private AircraftIcon createIcon(ObservableAircraftState state) {
@@ -119,23 +118,22 @@ public final class AircraftController {
                 state.getCategory(), data.wakeTurbulenceCategory());
     }
 
-    private void changeSelectedAircraft(AircraftIcon icon) {
+    private void changeSelectedAircraft() {
+        if (currentSelected != null) {
+            pane().getChildren().remove(currentSelected);
+        }
         Group icaoGroup = new Group();
         Group trajectoryGroup = new Group();
         Group mid = new Group();
         Group label = new Group();
-        SVGPath path = new SVGPath();
         Rectangle rectangle = new Rectangle();
         Text text = new Text();
-
         label.getChildren().addAll(rectangle, text);
-        mid.getChildren().addAll(path, label);
+        mid.getChildren().add(label);
         icaoGroup.getChildren().addAll(mid, trajectoryGroup);
         icaoGroup.setId("adr.\u2002OACI");
         trajectoryGroup.getStyleClass().add("trajectory");
         label.getStyleClass().add("label");
-        path.setContent(icon.svgPath());
-        path.getStyleClass().add("aircraft");
         icaoGroup.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                         WebMercator.x(parameters.getZoom(),
                                 selectedAircraft.get().getPosition().longitude()) - parameters.getMinX()
@@ -143,8 +141,19 @@ public final class AircraftController {
         icaoGroup.layoutYProperty().bind(Bindings.createDoubleBinding(() ->
                         WebMercator.y(parameters.getZoom(), selectedAircraft.get().getPosition().latitude()) - parameters.getMinY()
                 , parameters.zoomProperty(), selectedAircraft.get().positionProperty(), parameters.minYProperty()));
-        text.setText(selectedAircraft.get().getIcaoAddress().string());
+        rectangle.widthProperty().bind(text.layoutBoundsProperty().map(bounds -> bounds.getWidth() + 4));
+        rectangle.heightProperty().bind(text.layoutBoundsProperty().map(bounds -> bounds.getHeight() + 4));
+        text.setText(selectedAircraft.get().getIcaoAddress().string() + "\n" +
+                String.format("%f km/h", selectedAircraft.get().getVelocity()) + " " +
+                String.format("%f m", selectedAircraft.get().getAltitude()));
+        text.textProperty().bind(Bindings.createStringBinding(() -> selectedAircraft.get().getIcaoAddress().string() + "\n" +
+                        String.format("%.1f km/h", selectedAircraft.get().getVelocity()) + " " +
+                        String.format("%.1f m", selectedAircraft.get().getAltitude()), selectedAircraft.get().altitudeProperty(),
+                selectedAircraft.get().velocityProperty()));
         pane().getChildren().add(icaoGroup);
+        rectangle.setOpacity(1d);
+
+        currentSelected = icaoGroup;
         System.out.println("YEEEEEEEEEEETTTTT");
     }
 
