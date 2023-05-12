@@ -1,5 +1,9 @@
 package ch.epfl.javions.p8;
 
+import ch.epfl.javions.ByteString;
+import ch.epfl.javions.adsb.RawMessage;
+import ch.epfl.javions.aircraft.AircraftDatabase;
+import ch.epfl.javions.gui.AircraftStateManager;
 import ch.epfl.javions.gui.BaseMapController;
 import ch.epfl.javions.gui.MapParameters;
 import ch.epfl.javions.gui.TileManager;
@@ -8,8 +12,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javafx.application.Application.launch;
 
@@ -29,6 +38,7 @@ public final class TestBaseMapController extends Application {
         BaseMapController bmc = new BaseMapController(tm, mp);
         primaryStage.setScene(new Scene(bmc.pane()));
         primaryStage.show();
+
     }
 }
 

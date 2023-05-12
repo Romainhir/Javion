@@ -70,6 +70,13 @@ public final class AircraftStateManager {
      */
     public void purge() {
         aircraftStateSet.removeIf
-                (observableAircraftState -> lastMessageTimeStampNs - observableAircraftState.getLastMessageTimeStampNs() > ONEMIN);
+                (observableAircraftState -> {
+                    boolean removeNeeded = lastMessageTimeStampNs - observableAircraftState.getLastMessageTimeStampNs() > ONEMIN;
+                    if(removeNeeded){
+                        stateAccumulatorMap.remove(observableAircraftState.getIcaoAddress(),
+                                stateAccumulatorMap.get(observableAircraftState.getIcaoAddress()));
+                    }
+                    return removeNeeded;
+                });
     }
 }

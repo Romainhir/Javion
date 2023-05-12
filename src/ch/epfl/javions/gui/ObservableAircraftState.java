@@ -239,14 +239,9 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     @Override
     public void setPosition(GeoPos position) {
 
-        if (lastMessageTimeStampNs.get() == addProvokedMessTimeStamp){
-            airbornePos.set(airbornePos.size() - 1, new AirbornePos(position, altitude.get()));
-            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
-        }
-
         if ((this.getPosition() == null ||
                 !(this.position.get().equals(position))) &&
-                lastMessageTimeStampNs.get() != addProvokedMessTimeStamp) {
+                !(Double.isNaN(this.getAltitude()))) {
 
             airbornePos.add(new AirbornePos(position, altitude.get()));
             airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
@@ -264,17 +259,17 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setAltitude(double altitude) {
+        if(this.getPosition() != null && this.altitude.get() != altitude) {
 
-        if (addProvokedMessTimeStamp == lastMessageTimeStampNs.get()){
-            airbornePos.set(airbornePos.size() - 1, new AirbornePos(position.get(), altitude));
-            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
-        }
-        if (this.altitude.get() != altitude &&
-                addProvokedMessTimeStamp != lastMessageTimeStampNs.get()) {
-
-            airbornePos.add(new AirbornePos(position.get(), altitude));
-            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
-            addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
+            if (addProvokedMessTimeStamp == lastMessageTimeStampNs.get()) {
+                airbornePos.set(airbornePos.size() - 1, new AirbornePos(position.get(), altitude));
+                airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+            }
+            if (airbornePos.isEmpty()) {
+                airbornePos.add(new AirbornePos(position.get(), altitude));
+                airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+                addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
+            }
         }
         this.altitude.set(altitude);
     }
