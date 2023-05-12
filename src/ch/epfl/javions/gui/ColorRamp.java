@@ -31,19 +31,15 @@ public final class ColorRamp {
     }
 
     public Color at(double value) {
-        //TODO pas certain de ce que j'ai fait
         if (value <= 0d) {
             return colors[0];
         }
         if (value >= 1) {
             return colors[colors.length - 1];
         }
-        double divide = (colors.length - 1) / value;
-        if (Double.compare(divide, Math.floor(divide)) == 0) {
-            return colors[(int) (divide) - 1];
-        }
-        return colors[(int) Math.floor(divide)]
-                .interpolate(colors[(int) Math.ceil(divide)], divide - Math.floor(divide));
+        double pos = value * (colors.length - 1);
+        double ratio = pos - (pos / (colors.length - 1));
+        return colors[(int) Math.floor(pos)].interpolate(colors[(int) Math.ceil(pos)], ratio);
     }
 
 

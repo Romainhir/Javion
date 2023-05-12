@@ -8,7 +8,7 @@ import java.util.Objects;
 
 /**
  * Record that represent an airborne identification message. We store in the record the timestamp of the message,
- * the ICAO address, the category and the calldign of the aircraft.
+ * the ICAO address, the category and the callsign of the aircraft.
  *
  * @param timeStampNs (long) : the timestamp of the message
  * @param icaoAddress (IcaoAddress) : the ICAO address of the aircraft
