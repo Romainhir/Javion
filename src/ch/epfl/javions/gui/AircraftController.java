@@ -3,9 +3,7 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.WebMercator;
-import ch.epfl.javions.aircraft.AircraftData;
-import ch.epfl.javions.aircraft.AircraftDatabase;
-import ch.epfl.javions.aircraft.IcaoAddress;
+import ch.epfl.javions.aircraft.*;
 import com.sun.javafx.collections.UnmodifiableObservableMap;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -16,6 +14,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleSetProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.scene.Group;
@@ -23,14 +22,12 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public final class AircraftController {
 
@@ -38,8 +35,6 @@ public final class AircraftController {
     private MapParameters parameters;
     private ObjectProperty<ObservableAircraftState> selectedAircraft;
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
-    private Node currentSelected;
-
 
     public AircraftController(MapParameters parameters, ObservableSet<ObservableAircraftState> aircraftStateSet,
                               ObjectProperty<ObservableAircraftState> aircraftStateProperty) {
@@ -75,12 +70,12 @@ public final class AircraftController {
         path.viewOrderProperty().bind(state.altitudeProperty().negate());
         path.setLayoutX(setXPosition(state.getPosition()));
         path.setLayoutY(setYPosition(state.getPosition()));
+        path.setFill(ColorRamp.PLASMA.at(colorFormula(state.getAltitude())));
         state.trackOrHeadingProperty().addListener((observable, oldValue, newValue) -> {
-            path.setRotate(Units.convertTo(newValue.doubleValue(), Units.Angle.DEGREE));
+            path.setRotate(icon.canRotate() ? Units.convertTo(newValue.doubleValue(), Units.Angle.DEGREE) : 0);
         });
         path.setOnMouseClicked(event -> {
-            selectedAircraft = new SimpleObjectProperty<>(state);
-            changeSelectedAircraft();
+            selectedAircraft.setValue(state);
         });
         state.positionProperty().addListener((observable, oldValue, newValue) -> {
             path.setLayoutX(setXPosition(newValue));
@@ -92,7 +87,17 @@ public final class AircraftController {
         parameters.minYProperty().addListener((observable, oldValue, newValue) -> {
             path.setLayoutY(setYPosition(state.getPosition()));
         });
+        state.trackOrHeadingProperty().addListener((observable, oldValue, newValue) -> {
+            state.setPosition(state.getPosition());
+        });
+        state.altitudeProperty().addListener((observable, oldValue, newValue) ->
+                path.setFill(ColorRamp.PLASMA.at(colorFormula(newValue.doubleValue()))));
+        createSelectedAircraft(state);
         pane().getChildren().add(path);
+    }
+
+    private double colorFormula(double value) {
+        return Math.cbrt(value / 12000);
     }
 
     private double setXPosition(GeoPos g) {
@@ -114,47 +119,64 @@ public final class AircraftController {
 
     private AircraftIcon createIcon(ObservableAircraftState state) {
         AircraftData data = state.getAircraftData();
-        return AircraftIcon.iconFor(data.typeDesignator(), data.description(),
-                state.getCategory(), data.wakeTurbulenceCategory());
+        AircraftIcon icon = data != null ?
+                AircraftIcon.iconFor(data.typeDesignator() != null ? data.typeDesignator() : new AircraftTypeDesignator(""),
+                        data.description() != null ? data.description() : new AircraftDescription(""),
+                        state.getCategory(), data.wakeTurbulenceCategory() != null ? data.wakeTurbulenceCategory() : WakeTurbulenceCategory.UNKNOWN)
+                : AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""), state.getCategory(),
+                WakeTurbulenceCategory.UNKNOWN);
+        return icon;
     }
 
-    private void changeSelectedAircraft() {
-        if (currentSelected != null) {
-            pane().getChildren().remove(currentSelected);
-        }
+    private void createSelectedAircraft(ObservableAircraftState state) {
         Group icaoGroup = new Group();
-        Group trajectoryGroup = new Group();
         Group mid = new Group();
         Group label = new Group();
         Rectangle rectangle = new Rectangle();
         Text text = new Text();
         label.getChildren().addAll(rectangle, text);
         mid.getChildren().add(label);
-        icaoGroup.getChildren().addAll(mid, trajectoryGroup);
+        icaoGroup.getChildren().add(mid);
         icaoGroup.setId("adr.\u2002OACI");
-        trajectoryGroup.getStyleClass().add("trajectory");
         label.getStyleClass().add("label");
+        state.airbornePosProperty().addListener((ListChangeListener<? super ObservableAircraftState.AirbornePos>) c -> {
+            if (selectedAircraft.get() == state) {
+                Group trajectoryGroup = new Group();
+                trajectoryGroup.getStyleClass().add("trajectory");
+                List<ObservableAircraftState.AirbornePos> list = (List<ObservableAircraftState.AirbornePos>) c.getList();
+                for (int i = 1; i < list.size(); i++) {
+                    System.out.println(setXPosition(list.get(i).pos()));
+                    trajectoryGroup.getChildren().add(new Line(setXPosition(list.get(i - 1).pos()),
+                            setYPosition(list.get(i - 1).pos()), setXPosition(list.get(i).pos()),
+                            setYPosition(list.get(i).pos())));
+                }
+                icaoGroup.getChildren().add(trajectoryGroup);
+            }
+        });
         icaoGroup.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                         WebMercator.x(parameters.getZoom(),
-                                selectedAircraft.get().getPosition().longitude()) - parameters.getMinX()
-                , parameters.zoomProperty(), selectedAircraft.get().positionProperty(), parameters.minXProperty()));
+                                state.getPosition().longitude()) - parameters.getMinX()
+                , parameters.zoomProperty(), state.positionProperty(), parameters.minXProperty()));
         icaoGroup.layoutYProperty().bind(Bindings.createDoubleBinding(() ->
-                        WebMercator.y(parameters.getZoom(), selectedAircraft.get().getPosition().latitude()) - parameters.getMinY()
-                , parameters.zoomProperty(), selectedAircraft.get().positionProperty(), parameters.minYProperty()));
+                        WebMercator.y(parameters.getZoom(), state.getPosition().latitude()) - parameters.getMinY()
+                , parameters.zoomProperty(), state.positionProperty(), parameters.minYProperty()));
         rectangle.widthProperty().bind(text.layoutBoundsProperty().map(bounds -> bounds.getWidth() + 4));
         rectangle.heightProperty().bind(text.layoutBoundsProperty().map(bounds -> bounds.getHeight() + 4));
-        text.setText(selectedAircraft.get().getIcaoAddress().string() + "\n" +
-                String.format("%f km/h", selectedAircraft.get().getVelocity()) + " " +
-                String.format("%f m", selectedAircraft.get().getAltitude()));
-        text.textProperty().bind(Bindings.createStringBinding(() -> selectedAircraft.get().getIcaoAddress().string() + "\n" +
-                        String.format("%.1f km/h", selectedAircraft.get().getVelocity()) + " " +
-                        String.format("%.1f m", selectedAircraft.get().getAltitude()), selectedAircraft.get().altitudeProperty(),
-                selectedAircraft.get().velocityProperty()));
+        text.setText(state.getIcaoAddress().string() + "\n" +
+                String.format("%f km/h", Units.convertFrom(state.getVelocity(), Units.Speed.KNOT)) + " " +
+                String.format("%f.0 m", state.getAltitude()));
+        text.textProperty().bind(Bindings.createStringBinding(() -> state.getIcaoAddress().string() + "\n" +
+                        String.format("%.1f km/h", state.getVelocity()) + " " +
+                        String.format("%.1f m", state.getAltitude()), state.altitudeProperty(),
+                state.velocityProperty()));
+        icaoGroup.visibleProperty().bind(Bindings.createBooleanBinding(() -> (parameters.getZoom() >= 11) ||
+                (selectedAircraft.get() == state), parameters.zoomProperty(), selectedAircraft));
         pane().getChildren().add(icaoGroup);
         rectangle.setOpacity(1d);
-
-        currentSelected = icaoGroup;
-        System.out.println("YEEEEEEEEEEETTTTT");
     }
+
+//    private Group createTrajectoryGroup() {
+//
+//    }
 
 }
