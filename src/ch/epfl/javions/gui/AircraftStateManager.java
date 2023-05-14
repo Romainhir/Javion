@@ -1,19 +1,15 @@
 package ch.epfl.javions.gui;
 
 import ch.epfl.javions.adsb.AircraftStateAccumulator;
-import ch.epfl.javions.adsb.AircraftStateSetter;
 import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.aircraft.AircraftDatabase;
 import ch.epfl.javions.aircraft.IcaoAddress;
-import javafx.beans.property.ReadOnlyLongProperty;
-import javafx.beans.property.ReadOnlySetProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class used to manage the state of all aircraft depending on the messages received.
