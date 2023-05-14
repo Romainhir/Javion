@@ -20,8 +20,7 @@ import javafx.collections.SetChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
@@ -71,11 +70,12 @@ public final class AircraftController {
         path.setLayoutX(setXPosition(state.getPosition()));
         path.setLayoutY(setYPosition(state.getPosition()));
         path.setFill(ColorRamp.PLASMA.at(colorFormula(state.getAltitude())));
+        path.setStroke(Color.BLACK);
         state.trackOrHeadingProperty().addListener((observable, oldValue, newValue) -> {
             path.setRotate(icon.canRotate() ? Units.convertTo(newValue.doubleValue(), Units.Angle.DEGREE) : 0);
         });
         path.setOnMouseClicked(event -> {
-            selectedAircraft.setValue(state);
+            selectedAircraft.set(state);
         });
         state.positionProperty().addListener((observable, oldValue, newValue) -> {
             path.setLayoutX(setXPosition(newValue));
@@ -134,24 +134,30 @@ public final class AircraftController {
         Group label = new Group();
         Rectangle rectangle = new Rectangle();
         Text text = new Text();
+        Group trajectoryGroup = new Group();
         label.getChildren().addAll(rectangle, text);
         mid.getChildren().add(label);
-        icaoGroup.getChildren().add(mid);
+        icaoGroup.getChildren().addAll(mid, trajectoryGroup);
         icaoGroup.setId("adr.\u2002OACI");
         label.getStyleClass().add("label");
         state.airbornePosProperty().addListener((ListChangeListener<? super ObservableAircraftState.AirbornePos>) c -> {
-            if (selectedAircraft.get() == state) {
-                Group trajectoryGroup = new Group();
-                trajectoryGroup.getStyleClass().add("trajectory");
-                List<ObservableAircraftState.AirbornePos> list = (List<ObservableAircraftState.AirbornePos>) c.getList();
-                for (int i = 1; i < list.size(); i++) {
-                    System.out.println(setXPosition(list.get(i).pos()));
-                    trajectoryGroup.getChildren().add(new Line(setXPosition(list.get(i - 1).pos()),
-                            setYPosition(list.get(i - 1).pos()), setXPosition(list.get(i).pos()),
-                            setYPosition(list.get(i).pos())));
-                }
-                icaoGroup.getChildren().add(trajectoryGroup);
+            if (trajectoryGroup.isVisible()) {
+                createTrajectoryGroup(trajectoryGroup, (List<ObservableAircraftState.AirbornePos>) c.getList());
             }
+        });
+        trajectoryGroup.getStyleClass().add("trajectory");
+        trajectoryGroup.visibleProperty().bind(Bindings.createBooleanBinding(() -> (selectedAircraft.get() == state), selectedAircraft));
+        trajectoryGroup.layoutXProperty().bind(Bindings.createDoubleBinding(() -> -parameters.getMinX() - icaoGroup.getLayoutX(),
+                parameters.minXProperty(), icaoGroup.layoutXProperty()));
+        trajectoryGroup.layoutYProperty().bind(Bindings.createDoubleBinding(() -> -parameters.getMinY() - icaoGroup.getLayoutY(),
+                parameters.minYProperty(), icaoGroup.layoutYProperty()));
+        trajectoryGroup.visibleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                createTrajectoryGroup(trajectoryGroup, state.getAirbornePos());
+            }
+        });
+        parameters.zoomProperty().addListener((observable, oldValue, newValue) -> {
+            createTrajectoryGroup(trajectoryGroup, state.getAirbornePos());
         });
         icaoGroup.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                         WebMercator.x(parameters.getZoom(),
@@ -175,8 +181,26 @@ public final class AircraftController {
         rectangle.setOpacity(1d);
     }
 
-//    private Group createTrajectoryGroup() {
-//
-//    }
+    private void createTrajectoryGroup(Group trajectoryGroup, List<ObservableAircraftState.AirbornePos> list) {
+        trajectoryGroup.getChildren().clear();
+        ObservableAircraftState.AirbornePos last;
+        ObservableAircraftState.AirbornePos current;
+        for (int i = 1; i < list.size(); i++) {
+            last = list.get(i - 1);
+            current = list.get(i);
+            Line line = new Line(WebMercator.x(parameters.getZoom(), last.pos().longitude()),
+                    WebMercator.y(parameters.getZoom(), last.pos().latitude()),
+                    WebMercator.x(parameters.getZoom(), current.pos().longitude()),
+                    WebMercator.y(parameters.getZoom(), current.pos().latitude()));
+            if (Math.floor(last.altitude()) == Math.floor(current.altitude())) {
+                line.setStroke(ColorRamp.PLASMA.at(colorFormula(current.altitude())));
+            } else {
+                LinearGradient linearGradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                        new Stop(0, ColorRamp.PLASMA.at(colorFormula(last.altitude()))), new Stop(1, ColorRamp.PLASMA.at(colorFormula(current.altitude()))));
+                line.setStroke(linearGradient);
+            }
+            trajectoryGroup.getChildren().add(line);
+        }
+    }
 
 }
