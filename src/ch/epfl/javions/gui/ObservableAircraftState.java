@@ -95,7 +95,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      * @return (ObservableList < AirbornePos >) : the list of airborne positions of the aircraft
      */
     public ObservableList<AirbornePos> airbornePosProperty() {
-
         return airbornePosSecond;
     }
 
