@@ -157,8 +157,15 @@ public final class AircraftController {
             }
         });
         parameters.zoomProperty().addListener((observable, oldValue, newValue) -> {
-            createTrajectoryGroup(trajectoryGroup, state.getAirbornePos());
+            if (trajectoryGroup.isVisible()) {
+                createTrajectoryGroup(trajectoryGroup, state.getAirbornePos());
+            }
         });
+//        state.trackOrHeadingProperty().addListener((observable, oldValue, newValue) -> {
+//            if (trajectoryGroup.isVisible()) {
+//                createTrajectoryGroup(trajectoryGroup, state.getAirbornePos());
+//            }
+//        });
         icaoGroup.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                         WebMercator.x(parameters.getZoom(),
                                 state.getPosition().longitude()) - parameters.getMinX()
