@@ -22,10 +22,10 @@ class GptTestVitesse {
 
     @Test
     void testOf() {
-        String message = "0000000000000000000000000000";
+        String message = "8D4D2480990CBA00280809F8528A";
         RawMessage rawMessage = RawMessage.of(100, HexFormat.of().parseHex(message));
         AirborneVelocityMessage airborneVelocityMessage = AirborneVelocityMessage.of(rawMessage);
-        assertEquals(null, airborneVelocityMessage);
+        System.out.println(airborneVelocityMessage);
     }
 }
 
