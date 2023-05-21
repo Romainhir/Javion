@@ -41,7 +41,6 @@ public final class AircraftTableController {
         table = new TableView<>();
         this.aircraftStateSet = aircraftStateSet;
         this.observedAircraft = observedAircraft;
-    }
 
 
     /**
@@ -138,10 +137,10 @@ public final class AircraftTableController {
                 observedAircraft.set(table.getSelectionModel().getSelectedItem());
             }
         });
-
-
-        return table;
     }
+
+
+    public TableView<ObservableAircraftState> pane(){return table;}
 
 
     private TableColumn<ObservableAircraftState, String>
