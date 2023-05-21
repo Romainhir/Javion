@@ -28,6 +28,13 @@ import javafx.scene.text.Text;
 
 import java.util.*;
 
+/**
+ * Class used to control the view of the aircraft on the map. It stores and shows also the properties of the selected
+ * aircraft.
+ *
+ * @author Romain Hirschi
+ * @author Moussab Ibrahim
+ */
 public final class AircraftController {
 
     private Pane aircraftPane;
@@ -35,6 +42,15 @@ public final class AircraftController {
     private ObjectProperty<ObservableAircraftState> selectedAircraft;
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
 
+    /**
+     * Constructor of the aircraft controller. In parameter is given the parameters of the map, the set of
+     * observable aircraft state (the set is observable) and the observable aircraft state of the selected aircraft.
+     * The map parameters and the aircraft state set must not be null.
+     *
+     * @param parameters            (MapParameters) : the parameters of the map (non-null)
+     * @param aircraftStateSet      (ObservableSet<ObservableAircraftState>) : the observable set of observable aircraft state
+     * @param aircraftStateProperty (ObjectProperty<ObservableAircraftState>) :  the observable aircraft state of the selected aircraft
+     */
     public AircraftController(MapParameters parameters, ObservableSet<ObservableAircraftState> aircraftStateSet,
                               ObjectProperty<ObservableAircraftState> aircraftStateProperty) {
         Objects.requireNonNull(parameters);
@@ -57,6 +73,11 @@ public final class AircraftController {
         }
     }
 
+    /**
+     * Return the pane that contain all the aircraft.
+     *
+     * @return (Pane) :  the pane with all the aircraft
+     */
     public Pane pane() {
         return aircraftPane;
     }

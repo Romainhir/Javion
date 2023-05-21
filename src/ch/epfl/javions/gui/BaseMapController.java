@@ -14,6 +14,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class used to manage the base map.
+ *
+ * @author Romain Hirschi
+ * @author Moussab Tasnim Ibrahim
+ */
 public final class BaseMapController {
 
     private final TileManager tm;
@@ -26,6 +32,12 @@ public final class BaseMapController {
 
     private boolean redrawNeeded;
 
+    /**
+     * Constructor of the base map controller. In parameter is given the tile manager and the map parameters.
+     *
+     * @param tileManager (TileManager) : the tile manager of the map
+     * @param mapParameters (MapParameters) : the map parameters
+     */
     public BaseMapController(TileManager tileManager, MapParameters mapParameters) {
         canvas = new Canvas();
         pane = new Pane(canvas);
@@ -43,6 +55,11 @@ public final class BaseMapController {
         redrawOnNextPulse();
     }
 
+    /**
+     * Return the pane with the map drawn on.
+     *
+     * @return (Pane) : the pane with the map drawn on.
+     */
     public Pane pane() {
 
         LongProperty minScrollTime = new SimpleLongProperty();
@@ -101,9 +118,14 @@ public final class BaseMapController {
         }
     }
 
+    /**
+     * Center the map on the given GeoPos.
+     *
+     * @param pos (GeoPos) : the position of the future center of the map
+     */
     public void centerOn(GeoPos pos) {
-        mp.scroll(WebMercator.x(mp.getZoom(), pos.longitude()) - (canvas.getWidth()/2)  - mp.getMinX(),
-                WebMercator.y(mp.getZoom(), pos.latitude()) - (canvas.getHeight()/2) - mp.getMinY());
+        mp.scroll(WebMercator.x(mp.getZoom(), pos.longitude()) - (canvas.getWidth() / 2) - mp.getMinX(),
+                WebMercator.y(mp.getZoom(), pos.latitude()) - (canvas.getHeight() / 2) - mp.getMinY());
         redrawOnNextPulse();
 
     }

@@ -10,15 +10,34 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+/**
+ * Class that represent the status line controller, the line that shows how many aircraft are visible and how many messages
+ * has been received.
+ *
+ * @author Romain Hirschi
+ * @author Moussab Ibrahim
+ */
 public final class StatusLineController {
 
-    private IntegerProperty numberOfAircrafts = new SimpleIntegerProperty(0);
-    private LongProperty messageCount = new SimpleLongProperty(0);
-    private BorderPane pane = new BorderPane();
+    private IntegerProperty numberOfAircrafts;
+    private LongProperty messageCount;
+    private BorderPane pane;
 
+    /**
+     * Constructor of the status line controller
+     */
+    public StatusLineController() {
+        numberOfAircrafts = new SimpleIntegerProperty(0);
+        messageCount = new SimpleLongProperty(0);
+        pane = new BorderPane();
+    }
 
-
-    public Pane pane(){
+    /**
+     * Return the pane with the number of aircraft and messages.
+     *
+     * @return (Pane) : the pane with the number of aircraft and messages
+     */
+    public Pane pane() {
         pane.getStylesheets().add("status.css");
 
         Text nbOfAircraft = new Text();
@@ -33,6 +52,21 @@ public final class StatusLineController {
 
     }
 
-    public IntegerProperty aircraftCountProperty(){return numberOfAircrafts;}
-    public LongProperty messageCountProperty(){return messageCount;}
+    /**
+     * Return the aircraft count property
+     *
+     * @return (IntegerProperty) : the aircraft count property
+     */
+    public IntegerProperty aircraftCountProperty() {
+        return numberOfAircrafts;
+    }
+
+    /**
+     * Return the message count property
+     *
+     * @return (LongProperty) : the message count property
+     */
+    public LongProperty messageCountProperty() {
+        return messageCount;
+    }
 }
