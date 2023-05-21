@@ -9,6 +9,11 @@ import java.util.Map;
 
 import static ch.epfl.javions.aircraft.WakeTurbulenceCategory.HEAVY;
 
+/**
+ * Enum that represent the different aircraft icon to add on the map.
+ *
+ * @author Given in the project data
+ */
 public enum AircraftIcon {
     AIRLINER("""
             M 0.01 14.75 c -0.26 0 -0.74 -0.71 -0.86 -1.41 l -3.33 0.86 L -4.5
@@ -149,11 +154,22 @@ public enum AircraftIcon {
     private final boolean canRotate;
     private final String svgPath;
 
+    /**
+     * Constructor that build an aircraft icon with the svg path of the icon and if it can rotate or not.
+     *
+     * @param canRotate (boolean) : if the aircraft icon can rotate or not
+     * @param svgPath (String) : the svg path of the aircraft
+     */
     AircraftIcon(boolean canRotate, String svgPath) {
         this.canRotate = canRotate;
         this.svgPath = svgPath;
     }
 
+    /**
+     * Constructor that build an aircraft icon with the svg path of the icon. It tells that the icon can rotate.
+     *
+     * @param svgPath (String) : the svg path of the aircraft
+     */
     AircraftIcon(String svgPath) {
         this(true, svgPath);
     }
@@ -402,6 +418,16 @@ public enum AircraftIcon {
         return Map.copyOf(map);
     }
 
+    /**
+     * Return the icon that correspond with the given parameter : the aircraft type designator, the aircraft description,
+     * the categor and the wake turbulence category.
+     *
+     * @param typeDesignator (AircraftTypeDesignator) : the aircraft type designator
+     * @param typeDescription (AircraftDescription) : the description of the aircraft
+     * @param category (int) : the aircraft category
+     * @param wakeTurbulenceCategory (WakeTurbulenceCategory) : the
+     * @return (AircraftIcon) : the corresponding aircraft icon
+     */
     public static AircraftIcon iconFor(AircraftTypeDesignator typeDesignator,
                                        AircraftDescription typeDescription,
                                        int category,
@@ -443,10 +469,19 @@ public enum AircraftIcon {
         };
     }
 
+    /**
+     * Return if the aircraft icon can rotate, or not (in a boolean)
+     * @return (boolean) : if the icon can rotate of not
+     */
     public boolean canRotate() {
         return canRotate;
     }
 
+    /**
+     * Return the svg path of the icon (in a string)
+     *
+     * @return (String) : the string of the svg path
+     */
     public String svgPath() {
         return svgPath;
     }

@@ -35,7 +35,7 @@ public final class AircraftStateManager {
     /**
      * Return the set of all aircraft observable state where the position is defined.
      *
-     * @return (Set < ObservableAircraftState >) : the set of the aircraft observable state
+     * @return (Set <ObservableAircraftState>) : the set of the aircraft observable state
      */
     public ObservableSet<ObservableAircraftState> getStates() {
         return FXCollections.unmodifiableObservableSet(aircraftStateSet);
