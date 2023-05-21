@@ -42,13 +42,6 @@ public final class AircraftTableController {
         this.aircraftStateSet = aircraftStateSet;
         this.observedAircraft = observedAircraft;
 
-
-    /**
-     * Return the pane (accurately the table view) that contain all information about the aircraft drawn in the map.
-     *
-     * @return (TableView<ObservableAircraftState>) : the table view with all information about the aircraft
-     */
-    public TableView<ObservableAircraftState> pane() {
         table.getStylesheets().add("table.css");
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         table.setTableMenuButtonVisible(true);
@@ -140,7 +133,14 @@ public final class AircraftTableController {
     }
 
 
-    public TableView<ObservableAircraftState> pane(){return table;}
+    /**
+     * Return the pane (accurately the table view) that contain all information about the aircraft drawn in the map.
+     *
+     * @return (TableView<ObservableAircraftState>) : the table view with all information about the aircraft
+     */
+    public TableView<ObservableAircraftState> pane() {
+        return table;
+    }
 
 
     private TableColumn<ObservableAircraftState, String>
