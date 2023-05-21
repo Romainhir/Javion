@@ -3,8 +3,17 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.Preconditions;
 import javafx.scene.paint.Color;
 
+/**
+ * Class that represent a color ramp.
+ *
+ * @author Romain Hirschi
+ * @author Moussab Ibrahim
+ */
 public final class ColorRamp {
 
+    /**
+     * Specific color ramp that represent a plasma ramp.
+     */
     public static final ColorRamp PLASMA = new ColorRamp(
             Color.valueOf("0x0d0887ff"), Color.valueOf("0x220690ff"),
             Color.valueOf("0x320597ff"), Color.valueOf("0x40049dff"),
@@ -25,11 +34,22 @@ public final class ColorRamp {
 
     private final Color[] colors;
 
+    /**
+     * Constructor of the color ramp. In parameter is given the colors of the ramp.
+     *
+     * @param colors (Color...) : the colors of the ramp
+     */
     public ColorRamp(Color... colors) {
         Preconditions.checkArgument(colors.length >= 2);
         this.colors = colors;
     }
 
+    /**
+     * Return the color in the ramp at a specific position. The position must be between 0 and 1 (included).
+     *
+     * @param value (double) : the color position in the ramp (between 0 and 1)
+     * @return (Color) : the color at the given position
+     */
     public Color at(double value) {
         if (value <= 0d) {
             return colors[0];

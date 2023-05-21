@@ -3,41 +3,52 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.adsb.CallSign;
 import ch.epfl.javions.aircraft.AircraftData;
-import ch.epfl.javions.aircraft.IcaoAddress;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableSetValue;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Pane;
 
-import javax.swing.text.TabableView;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Comparator;
-import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
+/**
+ * Class used to control the aircraft table, under the map.
+ *
+ * @author Romain Hirschi
+ * @author Moussab Ibrahim
+ */
 public final class AircraftTableController {
 
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
     private ObjectProperty<ObservableAircraftState> observedAircraft;
-    private TableView<ObservableAircraftState> table = new TableView<>();
+    private TableView<ObservableAircraftState> table;
 
+    /**
+     * Constructor of the aircraft table controller. In parameter is given the aircraft state set and the selected aircraft.
+     * These two arguments are observable.
+     *
+     * @param aircraftStateSet (ObservableSet<ObservableAircraftState>) : the observable set of observable aircraft state
+     * @param observedAircraft (ObjectProperty<ObservableAircraftState>) : the observed aircraft state
+     */
     public AircraftTableController(ObservableSet<ObservableAircraftState> aircraftStateSet,
-                                   ObjectProperty<ObservableAircraftState> observedAircraft){
+                                   ObjectProperty<ObservableAircraftState> observedAircraft) {
+        table = new TableView<>();
         this.aircraftStateSet = aircraftStateSet;
         this.observedAircraft = observedAircraft;
 
+
+    /**
+     * Return the pane (accurately the table view) that contain all information about the aircraft drawn in the map.
+     *
+     * @return (TableView<ObservableAircraftState>) : the table view with all information about the aircraft
+     */
+    public TableView<ObservableAircraftState> pane() {
         table.getStylesheets().add("table.css");
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         table.setTableMenuButtonVisible(true);
@@ -94,35 +105,35 @@ public final class AircraftTableController {
                 TypeCol, DescriptionCol, LongitudeCol, LatitudeCol, AltitudeCol, VelocityCol);
 
         aircraftStateSet.addListener((SetChangeListener<? super ObservableAircraftState>) change -> {
-            if(change.wasAdded()){
+            if (change.wasAdded()) {
                 table.getItems().add(change.getElementAdded());
                 table.sort();
 
-                change.getElementAdded().positionProperty().addListener( posChange -> {
+                change.getElementAdded().positionProperty().addListener(posChange -> {
                     table.refresh();
                 });
 
-                change.getElementAdded().altitudeProperty().addListener( altChange -> {
+                change.getElementAdded().altitudeProperty().addListener(altChange -> {
                     table.refresh();
                 });
-                change.getElementAdded().velocityProperty().addListener( velChange -> {
+                change.getElementAdded().velocityProperty().addListener(velChange -> {
                     table.refresh();
                 });
             }
-            if(change.wasRemoved()){
+            if (change.wasRemoved()) {
                 table.getItems().remove(change.getElementRemoved());
             }
         });
 
-        observedAircraft.addListener( current -> {
-            if(!(observedAircraft.equals(table.getSelectionModel().selectedItemProperty()))){
+        observedAircraft.addListener(current -> {
+            if (!(observedAircraft.equals(table.getSelectionModel().selectedItemProperty()))) {
                 table.scrollTo(observedAircraft.get());
                 table.getSelectionModel().select(observedAircraft.get());
             }
         });
 
-        table.getSelectionModel().selectedItemProperty().addListener( selected -> {
-            if(!(observedAircraft.equals(table.getSelectionModel().selectedItemProperty()))){
+        table.getSelectionModel().selectedItemProperty().addListener(selected -> {
+            if (!(observedAircraft.equals(table.getSelectionModel().selectedItemProperty()))) {
                 observedAircraft.set(table.getSelectionModel().getSelectedItem());
             }
         });
@@ -134,7 +145,7 @@ public final class AircraftTableController {
 
     private TableColumn<ObservableAircraftState, String>
     DataColumn(Function<TableColumn.CellDataFeatures<ObservableAircraftState, String>,
-            ObservableValue> operator, String name){
+            ObservableValue> operator, String name) {
         TableColumn<ObservableAircraftState, String> column = new TableColumn<>(name);
         column.setCellValueFactory(operator::apply);
         return column;
@@ -143,7 +154,7 @@ public final class AircraftTableController {
     private TableColumn<ObservableAircraftState, String> NumberColumn
             (int nbOfDigits, String name,
              Function<TableColumn.CellDataFeatures<ObservableAircraftState, String>,
-                     Double> operator){
+                     Double> operator) {
         TableColumn<ObservableAircraftState, String> column = new TableColumn<>(name);
         column.getStyleClass().add("numeric");
         column.setComparator((n1, n2) -> {
@@ -166,7 +177,12 @@ public final class AircraftTableController {
         return column;
     }
 
-    public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer){
+    /**
+     * Define what happened if we double-clock on an aircraft in the table.
+     *
+     * @param consumer (Comsumer<ObservableAircraftState>) : the consumer of the action
+     */
+    public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer) {
         table.setOnMouseClicked((event) -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2
                     && observedAircraft.get() != null) {
