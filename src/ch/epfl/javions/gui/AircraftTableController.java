@@ -37,10 +37,7 @@ public final class AircraftTableController {
                                    ObjectProperty<ObservableAircraftState> observedAircraft){
         this.aircraftStateSet = aircraftStateSet;
         this.observedAircraft = observedAircraft;
-    }
 
-
-    public TableView<ObservableAircraftState> pane(){
         table.getStylesheets().add("table.css");
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         table.setTableMenuButtonVisible(true);
@@ -53,7 +50,7 @@ public final class AircraftTableController {
 
         TableColumn<ObservableAircraftState, String> ImmatriculationCol =
                 DataColumn(f -> new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData())
-                                .map(s -> s.registration().string()), "Immatriculation");
+                        .map(s -> s.registration().string()), "Immatriculation");
 
         TableColumn<ObservableAircraftState, String> ModelCol =
                 DataColumn(f -> new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData())
@@ -79,7 +76,7 @@ public final class AircraftTableController {
 
         TableColumn<ObservableAircraftState, String> AltitudeCol =
                 NumberColumn(0, "Altitude(m)", f ->
-                       Math.rint(f.getValue().getAltitude()));
+                        Math.rint(f.getValue().getAltitude()));
 
         TableColumn<ObservableAircraftState, String> VelocityCol =
                 NumberColumn(0, "Vitesse(km/h)", f ->
@@ -129,10 +126,10 @@ public final class AircraftTableController {
                 observedAircraft.set(table.getSelectionModel().getSelectedItem());
             }
         });
-
-
-        return table;
     }
+
+
+    public TableView<ObservableAircraftState> pane(){return table;}
 
 
     private TableColumn<ObservableAircraftState, String>

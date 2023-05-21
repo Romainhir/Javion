@@ -16,22 +16,19 @@ public final class StatusLineController {
     private LongProperty messageCount = new SimpleLongProperty(0);
     private BorderPane pane = new BorderPane();
 
-
-
-    public Pane pane(){
+    public StatusLineController(){
         pane.getStylesheets().add("status.css");
 
         Text nbOfAircraft = new Text();
-        nbOfAircraft.textProperty().bind(Bindings.format("Aéronefs visibles : %d", numberOfAircrafts.get(),
-                numberOfAircrafts));
+        nbOfAircraft.textProperty().bind(Bindings.format("Aéronefs visibles : %d", numberOfAircrafts));
         pane.leftProperty().set(nbOfAircraft);
 
         Text nbOfMessages = new Text();
-        nbOfMessages.textProperty().bind(Bindings.format("Messages reçus : %d", messageCount.get()));
+        nbOfMessages.textProperty().bind(Bindings.format("Messages reçus : %d", messageCount));
         pane.rightProperty().set(nbOfMessages);
-        return pane;
-
     }
+
+    public Pane pane(){return pane;}
 
     public IntegerProperty aircraftCountProperty(){return numberOfAircrafts;}
     public LongProperty messageCountProperty(){return messageCount;}

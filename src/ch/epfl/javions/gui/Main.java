@@ -5,6 +5,7 @@ import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.adsb.MessageParser;
 import ch.epfl.javions.adsb.RawMessage;
 import ch.epfl.javions.aircraft.AircraftDatabase;
+import ch.epfl.javions.demodulation.AdsbDemodulator;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -100,27 +101,42 @@ public final class Main extends Application {
 
 
 
-        new Thread(() -> {
+       Thread t = new Thread(() -> {
+            List<String> args = getParameters().getRaw();
+            if (args.isEmpty()) {
+                try(InputStream in = System.in) {
+                    AdsbDemodulator demodulator = new AdsbDemodulator(in);
+                    RawMessage m;
+                    while ((m = demodulator.nextMessage()) != null) {messageQueue.add(m);}
 
-            try (DataInputStream s = new DataInputStream(
-                    new BufferedInputStream(
-                            new FileInputStream("resources/messages_20230318_0915.bin")))) {
-                byte[] bytes = new byte[RawMessage.LENGTH];
-                int i = 0;
-                long lastTimeStampNs = 0;
-                while (i < s.available()) {
-                    i++;
-                    long timeStampNs = s.readLong();
-                    int bytesRead = s.readNBytes(bytes, 0, bytes.length);
-                    assert bytesRead == RawMessage.LENGTH;
-                    ByteString message = new ByteString(bytes);
-                    messageQueue.add(new RawMessage(timeStampNs, message));
-                    long delta = timeStampNs - lastTimeStampNs;
-                    Thread.sleep(delta / 1_000_000);
-                    lastTimeStampNs = timeStampNs;
-                }
-        } catch (IOException | InterruptedException e2) {}
-        }).start();
+                } catch (IOException e) {}
+            } else {
+                URL file = getClass().getResource(args.get(0));
+                assert file != null;
+                try (DataInputStream s = new DataInputStream(
+                        new BufferedInputStream(
+                                new FileInputStream(file.getFile())))) {
+                    byte[] bytes = new byte[RawMessage.LENGTH];
+                    int i = 0;
+                    long lastTimeStampNs = 0;
+                    while (i < s.available()) {
+                        i++;
+                        long timeStampNs = s.readLong();
+                        int bytesRead = s.readNBytes(bytes, 0, bytes.length);
+                        assert bytesRead == RawMessage.LENGTH;
+                        ByteString message = new ByteString(bytes);
+                        messageQueue.add(new RawMessage(timeStampNs, message));
+                        long delta = timeStampNs - lastTimeStampNs;
+                        Thread.sleep(delta / 1_000_000);
+                        lastTimeStampNs = timeStampNs;
+                    }
+                } catch (IOException | InterruptedException e2) {
+            }
+        }
+        });
+       t.setDaemon(true);
+       t.start();
+
 
         new AnimationTimer() {
             @Override
