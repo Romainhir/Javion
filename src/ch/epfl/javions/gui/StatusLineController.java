@@ -30,15 +30,7 @@ public final class StatusLineController {
         numberOfAircrafts = new SimpleIntegerProperty(0);
         messageCount = new SimpleLongProperty(0);
         pane = new BorderPane();
-    }
 
-    /**
-     * Return the pane with the number of aircraft and messages.
-     *
-     * @return (Pane) : the pane with the number of aircraft and messages
-     */
-    public Pane pane() {
-      
         pane.getStylesheets().add("status.css");
 
         Text nbOfAircraft = new Text();
@@ -48,6 +40,15 @@ public final class StatusLineController {
         Text nbOfMessages = new Text();
         nbOfMessages.textProperty().bind(Bindings.format("Messages reçus : %d", messageCount));
         pane.rightProperty().set(nbOfMessages);
+    }
+
+    /**
+     * Return the pane with the number of aircraft and messages.
+     *
+     * @return (Pane) : the pane with the number of aircraft and messages
+     */
+    public Pane pane() {
+        return pane;
     }
 
 
@@ -67,5 +68,6 @@ public final class StatusLineController {
      */
     public LongProperty messageCountProperty() {
         return messageCount;
+    }
 
 }
