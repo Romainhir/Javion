@@ -94,7 +94,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
     }
 
     private static boolean isValidAlt(double alt) {
-        return alt != Double.MAX_VALUE;
+        return alt != Double.NaN;
     }
 
     private static int rearrange(int rawAlt) {

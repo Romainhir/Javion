@@ -26,7 +26,7 @@ public final class Bits {
      * @throws IllegalArgumentException  if the size is not strictly between 0 and 32
      */
     public static int extractUInt(long value, int start, int size) throws IndexOutOfBoundsException, IllegalArgumentException {
-        Preconditions.checkArgument((size > 0) && (size < 32));
+        Preconditions.checkArgument((size > 0) && (size < Integer.SIZE));
         Objects.checkFromIndexSize(start, size, Long.SIZE);
         int extracted = (int) (value >>> start);
         int mask = (1 << size) - 1;

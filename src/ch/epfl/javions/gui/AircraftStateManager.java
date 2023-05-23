@@ -42,9 +42,10 @@ public final class AircraftStateManager {
     }
 
     /**
-     * Update the
+     * Update the aircraft state set with the message given in parameter. Create a new aircraft state accumulator
+     * if there is nothing already mapped with the ICAO address provided in the message.
      *
-     * @param message
+     * @param message (essage
      */
     public void update(Message message) throws IOException {
         if (stateAccumulatorMap.containsKey(message.icaoAddress())) {

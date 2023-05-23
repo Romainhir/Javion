@@ -182,11 +182,6 @@ public final class AircraftController {
                 createTrajectoryGroup(trajectoryGroup, state.getAirbornePos());
             }
         });
-//        state.trackOrHeadingProperty().addListener((observable, oldValue, newValue) -> {
-//            if (trajectoryGroup.isVisible()) {
-//                createTrajectoryGroup(trajectoryGroup, state.getAirbornePos());
-//            }
-//        });
         icaoGroup.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                         WebMercator.x(parameters.getZoom(),
                                 state.getPosition().longitude()) - parameters.getMinX()
@@ -216,18 +211,20 @@ public final class AircraftController {
         for (int i = 1; i < list.size(); i++) {
             last = list.get(i - 1);
             current = list.get(i);
-            Line line = new Line(WebMercator.x(parameters.getZoom(), last.pos().longitude()),
-                    WebMercator.y(parameters.getZoom(), last.pos().latitude()),
-                    WebMercator.x(parameters.getZoom(), current.pos().longitude()),
-                    WebMercator.y(parameters.getZoom(), current.pos().latitude()));
-            if (Math.floor(last.altitude()) == Math.floor(current.altitude())) {
-                line.setStroke(ColorRamp.PLASMA.at(colorFormula(current.altitude())));
-            } else {
-                LinearGradient linearGradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
-                        new Stop(0, ColorRamp.PLASMA.at(colorFormula(last.altitude()))), new Stop(1, ColorRamp.PLASMA.at(colorFormula(current.altitude()))));
-                line.setStroke(linearGradient);
+            if (last.pos() != null) {
+                Line line = new Line(WebMercator.x(parameters.getZoom(), last.pos().longitude()),
+                        WebMercator.y(parameters.getZoom(), last.pos().latitude()),
+                        WebMercator.x(parameters.getZoom(), current.pos().longitude()),
+                        WebMercator.y(parameters.getZoom(), current.pos().latitude()));
+                if (Math.floor(last.altitude()) == Math.floor(current.altitude())) {
+                    line.setStroke(ColorRamp.PLASMA.at(colorFormula(current.altitude())));
+                } else {
+                    LinearGradient linearGradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                            new Stop(0, ColorRamp.PLASMA.at(colorFormula(last.altitude()))), new Stop(1, ColorRamp.PLASMA.at(colorFormula(current.altitude()))));
+                    line.setStroke(linearGradient);
+                }
+                trajectoryGroup.getChildren().add(line);
             }
-            trajectoryGroup.getChildren().add(line);
         }
     }
 
