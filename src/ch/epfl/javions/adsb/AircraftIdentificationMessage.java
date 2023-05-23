@@ -57,11 +57,11 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
             if (extractedChar == 0) {
                 return null;
             }
-            if (extractedChar != ' ') {
+//            if (extractedChar != ' ') {
                 callString.append(extractedChar);
-            }
+//            }
         }
-        CallSign sign = new CallSign(callString.toString());
+        CallSign sign = new CallSign(callString.toString().trim());
         return new AircraftIdentificationMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), category, sign);
     }
 

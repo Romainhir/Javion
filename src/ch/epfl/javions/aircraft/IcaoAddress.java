@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * @author Moussab Tasnim Ibrahim
  */
 public record IcaoAddress(String string) {
-    private static final Pattern formatOACI = Pattern.compile("[0-9A-F]{6}");
+    private static final Pattern FORMAT_ICAO = Pattern.compile("[0-9A-F]{6}");
 
     /**
      * Constructor of the record.
@@ -20,6 +20,6 @@ public record IcaoAddress(String string) {
      * @param string (String) : the ICAO address
      */
     public IcaoAddress {
-        Preconditions.checkArgument(formatOACI.matcher(string).matches());
+        Preconditions.checkArgument(FORMAT_ICAO.matcher(string).matches());
     }
 }

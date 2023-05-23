@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * @author Moussab Tasnim Ibrahim
  */
 public record AircraftTypeDesignator(String string) {
-    private static final Pattern formatOACI = Pattern.compile("[A-Z0-9]{2,4}");
+    private static final Pattern FORMAT_ICAO = Pattern.compile("[A-Z0-9]{2,4}");
 
     /**
      * Constructor of the record
@@ -20,6 +20,6 @@ public record AircraftTypeDesignator(String string) {
      * @param string (String) : the aircraft type designator
      */
     public AircraftTypeDesignator {
-        Preconditions.checkArgument(formatOACI.matcher(string).matches() || (string.equals("")));
+        Preconditions.checkArgument(FORMAT_ICAO.matcher(string).matches() || (string.equals("")));
     }
 }

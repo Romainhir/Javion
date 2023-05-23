@@ -15,6 +15,8 @@ public final class ByteString {
 
     private final byte[] bytes;
 
+    private static final HexFormat hexFormat = HexFormat.of().withUpperCase();
+
     /**
      * Constructor of the Byte String. An array of byte is needed in parameter to store it in the attribute.
      *
@@ -34,7 +36,6 @@ public final class ByteString {
      */
     public static ByteString ofHexadecimalString(String hexString) throws IllegalArgumentException {
         Preconditions.checkArgument(hexString.length() % 2 == 0);
-        HexFormat hexFormat = HexFormat.of().withUpperCase();
         byte[] value = hexFormat.parseHex(hexString);
         return new ByteString(value);
     }
@@ -76,7 +77,6 @@ public final class ByteString {
     public long bytesInRange(int fromIndex, int toIndex) throws IndexOutOfBoundsException, IllegalArgumentException {
         Objects.checkFromToIndex(fromIndex, toIndex, size());
         Objects.checkIndex(toIndex - fromIndex, Long.SIZE);
-        HexFormat hexFormat = HexFormat.of().withUpperCase();
         String value = hexFormat.formatHex(bytes, fromIndex, toIndex);
         return Long.decode("0x" + value);
     }
@@ -90,11 +90,7 @@ public final class ByteString {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ByteString byteString) {
-            return Arrays.equals(byteString.bytes, bytes);
-        } else {
-            return false;
-        }
+        return (obj instanceof ByteString byteString) && Arrays.equals(byteString.bytes, bytes);
     }
 
     /**
@@ -115,7 +111,6 @@ public final class ByteString {
      */
     @Override
     public String toString() {
-        HexFormat hexFormat = HexFormat.of().withUpperCase();
         return hexFormat.formatHex(bytes);
     }
 

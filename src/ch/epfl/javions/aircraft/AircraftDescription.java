@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * @author Moussab Tasnim Ibrahim
  */
 public record AircraftDescription(String string) {
-    private static final Pattern formatOACI = Pattern.compile("[ABDGHLPRSTV-][0123468][EJPT-]");
+    private static final Pattern FORMAT_ICAO = Pattern.compile("[ABDGHLPRSTV-][0123468][EJPT-]");
 
     /**
      * Constructor of the record
@@ -20,6 +20,6 @@ public record AircraftDescription(String string) {
      * @param string (String) : the aircraft description
      */
     public AircraftDescription {
-        Preconditions.checkArgument(formatOACI.matcher(string).matches() || (string.equals("")));
+        Preconditions.checkArgument(FORMAT_ICAO.matcher(string).matches() || (string.equals("")));
     }
 }

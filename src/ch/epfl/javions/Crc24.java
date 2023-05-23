@@ -8,7 +8,7 @@ package ch.epfl.javions;
  */
 public final class Crc24 {
     public static final int GENERATOR = 0xFFF409;
-    public static final int CRC_LENGTH = 24;
+    private static final int CRC_LENGTH = 24;
     private final int[] table;
     private final static int MASK_CRC = 0x00FFFFFF;
 
