@@ -37,7 +37,7 @@ public final class Main extends Application {
     private static final int ZOOM = 8;
     public static final String SERVER_NAME = "tile.openstreetmap.org";
     public static final String AIRCRAFT_DATABASE = "/aircraft.zip";
-    private final ConcurrentLinkedQueue<RawMessage> messageQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<>();
 
 
 
@@ -88,8 +88,11 @@ public final class Main extends Application {
             if (args.isEmpty()) {
                 try(InputStream in = System.in) {
                     AdsbDemodulator demodulator = new AdsbDemodulator(in);
-                    RawMessage m;
-                    while ((m = demodulator.nextMessage()) != null) {messageQueue.add(m);}
+                    RawMessage rm;
+                    while((rm = demodulator.nextMessage()) != null) {
+                        Message m = MessageParser.parse(rm);
+                        if (m != null) {messageQueue.add(m);}
+                    }
 
                 } catch (IOException e) {}
             } else {
@@ -107,10 +110,13 @@ public final class Main extends Application {
                         int bytesRead = s.readNBytes(bytes, 0, bytes.length);
                         assert bytesRead == RawMessage.LENGTH;
                         ByteString message = new ByteString(bytes);
-                        messageQueue.add(new RawMessage(timeStampNs, message));
-                        long delta = timeStampNs - lastTimeStampNs;
-                        Thread.sleep(delta / ONE_MILLION);
-                        lastTimeStampNs = timeStampNs;
+                        Message m = MessageParser.parse(new RawMessage(timeStampNs, message));
+                        if (m != null) {
+                            messageQueue.add(m);
+                            long delta = timeStampNs - lastTimeStampNs;
+                            Thread.sleep(delta / ONE_MILLION);
+                            lastTimeStampNs = timeStampNs;
+                        }
                     }
                 } catch (IOException | InterruptedException e2)
                 {
@@ -130,9 +136,8 @@ public final class Main extends Application {
                 }
                 try {
                     if(!(messageQueue.isEmpty())) {
-                        RawMessage m = messageQueue.poll();
-                        Message message = MessageParser.parse(m);
-                        asm.update(message);
+                        Message m = messageQueue.poll();
+                        asm.update(m);
                         slc.messageCountProperty().set(slc.messageCountProperty().get() + 1);
                     }
                 } catch (IOException e) {
