@@ -25,6 +25,13 @@ import java.util.function.Function;
  */
 public final class AircraftTableController {
 
+    public static final int POSITION_DIGITS = 4;
+    public static final int WIDTH_ONE = 60;
+    public static final int WIDTH_TWO = 70;
+    public static final int WIDTH_THREE = 90;
+    public static final int WIDTH_FOUR = 230;
+    public static final int WIDTH_FIVE = 50;
+    public static final int NUMERIC_WIDTH = 85;
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
     private ObjectProperty<ObservableAircraftState> observedAircraft;
     private TableView<ObservableAircraftState> table;
@@ -71,11 +78,11 @@ public final class AircraftTableController {
                         "Description");
 
         TableColumn<ObservableAircraftState, String> LongitudeCol =
-                NumberColumn(4, "Longitude(°)", f ->
+                NumberColumn(POSITION_DIGITS, "Longitude(°)", f ->
                         Units.convertTo(f.getValue().getPosition().longitude(), Units.Angle.DEGREE));
 
         TableColumn<ObservableAircraftState, String> LatitudeCol =
-                NumberColumn(4, "Latitude(°)", f ->
+                NumberColumn(POSITION_DIGITS, "Latitude(°)", f ->
                         Units.convertTo(f.getValue().getPosition().latitude(), Units.Angle.DEGREE));
 
         TableColumn<ObservableAircraftState, String> AltitudeCol =
@@ -86,12 +93,17 @@ public final class AircraftTableController {
                 NumberColumn(0, "Vitesse(km/h)", f ->
                         Math.rint(Units.convertTo(f.getValue().getVelocity(), Units.Speed.KILOMETER_PER_HOUR)));
 
-        ICAOCol.setPrefWidth(60);
-        CallSignCol.setPrefWidth(70);
-        ImmatriculationCol.setPrefWidth(90);
-        ModelCol.setPrefWidth(230);
-        TypeCol.setPrefWidth(50);
-        DescriptionCol.setPrefWidth(70);
+        ICAOCol.setPrefWidth(WIDTH_ONE);
+        CallSignCol.setPrefWidth(WIDTH_TWO);
+        ImmatriculationCol.setPrefWidth(WIDTH_THREE);
+        ModelCol.setPrefWidth(WIDTH_FOUR);
+        TypeCol.setPrefWidth(WIDTH_FIVE);
+        DescriptionCol.setPrefWidth(WIDTH_TWO);
+
+        LongitudeCol.setPrefWidth(NUMERIC_WIDTH);
+        LatitudeCol.setPrefWidth(NUMERIC_WIDTH);
+        AltitudeCol.setPrefWidth(NUMERIC_WIDTH);
+        VelocityCol.setPrefWidth(NUMERIC_WIDTH);
 
 
         table.getColumns().addAll(ICAOCol, CallSignCol, ImmatriculationCol, ModelCol,
