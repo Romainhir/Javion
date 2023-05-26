@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public final class TileManager {
 
+    public static final int MAX_SIZE_OF_CACHE = 100;
     private String serverName;
     private Path diskCachePath;
     private Map<TileId, Image> memoryCache;
@@ -59,7 +60,7 @@ public final class TileManager {
         String filePath = diskCachePath.toString() + zoomFolder + imageFolder + imageLocation;
         if (Files.exists(Path.of(filePath))) {
             value = new Image(new FileInputStream(filePath));
-            if (memoryCache.size() >= 100) {
+            if (memoryCache.size() >= MAX_SIZE_OF_CACHE) {
                 memoryCache.remove(memoryCache.keySet().iterator().next());
             }
             memoryCache.put(id, value);
@@ -87,7 +88,7 @@ public final class TileManager {
             }
         }
         value = new Image(new FileInputStream(filePath));
-        if (memoryCache.size() >= 100) {
+        if (memoryCache.size() >= MAX_SIZE_OF_CACHE) {
             memoryCache.remove(memoryCache.keySet().iterator().next());
         }
         memoryCache.put(id, value);

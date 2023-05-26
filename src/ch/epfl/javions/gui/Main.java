@@ -28,48 +28,30 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Main extends Application {
 
-    private final ConcurrentLinkedQueue<RawMessage> messageQueue = new ConcurrentLinkedQueue<>();
-
+    public static final int ONE_MILLION = 1_000_000;
+    public static final String IMAGE_STORAGE = "tile-cache";
     private static final int WIDTH_MIN = 800;
     private static final int HEIGHT_MIN = 600;
     private static final int X_COORD = 33_530;
     private static final int Y_COORD = 23_070;
     private static final int ZOOM = 8;
+    public static final String SERVER_NAME = "tile.openstreetmap.org";
+    public static final String AIRCRAFT_DATABASE = "/aircraft.zip";
+    private final ConcurrentLinkedQueue<RawMessage> messageQueue = new ConcurrentLinkedQueue<>();
 
 
-
-    private List<RawMessage> readAllMessages(String fileName)
-            throws IOException {
-        List<RawMessage> list = new ArrayList<>();
-        try (DataInputStream s = new DataInputStream(
-                new BufferedInputStream(
-                        new FileInputStream("resources/messages_20230318_0915.bin")))) {
-            byte[] bytes = new byte[RawMessage.LENGTH];
-            AircraftStateManager asm = new AircraftStateManager(new AircraftDatabase("resources/aircraft.zip"));
-            int i = 0;
-            while (i < s.available()) {
-                i++;
-                long timeStampNs = s.readLong();
-                int bytesRead = s.readNBytes(bytes, 0, bytes.length);
-                assert bytesRead == RawMessage.LENGTH;
-                ByteString message = new ByteString(bytes);
-                list.add(new RawMessage(timeStampNs, message));
-            }
-        }
-        return list;
-    }
 
     public static void main(String[] args) {launch(args); }
     @Override
     public void start(Stage primaryStage) throws Exception {
 
         TileManager tm =
-                new TileManager(Path.of("tile-cache"), "tile.openstreetmap.org");
+                new TileManager(Path.of(IMAGE_STORAGE), SERVER_NAME);
         MapParameters mp =
                 new MapParameters(ZOOM, X_COORD, Y_COORD);
         BaseMapController bmc = new BaseMapController(tm, mp);
 
-        URL u = getClass().getResource("/aircraft.zip");
+        URL u = getClass().getResource(AIRCRAFT_DATABASE);
         assert u != null;
         Path p = Path.of(u.toURI());
         AircraftDatabase db = new AircraftDatabase(p.toString());
@@ -127,10 +109,11 @@ public final class Main extends Application {
                         ByteString message = new ByteString(bytes);
                         messageQueue.add(new RawMessage(timeStampNs, message));
                         long delta = timeStampNs - lastTimeStampNs;
-                        Thread.sleep(delta / 1_000_000);
+                        Thread.sleep(delta / ONE_MILLION);
                         lastTimeStampNs = timeStampNs;
                     }
-                } catch (IOException | InterruptedException e2) {
+                } catch (IOException | InterruptedException e2)
+                {
             }
         }
         });
@@ -139,8 +122,13 @@ public final class Main extends Application {
 
 
         new AnimationTimer() {
+            long lastPurgeCall = 0;
             @Override
             public void handle(long now) {
+                if(now - lastPurgeCall > 1_000_000_000) {
+                    lastPurgeCall = now;
+                    asm.purge();
+                }
                 try {
                     if(!(messageQueue.isEmpty())) {
                         RawMessage m = messageQueue.poll();

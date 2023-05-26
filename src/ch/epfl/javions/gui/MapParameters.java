@@ -19,6 +19,8 @@ import javafx.beans.property.IntegerProperty;
  */
 public final class MapParameters {
 
+    public static final int MAX_ZOOM = 19;
+    public static final int MIN_ZOOM = 6;
     private IntegerProperty zoom;
     private DoubleProperty minX;
     private DoubleProperty minY;
@@ -44,14 +46,14 @@ public final class MapParameters {
      * @param dZoom (int) : the difference between the current zoom and the next zoom.
      */
     public void changeZoomLevel(int dZoom) {
-        if ((6 <= getZoom() && getZoom() <= 19)) {
-            if ((getZoom() == 6 && dZoom < 0) || (getZoom() == 19 && dZoom > 0)) {
+        if ((MIN_ZOOM <= getZoom() && getZoom() <= MAX_ZOOM)) {
+            if ((getZoom() == MIN_ZOOM && dZoom < 0) || (getZoom() == MAX_ZOOM && dZoom > 0)) {
                 return;
             }
             minX.set(Math.scalb(getMinX(), dZoom));
             minY.set(Math.scalb(getMinY(), dZoom));
         }
-        zoom.set(Math2.clamp(6, getZoom() + dZoom, 19));
+        zoom.set(Math2.clamp(MIN_ZOOM, getZoom() + dZoom, MAX_ZOOM));
     }
 
     /**
