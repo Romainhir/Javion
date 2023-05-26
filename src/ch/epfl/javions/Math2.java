@@ -28,9 +28,9 @@ public final class Math2 {
      */
     public static int clamp(int min, int v, int max) throws IllegalArgumentException {
         Preconditions.checkArgument(max >= min);
-        if (v < min) {
+        if (Math.min(v, min) == v) {
             return min;
-        } else if (v > max) {
+        } else if (Math.max(v, max) == v) {
             return max;
         } else return v;
     }

@@ -17,7 +17,7 @@ import java.util.zip.ZipFile;
  */
 public final class AircraftDatabase {
 
-    private String fileName;
+    private final    String fileName;
 
     /**
      * Constructor of the database. Need the name of the resource of the database
@@ -40,7 +40,8 @@ public final class AircraftDatabase {
     public AircraftData get(IcaoAddress address) throws IOException {
         AircraftData aircraftData = null;
         String file = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
-        try (ZipFile zip = new ZipFile(file); InputStream in = zip.getInputStream(zip.getEntry(address.string().substring(4) + ".csv"));
+        try (ZipFile zip = new ZipFile(file);
+             InputStream in = zip.getInputStream(zip.getEntry(address.string().substring(4) + ".csv"));
              BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             String value;
             while ((value = reader.readLine()) != null) {

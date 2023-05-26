@@ -28,20 +28,21 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private IntegerProperty category;
     private ObjectProperty<CallSign> callSign;
     private ObjectProperty<GeoPos> position;
-    private final ObservableList<AirbornePos> airbornePos = FXCollections.observableArrayList();
-    private ObservableList<AirbornePos> airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
+    private final ObservableList<AirbornePos> airbornePos;
+    private ObservableList<AirbornePos> airbornePosSecond;
 
 
     private DoubleProperty altitude;
     private DoubleProperty velocity;
     private DoubleProperty trackOrHeading;
 
-    private long addProvokedMessTimeStamp = -1;
+    private long addProvokedMessTimeStamp;
 
 
     public ObservableAircraftState(IcaoAddress icaoAddress, AircraftDatabase database) throws IOException {
         this.icaoAddress = icaoAddress;
         this.aircraftData = database.get(icaoAddress);
+        addProvokedMessTimeStamp = -1;
         lastMessageTimeStampNs = new SimpleLongProperty(0);
         category = new SimpleIntegerProperty(0);
         callSign = new SimpleObjectProperty<>(null);
@@ -49,6 +50,8 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         altitude = new SimpleDoubleProperty(0);
         velocity = new SimpleDoubleProperty(0);
         trackOrHeading = new SimpleDoubleProperty(0);
+        airbornePos = FXCollections.observableArrayList();
+        airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
     }
 
     /**
@@ -125,8 +128,13 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         return trackOrHeading;
     }
 
-    public IcaoAddress getIcaoAddress() {return icaoAddress;}
-    public AircraftData getAircraftData() {return aircraftData;}
+    public IcaoAddress getIcaoAddress() {
+        return icaoAddress;
+    }
+
+    public AircraftData getAircraftData() {
+        return aircraftData;
+    }
 
     /**
      * Get the value of the property containing the timestamp of the last message sent by the aircraft.
@@ -237,18 +245,11 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setPosition(GeoPos position) {
-
-        if ((this.getPosition() == null ||
-                !(this.position.get().equals(position))) &&
-                !(Double.isNaN(this.getAltitude()))) {
-
+        this.position.set(position);
+        if (getAltitude() != 0) {
             airbornePos.add(new AirbornePos(position, altitude.get()));
-            airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
             addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
         }
-
-        this.position.set(position);
-
     }
 
     /**
@@ -258,19 +259,14 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setAltitude(double altitude) {
-        if(this.getPosition() != null && this.altitude.get() != altitude) {
-
-            if (addProvokedMessTimeStamp == lastMessageTimeStampNs.get()) {
-                airbornePos.set(airbornePos.size() - 1, new AirbornePos(position.get(), altitude));
-                airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
-            }
-            if (airbornePos.isEmpty()) {
-                airbornePos.add(new AirbornePos(position.get(), altitude));
-                airbornePosSecond = FXCollections.unmodifiableObservableList(airbornePos);
-                addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
-            }
-        }
         this.altitude.set(altitude);
+        if (airbornePos.isEmpty()) {
+            airbornePos.add(new AirbornePos(position.get(), altitude));
+            addProvokedMessTimeStamp = lastMessageTimeStampNs.get();
+        }
+        if (addProvokedMessTimeStamp == lastMessageTimeStampNs.get()) {
+            airbornePos.set(airbornePos.size() - 1, new AirbornePos(position.get(), altitude));
+        }
     }
 
     /**
