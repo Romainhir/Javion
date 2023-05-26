@@ -32,6 +32,8 @@ public final class AircraftTableController {
     public static final int WIDTH_FOUR = 230;
     public static final int WIDTH_FIVE = 50;
     public static final int NUMERIC_WIDTH = 85;
+    public static final String NUMERIC_SYTLE = "numeric";
+    public static final String TABLE_CSS = "table.css";
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
     private ObjectProperty<ObservableAircraftState> observedAircraft;
     private TableView<ObservableAircraftState> table;
@@ -49,7 +51,7 @@ public final class AircraftTableController {
         this.aircraftStateSet = aircraftStateSet;
         this.observedAircraft = observedAircraft;
 
-        table.getStylesheets().add("table.css");
+        table.getStylesheets().add(TABLE_CSS);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         table.setTableMenuButtonVisible(true);
 
@@ -168,7 +170,7 @@ public final class AircraftTableController {
              Function<TableColumn.CellDataFeatures<ObservableAircraftState, String>,
                      Double> operator) {
         TableColumn<ObservableAircraftState, String> column = new TableColumn<>(name);
-        column.getStyleClass().add("numeric");
+        column.getStyleClass().add(NUMERIC_SYTLE);
         column.setComparator((n1, n2) -> {
             try {
                 NumberFormat nf = NumberFormat.getInstance();
