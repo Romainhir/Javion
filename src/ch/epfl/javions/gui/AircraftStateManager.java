@@ -21,6 +21,7 @@ public final class AircraftStateManager {
 
     private Map<IcaoAddress, AircraftStateAccumulator<ObservableAircraftState>> stateAccumulatorMap;
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
+    private ObservableSet<ObservableAircraftState> aircraftStateSetUnmodifiable;
 
     private AircraftDatabase db;
     private long lastMessageTimeStampNs = 0;
@@ -29,6 +30,7 @@ public final class AircraftStateManager {
     public AircraftStateManager(AircraftDatabase db) {
         stateAccumulatorMap = new HashMap<>();
         aircraftStateSet = FXCollections.observableSet();
+        aircraftStateSetUnmodifiable = FXCollections.unmodifiableObservableSet(aircraftStateSet);
         this.db = db;
     }
 
@@ -38,7 +40,7 @@ public final class AircraftStateManager {
      * @return (Set <ObservableAircraftState>) : the set of the aircraft observable state
      */
     public ObservableSet<ObservableAircraftState> getStates() {
-        return FXCollections.unmodifiableObservableSet(aircraftStateSet);
+        return aircraftStateSetUnmodifiable;
     }
 
     /**
