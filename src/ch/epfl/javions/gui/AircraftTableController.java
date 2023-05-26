@@ -183,9 +183,9 @@ public final class AircraftTableController {
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMinimumFractionDigits(0);
             nf.setMaximumFractionDigits(nbOfDigits);
-
-            double value = operator.apply(f);
-            return new ReadOnlyObjectWrapper<>(nf.format(value));
+            // We also wrap altitude and velocity eventhough they are already in an observable object because
+            // we don't want to modify the original value itself, so it is a new formatted value that is observed
+            return new ReadOnlyObjectWrapper<>(nf.format(operator.apply(f)));
 
         });
         return column;

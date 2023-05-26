@@ -120,7 +120,6 @@ public final class Main extends Application {
        t.setDaemon(true);
        t.start();
 
-
         new AnimationTimer() {
             long lastPurgeCall = 0;
             @Override
