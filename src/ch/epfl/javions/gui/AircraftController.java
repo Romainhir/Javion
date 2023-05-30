@@ -195,8 +195,9 @@ public final class AircraftController {
                 String.format("%f km/h", Units.convertFrom(state.getVelocity(), Units.Speed.KNOT)) + " " +
                 String.format("%f.0 m", state.getAltitude()));
         text.textProperty().bind(Bindings.createStringBinding(() -> state.getIcaoAddress().string() + "\n" +
-                        String.format("%.1f km/h", state.getVelocity()) + " " +
-                        String.format("%.1f m", state.getAltitude()), state.altitudeProperty(),
+                        String.format("%.0f km/h", Math.rint(Units.convertTo
+                                (state.getVelocity(), Units.Speed.KILOMETER_PER_HOUR))) + " " +
+                        String.format("%.0f m", Math.rint(state.getAltitude())), state.altitudeProperty(),
                 state.velocityProperty()));
         icaoGroup.visibleProperty().bind(Bindings.createBooleanBinding(() -> (parameters.getZoom() >= 11) ||
                 (selectedAircraft.get() == state), parameters.zoomProperty(), selectedAircraft));

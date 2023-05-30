@@ -25,6 +25,15 @@ import java.util.function.Function;
  */
 public final class AircraftTableController {
 
+    public static final int POSITION_DIGITS = 4;
+    public static final int WIDTH_ONE = 60;
+    public static final int WIDTH_TWO = 70;
+    public static final int WIDTH_THREE = 90;
+    public static final int WIDTH_FOUR = 230;
+    public static final int WIDTH_FIVE = 50;
+    public static final int NUMERIC_WIDTH = 85;
+    public static final String NUMERIC_SYTLE = "numeric";
+    public static final String TABLE_CSS = "table.css";
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
     private ObjectProperty<ObservableAircraftState> observedAircraft;
     private TableView<ObservableAircraftState> table;
@@ -42,7 +51,7 @@ public final class AircraftTableController {
         this.aircraftStateSet = aircraftStateSet;
         this.observedAircraft = observedAircraft;
 
-        table.getStylesheets().add("table.css");
+        table.getStylesheets().add(TABLE_CSS);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         table.setTableMenuButtonVisible(true);
 
@@ -71,11 +80,11 @@ public final class AircraftTableController {
                         "Description");
 
         TableColumn<ObservableAircraftState, String> LongitudeCol =
-                NumberColumn(4, "Longitude(°)", f ->
+                NumberColumn(POSITION_DIGITS, "Longitude(°)", f ->
                         Units.convertTo(f.getValue().getPosition().longitude(), Units.Angle.DEGREE));
 
         TableColumn<ObservableAircraftState, String> LatitudeCol =
-                NumberColumn(4, "Latitude(°)", f ->
+                NumberColumn(POSITION_DIGITS, "Latitude(°)", f ->
                         Units.convertTo(f.getValue().getPosition().latitude(), Units.Angle.DEGREE));
 
         TableColumn<ObservableAircraftState, String> AltitudeCol =
@@ -86,12 +95,17 @@ public final class AircraftTableController {
                 NumberColumn(0, "Vitesse(km/h)", f ->
                         Math.rint(Units.convertTo(f.getValue().getVelocity(), Units.Speed.KILOMETER_PER_HOUR)));
 
-        ICAOCol.setPrefWidth(60);
-        CallSignCol.setPrefWidth(70);
-        ImmatriculationCol.setPrefWidth(90);
-        ModelCol.setPrefWidth(230);
-        TypeCol.setPrefWidth(50);
-        DescriptionCol.setPrefWidth(70);
+        ICAOCol.setPrefWidth(WIDTH_ONE);
+        CallSignCol.setPrefWidth(WIDTH_TWO);
+        ImmatriculationCol.setPrefWidth(WIDTH_THREE);
+        ModelCol.setPrefWidth(WIDTH_FOUR);
+        TypeCol.setPrefWidth(WIDTH_FIVE);
+        DescriptionCol.setPrefWidth(WIDTH_TWO);
+
+        LongitudeCol.setPrefWidth(NUMERIC_WIDTH);
+        LatitudeCol.setPrefWidth(NUMERIC_WIDTH);
+        AltitudeCol.setPrefWidth(NUMERIC_WIDTH);
+        VelocityCol.setPrefWidth(NUMERIC_WIDTH);
 
 
         table.getColumns().addAll(ICAOCol, CallSignCol, ImmatriculationCol, ModelCol,
@@ -156,7 +170,7 @@ public final class AircraftTableController {
              Function<TableColumn.CellDataFeatures<ObservableAircraftState, String>,
                      Double> operator) {
         TableColumn<ObservableAircraftState, String> column = new TableColumn<>(name);
-        column.getStyleClass().add("numeric");
+        column.getStyleClass().add(NUMERIC_SYTLE);
         column.setComparator((n1, n2) -> {
             try {
                 NumberFormat nf = NumberFormat.getInstance();
@@ -169,9 +183,9 @@ public final class AircraftTableController {
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMinimumFractionDigits(0);
             nf.setMaximumFractionDigits(nbOfDigits);
-
-            double value = operator.apply(f);
-            return new ReadOnlyObjectWrapper<>(nf.format(value));
+            // We also wrap altitude and velocity eventhough they are already in an observable object because
+            // we don't want to modify the original value itself, so it is a new formatted value that is observed
+            return new ReadOnlyObjectWrapper<>(nf.format(operator.apply(f)));
 
         });
         return column;

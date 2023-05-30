@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
  */
 public final class StatusLineController {
 
+    public static final String STATUS_STYLE = "status.css";
     private IntegerProperty numberOfAircrafts;
     private LongProperty messageCount;
     private BorderPane pane;
@@ -31,7 +32,7 @@ public final class StatusLineController {
         messageCount = new SimpleLongProperty(0);
         pane = new BorderPane();
 
-        pane.getStylesheets().add("status.css");
+        pane.getStylesheets().add(STATUS_STYLE);
 
         Text nbOfAircraft = new Text();
         nbOfAircraft.textProperty().bind(Bindings.format("Aéronefs visibles : %d", numberOfAircrafts));

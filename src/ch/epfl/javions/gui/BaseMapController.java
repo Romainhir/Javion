@@ -89,8 +89,6 @@ public final class BaseMapController {
             // Use an array because it has to be final so the use of double is not convenient there
             double[] difference = {e1.getX(), e1.getY()};
             canvas.setOnMouseDragged(e2 -> {
-                /*System.out.println("e1 " + e1.getX() + " " + e1.getY());*/
-//                System.out.println("e2 " + e2.getX() + " " + e2.getY());
                 mp.scroll(difference[0] - e2.getX(), difference[1] - e2.getY());
                 difference[0] = e2.getX();
                 difference[1] = e2.getY();
