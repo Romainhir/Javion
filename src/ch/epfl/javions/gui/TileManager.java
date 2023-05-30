@@ -1,7 +1,5 @@
 package ch.epfl.javions.gui;
 
-import ch.epfl.javions.Preconditions;
-import ch.epfl.javions.WebMercator;
 import javafx.scene.image.Image;
 
 import java.io.*;
@@ -67,8 +65,11 @@ public final class TileManager {
             return value;
         }
 
-        URLConnection connection = new URL("https://" + serverName + zoomFolder +
-                imageFolder + imageLocation).openConnection();
+        URLConnection connection = new URL("https://"
+                + serverName
+                + zoomFolder
+                + imageFolder
+                + imageLocation).openConnection();
         connection.setRequestProperty("User-Agent", "Javions");
         byte[] imageByte;
         try (InputStream in = connection.getInputStream()) {

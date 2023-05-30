@@ -74,7 +74,6 @@ public final class BaseMapController {
             if (s.getDeltaY() > 0) {
                 mp.scroll(s.getX(), s.getY());
                 mp.changeZoomLevel(1);
-                System.out.println(mp.getZoom());
                 mp.scroll(-s.getX(), -s.getY());
             }
             if (s.getDeltaY() < 0) {
