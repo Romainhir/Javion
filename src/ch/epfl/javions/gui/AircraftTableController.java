@@ -171,6 +171,7 @@ public final class AircraftTableController {
                      Double> operator) {
         TableColumn<ObservableAircraftState, String> column = new TableColumn<>(name);
         column.getStyleClass().add(NUMERIC_SYTLE);
+        //One comparator for all numeric columns is sufficient because we only compare double.
         column.setComparator((n1, n2) -> {
             try {
                 NumberFormat nf = NumberFormat.getInstance();
@@ -183,8 +184,8 @@ public final class AircraftTableController {
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMinimumFractionDigits(0);
             nf.setMaximumFractionDigits(nbOfDigits);
-            // We also wrap altitude and velocity eventhough they are already in an observable object because
-            // we don't want to modify the original value itself, so it is a new formatted value that is observed
+            // We also wrap altitude and velocity eventhough they are already in an observable object because we don't
+            // want to modify the original value itself, so it is a new formatted value that is wrapped and observed.
             return new ReadOnlyObjectWrapper<>(nf.format(operator.apply(f)));
 
         });
