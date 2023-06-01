@@ -78,7 +78,6 @@ public final class Main extends Application {
                         if (m != null) {
                             messageQueue.add(m);
                             long delta = timeStampNs - lastTimeStampNs;
-                            System.out.println(timeStampNs);
                             if(lastTimeStampNs != 0) Thread.sleep(delta / ONE_MILLION);
                             lastTimeStampNs = timeStampNs;
                         }
