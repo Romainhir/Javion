@@ -7,6 +7,7 @@ import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
 
@@ -53,14 +54,6 @@ public final class BaseMapController {
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
         redrawOnNextPulse();
-    }
-
-    /**
-     * Return the pane with the map drawn on.
-     *
-     * @return (Pane) : the pane with the map drawn on.
-     */
-    public Pane pane() {
 
         LongProperty minScrollTime = new SimpleLongProperty();
         pane.setOnScroll(s -> {
@@ -95,19 +88,29 @@ public final class BaseMapController {
             });
         });
         draw();
-        return pane;
     }
+
+    /**
+     * Return the pane with the map drawn on.
+     *
+     * @return (Pane) : the pane with the map drawn on.
+     */
+    public Pane pane() {return pane;}
 
     private void draw() {
         GraphicsContext context = canvas.getGraphicsContext2D();
-
+        int[] pos = new int[3];
         for (double h = -mp.getMinY() % TILE_SIZE; h < canvas.getHeight(); h += TILE_SIZE) {
             for (double w = -mp.getMinX() % TILE_SIZE; w < canvas.getWidth(); w += TILE_SIZE) {
-
+                pos[0] = mp.getZoom();
+                pos[1] = (int) ((mp.getMinX() + w) / TILE_SIZE);
+                pos[2] = (int) ((mp.getMinY() + h) / TILE_SIZE);
                 try {
-                    context.drawImage(tm.getTileImageAt(new TileManager.TileId
-                            (mp.getZoom(), (int) ((mp.getMinX() + w) / TILE_SIZE),
-                                    (int) ((mp.getMinY() + h) / TILE_SIZE))), w, h);
+                    if(TileManager.TileId.isValid(pos[0], pos[1],
+                            pos[2])) {
+                        context.drawImage(tm.getTileImageAt(new TileManager.TileId
+                                (pos[0], pos[1], pos[2])), w, h);
+                    }
                 } catch (IOException e) {
                     System.out.println("Missing tile");
                 }
