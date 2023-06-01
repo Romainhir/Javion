@@ -61,7 +61,7 @@ public final class Main extends Application {
                         if (m != null) messageQueue.add(m);
                     }
 
-                } catch (IOException e) {}
+                } catch (IOException ignored) {}
             } else {
                 URL file = getClass().getResource(args.get(0));
                 assert file != null;
@@ -82,7 +82,7 @@ public final class Main extends Application {
                             lastTimeStampNs = timeStampNs;
                         }
                     }
-                } catch (IOException |InterruptedException  e2) {}
+                } catch (IOException |InterruptedException ignored) {}
             }
         });
     }
