@@ -78,7 +78,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                 stateSetter.setVelocity(avm.speed());
                 stateSetter.setTrackOrHeading(avm.trackOrHeading());
             }
-            default -> throw new IllegalArgumentException("Unexpected case" );
+            default -> throw new IllegalArgumentException("Unexpected case");
         }
     }
 }

@@ -114,7 +114,7 @@ public final class TileManager {
          * @param y (int) : the y coordinate
          * @return (boolean) : true if the values are valid, false otherwise
          */
-        public static boolean isValid(int zoom, double x, double y) {
+        public static boolean isValid(int zoom, int x, int y) {
             return (zoom >= 6) && (zoom <= 19) && (x < Math.pow(2, zoom))
                     && (0 <= x) && (y < Math.pow(2, zoom)) && (0 <= y);
         }
