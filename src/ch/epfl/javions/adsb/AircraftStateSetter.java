@@ -4,6 +4,9 @@ import ch.epfl.javions.GeoPos;
 
 /**
  * Interface that represent all state setter of an aircraft
+ *
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public interface AircraftStateSetter {
 

@@ -5,8 +5,8 @@ package ch.epfl.javions;
  *
  * @param longitudeT32 (int) : the longitude coordinate of the position
  * @param latitudeT32  (int) : the latitude coordinate of the position
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public record GeoPos(int longitudeT32, int latitudeT32) {
 

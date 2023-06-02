@@ -17,14 +17,16 @@ import java.util.Objects;
  * @param parity      (int) : the parity of the message
  * @param x           (double) : the x local position of the aircraft
  * @param y           (double) : the y local position of the aircraft
- * @author Romain Hirschi
- * @author Moussab Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress, double altitude, int parity, double x,
                                       double y) implements Message {
     private final static int POSITION_SIZE = 17;
     private final static int PARITY_SIZE = 1;
     private final static int ALTITUDE_SIZE = 12;
+    private static final int START_FORMAT = 34;
+    private static final int START_ALT = 36;
 
 
     /**
@@ -54,8 +56,8 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
         long payload = rawMessage.payload();
         double lat_cpr = (double) Bits.extractUInt(payload, 0, POSITION_SIZE) / (1 << POSITION_SIZE);
         double lon_cpr = (double) Bits.extractUInt(payload, POSITION_SIZE, POSITION_SIZE) / (1 << POSITION_SIZE);
-        int format = Bits.extractUInt(payload, 34, PARITY_SIZE);
-        double alt = decodeAltitude(Bits.extractUInt(payload, 36, ALTITUDE_SIZE));
+        int format = Bits.extractUInt(payload, START_FORMAT, PARITY_SIZE);
+        double alt = decodeAltitude(Bits.extractUInt(payload, START_ALT, ALTITUDE_SIZE));
 
         if (alt < 0 || !isValidAlt(alt)) {
             return null;
@@ -93,7 +95,7 @@ public record AirbornePositionMessage(long timeStampNs, IcaoAddress icaoAddress,
     }
 
     private static boolean isValidAlt(double alt) {
-        return alt != Double.NaN;
+        return !Double.isNaN(alt);
     }
 
     private static int rearrange(int rawAlt) {

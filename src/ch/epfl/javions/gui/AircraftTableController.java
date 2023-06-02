@@ -20,20 +20,30 @@ import java.util.function.Function;
 /**
  * Class used to control the aircraft table, under the map.
  *
- * @author Romain Hirschi
- * @author Moussab Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class AircraftTableController {
 
-    public static final int POSITION_DIGITS = 4;
-    public static final int WIDTH_ONE = 60;
-    public static final int WIDTH_TWO = 70;
-    public static final int WIDTH_THREE = 90;
-    public static final int WIDTH_FOUR = 230;
-    public static final int WIDTH_FIVE = 50;
-    public static final int NUMERIC_WIDTH = 85;
-    public static final String NUMERIC_SYTLE = "numeric";
-    public static final String TABLE_CSS = "table.css";
+    private static final int POSITION_DIGITS = 4;
+    private static final int WIDTH_ONE = 60;
+    private static final int WIDTH_TWO = 70;
+    private static final int WIDTH_THREE = 90;
+    private static final int WIDTH_FOUR = 230;
+    private static final int WIDTH_FIVE = 50;
+    private static final int NUMERIC_WIDTH = 85;
+    private static final String NUMERIC_SYTLE = "numeric";
+    private static final String TABLE_CSS = "table.css";
+    private static final String COL1_NAME = "ICAO";
+    private static final String COL2_NAME = "CallSign";
+    private static final String COL3_NAME = "Immatriculation";
+    private static final String COL4_NAME = "Modèle";
+    private static final String COL5_NAME = "Type";
+    private static final String COL6_NAME = "Description";
+    private static final String COL7_NAME = "Longitude(°)";
+    private static final String COL8_NAME = "Latitude(°)";
+    private static final String COL9_NAME = "Altitude(m)";
+    private static final String COL10_NAME = "Vitesse(km/h)";
     private ObservableSet<ObservableAircraftState> aircraftStateSet;
     private ObjectProperty<ObservableAircraftState> observedAircraft;
     private TableView<ObservableAircraftState> table;
@@ -56,43 +66,44 @@ public final class AircraftTableController {
         table.setTableMenuButtonVisible(true);
 
         TableColumn<ObservableAircraftState, String> ICAOCol = DataColumn(f ->
-                new ReadOnlyObjectWrapper<>(f.getValue().getIcaoAddress().string()), "ICAO");
+                new ReadOnlyObjectWrapper<>(f.getValue().getIcaoAddress().string()), COL1_NAME);
 
         TableColumn<ObservableAircraftState, String> CallSignCol = DataColumn(f ->
-                f.getValue().callSignProperty().map(CallSign::string), "CallSign");
+                f.getValue().callSignProperty().map(CallSign::string), COL2_NAME);
+
 
         TableColumn<ObservableAircraftState, String> ImmatriculationCol =
                 DataColumn(f -> new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData())
-                        .map(s -> s.registration().string()), "Immatriculation");
+                        .map(s -> s.registration().string()), COL3_NAME);
 
         TableColumn<ObservableAircraftState, String> ModelCol =
                 DataColumn(f -> new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData())
-                        .map(AircraftData::model), "Modèle");
+                        .map(AircraftData::model), COL4_NAME);
 
         TableColumn<ObservableAircraftState, String> TypeCol =
                 DataColumn(f -> new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData())
                                 .map(s -> s.typeDesignator().string())
-                        , "Type");
+                        , COL5_NAME);
 
         TableColumn<ObservableAircraftState, String> DescriptionCol =
                 DataColumn(f -> new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData())
                                 .map(s -> s.description().string()),
-                        "Description");
+                        COL6_NAME);
 
         TableColumn<ObservableAircraftState, String> LongitudeCol =
-                NumberColumn(POSITION_DIGITS, "Longitude(°)", f ->
+                NumberColumn(POSITION_DIGITS, COL7_NAME, f ->
                         Units.convertTo(f.getValue().getPosition().longitude(), Units.Angle.DEGREE));
 
         TableColumn<ObservableAircraftState, String> LatitudeCol =
-                NumberColumn(POSITION_DIGITS, "Latitude(°)", f ->
+                NumberColumn(POSITION_DIGITS, COL8_NAME, f ->
                         Units.convertTo(f.getValue().getPosition().latitude(), Units.Angle.DEGREE));
 
         TableColumn<ObservableAircraftState, String> AltitudeCol =
-                NumberColumn(0, "Altitude(m)", f ->
+                NumberColumn(0, COL9_NAME, f ->
                         Math.rint(f.getValue().getAltitude()));
 
         TableColumn<ObservableAircraftState, String> VelocityCol =
-                NumberColumn(0, "Vitesse(km/h)", f ->
+                NumberColumn(0, COL10_NAME, f ->
                         Math.rint(Units.convertTo(f.getValue().getVelocity(), Units.Speed.KILOMETER_PER_HOUR)));
 
         ICAOCol.setPrefWidth(WIDTH_ONE);

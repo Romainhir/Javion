@@ -3,10 +3,10 @@ package ch.epfl.javions;
 /**
  * Class used to project geographical coordinates based on the WebMercator projection.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
-public class WebMercator {
+public final class WebMercator {
 
     private WebMercator() {
     }
@@ -19,8 +19,7 @@ public class WebMercator {
      * @return (double) : the X coordinate
      */
     public static double x(int zoomLevel, double longitude) {
-        return Math.scalb(1, 8 + zoomLevel) *
-                (Units.convertTo(longitude, Units.Angle.TURN) + 0.5);
+        return Math.scalb((Units.convertTo(longitude, Units.Angle.TURN) + 0.5), 8 + zoomLevel);
     }
 
     /**

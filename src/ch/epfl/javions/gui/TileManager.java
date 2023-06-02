@@ -14,12 +14,14 @@ import java.util.Map;
  * Class used to manage all the map tile to draw the full map. It searches the tile in a disk cache, in a map in attribute
  * and also in internet.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class TileManager {
 
-    public static final int MAX_SIZE_OF_CACHE = 100;
+    private static final int MAX_SIZE_OF_CACHE = 100;
+    private static final String PROJECT_NAME = "Javions";
+    private static final String KEY = "User-Agent";
     private String serverName;
     private Path diskCachePath;
     private Map<TileId, Image> memoryCache;
@@ -70,7 +72,7 @@ public final class TileManager {
                 + zoomFolder
                 + imageFolder
                 + imageLocation).openConnection();
-        connection.setRequestProperty("User-Agent", "Javions");
+        connection.setRequestProperty(KEY, PROJECT_NAME);
         byte[] imageByte;
         try (InputStream in = connection.getInputStream()) {
             imageByte = in.readAllBytes();
@@ -104,7 +106,8 @@ public final class TileManager {
      * @param y (int) : the y coordinate
      */
     public record TileId(int zoom, int x, int y) {
-
+        private static final int MAX_ZOOM = 19;
+        private static final int MIN_ZOOM = 6;
         /**
          * Check if the given values are valid to make a new tile id. To be valid, the zoom must be between
          * 6 and 19 (include) and the x/y coordinate must be between 0 and 2 to the power of the zoom level (2^z).
@@ -115,7 +118,7 @@ public final class TileManager {
          * @return (boolean) : true if the values are valid, false otherwise
          */
         public static boolean isValid(int zoom, int x, int y) {
-            return (zoom >= 6) && (zoom <= 19) && (x < Math.pow(2, zoom))
+            return (zoom >= MIN_ZOOM) && (zoom <= MAX_ZOOM) && (x < Math.pow(2, zoom))
                     && (0 <= x) && (y < Math.pow(2, zoom)) && (0 <= y);
         }
 

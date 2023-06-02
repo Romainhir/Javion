@@ -18,8 +18,8 @@ import java.util.List;
  * Class that represent an aircraft state. This state is observable. It uses many JavaFX property to describe each
  * data of the state.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class ObservableAircraftState implements AircraftStateSetter {
     private final IcaoAddress icaoAddress;

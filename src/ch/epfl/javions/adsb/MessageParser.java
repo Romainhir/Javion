@@ -3,8 +3,8 @@ package ch.epfl.javions.adsb;
 /**
  * Class used to parse the raw message to the correct type of message
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public class MessageParser {
 

@@ -10,8 +10,8 @@ import java.util.Objects;
 /**
  * Class that represent a window of all the power sample decoded by the power computer.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class PowerWindow {
 

@@ -3,10 +3,7 @@ package ch.epfl.javions.gui;
 
 import ch.epfl.javions.Math2;
 import ch.epfl.javions.Preconditions;
-import ch.epfl.javions.WebMercator;
 import javafx.beans.property.*;
-
-import ch.epfl.javions.Preconditions;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 
@@ -14,13 +11,13 @@ import javafx.beans.property.IntegerProperty;
  * Class that represent the map parameters. The parameters are the zoom level, the minimum x and the minimum y.
  * These attributes are JavaFX properties.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class MapParameters {
     private final static int TILE_SIZE = 256;
-    public static final int MAX_ZOOM = 19;
-    public static final int MIN_ZOOM = 6;
+    private static final int MAX_ZOOM = 19;
+    private static final int MIN_ZOOM = 6;
     private IntegerProperty zoom;
     private DoubleProperty minX;
     private DoubleProperty minY;

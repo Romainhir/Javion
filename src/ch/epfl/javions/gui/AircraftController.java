@@ -31,8 +31,8 @@ import java.util.Objects;
  * Class used to control the view of the aircraft on the map. It stores and shows also the properties of the selected
  * aircraft.
  *
- * @author Romain Hirschi
- * @author Moussab Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class AircraftController {
 

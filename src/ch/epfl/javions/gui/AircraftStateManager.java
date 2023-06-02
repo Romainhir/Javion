@@ -14,8 +14,8 @@ import java.util.Map;
 /**
  * Class used to manage the state of all aircraft depending on the messages received.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class AircraftStateManager {
 
@@ -25,7 +25,7 @@ public final class AircraftStateManager {
 
     private AircraftDatabase db;
     private long lastMessageTimeStampNs = 0;
-    public final static long ONEMIN = 60000000000L;
+    private final static long ONEMIN = 60000000000L;
 
     public AircraftStateManager(AircraftDatabase db) {
         stateAccumulatorMap = new HashMap<>();

@@ -23,23 +23,42 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * The main class of the program
+ *
+ *  * @author Romain Hirschi (Sciper: 359286)
+ *  * @author Moussab Ibrahim  (Sciper: 363888)
+ */
 public final class Main extends Application {
 
-    public static final int ONE_MILLION = 1_000_000;
-    public static final String IMAGE_STORAGE = "tile-cache";
+    private static final int ONE_MILLION = 1_000_000;
+    private static final String IMAGE_STORAGE = "tile-cache";
     private static final int WIDTH_MIN = 800;
     private static final int HEIGHT_MIN = 600;
     private static final int X_COORD = 33_530;
     private static final int Y_COORD = 23_070;
     private static final int ZOOM = 8;
-    public static final String SERVER_NAME = "tile.openstreetmap.org";
-    public static final String AIRCRAFT_DATABASE = "/aircraft.zip";
-    public static final int ONE_MINUTE = 1_000_000_000;
+    private static final String SERVER_NAME = "tile.openstreetmap.org";
+    private static final String AIRCRAFT_DATABASE = "/aircraft.zip";
+    private static final int ONE_MINUTE = 1_000_000_000;
     private final ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<>();
 
 
-
+    /**
+     * Main class launch the program
+     * @param args
+     */
     public static void main(String[] args) {launch(args); }
+
+    /**
+     * Build the whole program with both threads. One to decode message and one to update the graphic interface.
+     *
+     * @param primaryStage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @throws Exception (IOException, InterruptedException, URISyntaxException)
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
        buildInterfaceAndAnimation(primaryStage);

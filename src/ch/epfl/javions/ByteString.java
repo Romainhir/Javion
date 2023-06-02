@@ -8,8 +8,8 @@ import java.util.Objects;
  * Class represent a byte String. This is basically an array of bytes but bytes are unsigned and the objects
  * created are immutable.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class ByteString {
 

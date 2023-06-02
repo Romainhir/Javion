@@ -5,8 +5,8 @@ import java.util.Objects;
 /**
  * Class dedicated for bits manipulation
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class Bits {
 

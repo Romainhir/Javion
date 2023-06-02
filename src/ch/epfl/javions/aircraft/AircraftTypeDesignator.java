@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
  * Record that store a valid aircraft type designator
  *
  * @param string (String) : the aircraft type designator
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public record AircraftTypeDesignator(String string) {
     private static final Pattern FORMAT_ICAO = Pattern.compile("[A-Z0-9]{2,4}");

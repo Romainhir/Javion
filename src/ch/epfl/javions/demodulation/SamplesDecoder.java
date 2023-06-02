@@ -2,7 +2,6 @@ package ch.epfl.javions.demodulation;
 
 import ch.epfl.javions.Preconditions;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -10,8 +9,8 @@ import java.io.InputStream;
  * Class that represent a sample decoder. It transforms the bytes sended by an AirSpy radio in samples of 12
  * signed bits.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class SamplesDecoder {
 
