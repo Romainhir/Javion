@@ -21,6 +21,14 @@ import java.util.Objects;
 public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress, double speed,
                                       double trackOrHeading) implements Message {
 
+    private static final int START_SUBTYPE = 48;
+    private static final int SIZE_SUBTYPE = 3;
+    private static final int START_XSPEED = 32;
+    private static final int START_YSPEED = 21;
+    private static final int SIZE_SPEED = 10;
+    private static final int START_SIGNX = 42;
+    private static final int START_SIGNY = 31;
+
     /**
      * Constructor of the record. In parameter is given the record the timestamp of the message,
      * the ICAO address, the speed and the heading/track of the aircraft
@@ -43,7 +51,7 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
      */
     public static AirborneVelocityMessage of(RawMessage rawMessage) {
         long payload = rawMessage.payload();
-        int subType = Bits.extractUInt(payload, 48, 3);
+        int subType = Bits.extractUInt(payload, START_SUBTYPE, SIZE_SUBTYPE);
         double speed = 0;
         double trackOrHeading = 0;
         switch (subType) {
@@ -88,8 +96,8 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
     }
 
     private static double[] calculateGroundSpeedAndTrack(long payload) {
-        int xSpeed = Bits.extractUInt(payload, 32, 10);
-        int ySpeed = Bits.extractUInt(payload, 21, 10);
+        int xSpeed = Bits.extractUInt(payload, START_XSPEED, SIZE_SPEED);
+        int ySpeed = Bits.extractUInt(payload, START_YSPEED, SIZE_SPEED);
         if (xSpeed == 0 || ySpeed == 0) {
             return null;
         }
@@ -97,8 +105,8 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
         ySpeed -= 1;
 
 
-        xSpeed = (Bits.extractUInt(payload, 42, 1) == 1) ? -xSpeed : xSpeed;
-        ySpeed = (Bits.extractUInt(payload, 31, 1) == 1) ? -ySpeed : ySpeed;
+        xSpeed = (Bits.extractUInt(payload, START_SIGNX, 1) == 1) ? -xSpeed : xSpeed;
+        ySpeed = (Bits.extractUInt(payload, START_SIGNY, 1) == 1) ? -ySpeed : ySpeed;
         double track;
         if (xSpeed < 0 && ySpeed >= 0) {
             track = (Math.PI * 450 / 180) - (Math.atan2(ySpeed, xSpeed));

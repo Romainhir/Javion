@@ -25,7 +25,7 @@ public final class AircraftStateManager {
 
     private AircraftDatabase db;
     private long lastMessageTimeStampNs = 0;
-    public final static long ONEMIN = 60000000000L;
+    private final static long ONEMIN = 60000000000L;
 
     public AircraftStateManager(AircraftDatabase db) {
         stateAccumulatorMap = new HashMap<>();

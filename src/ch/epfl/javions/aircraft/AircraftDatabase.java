@@ -17,7 +17,7 @@ import java.util.zip.ZipFile;
  */
 public final class AircraftDatabase {
 
-    private final    String fileName;
+    private final String fileName;
 
     /**
      * Constructor of the database. Need the name of the resource of the database
@@ -47,8 +47,8 @@ public final class AircraftDatabase {
             while ((value = reader.readLine()) != null) {
                 String[] tab = value.split(",", -1);
                 if (tab[0].equals(address.string())) {
-                    aircraftData = new AircraftData(new AircraftRegistration(tab[1]), new AircraftTypeDesignator(tab[2]),
-                            tab[3], new AircraftDescription(tab[4]), WakeTurbulenceCategory.of(tab[5]));
+                    aircraftData = new AircraftData(new AircraftRegistration(tab[1]), new AircraftTypeDesignator(tab[2])
+                            , tab[3], new AircraftDescription(tab[4]), WakeTurbulenceCategory.of(tab[5]));
                     break;
                 }
             }

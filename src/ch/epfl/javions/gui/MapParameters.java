@@ -19,8 +19,8 @@ import javafx.beans.property.IntegerProperty;
  */
 public final class MapParameters {
     private final static int TILE_SIZE = 256;
-    public static final int MAX_ZOOM = 19;
-    public static final int MIN_ZOOM = 6;
+    private static final int MAX_ZOOM = 19;
+    private static final int MIN_ZOOM = 6;
     private IntegerProperty zoom;
     private DoubleProperty minX;
     private DoubleProperty minY;

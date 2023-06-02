@@ -24,7 +24,7 @@ public final class AdsbDemodulator {
     /**
      * The size of a window of power sample
      */
-    public final static int WINDOWSIZE = 1200;
+    private final static int WINDOWSIZE = 1200;
 
     /**
      * Constructor of the ADSB demodulator. Take in parameter the input stream of the data to be decoded, to give it
@@ -56,8 +56,18 @@ public final class AdsbDemodulator {
                 && (peaksSample[1] > peaksSample[2]);
     }
 
+    private boolean decodeFirstMessage(byte[] messageBytes){
+        for (int i = 0; i < Byte.SIZE; i++) {
+            if (powerWindow.get(80 + 10 * i) < powerWindow.get(85 + 10 * i)) {
+                messageBytes[i / Byte.SIZE] = (byte) (messageBytes[i / Byte.SIZE] << 1);
+            } else {
+                messageBytes[i / Byte.SIZE] = (byte) ((messageBytes[i / Byte.SIZE] << 1) | 1);
+            }
+        }
+        return (RawMessage.size(messageBytes[0]) == RawMessage.LENGTH);
+    }
     private void decodeMessage(byte[] messageBytes) {
-        for (int i = 0; i < MESSAGE_SIZE; i++) {
+        for (int i = Byte.SIZE; i < MESSAGE_SIZE; i++) {
             if (powerWindow.get(80 + 10 * i) < powerWindow.get(85 + 10 * i)) {
                 messageBytes[i / Byte.SIZE] = (byte) (messageBytes[i / Byte.SIZE] << 1);
             } else {
@@ -78,11 +88,13 @@ public final class AdsbDemodulator {
         while (powerWindow.isFull()) {
             if (preambleFound(peaksSample)) {
                 Arrays.fill(messageBytes, (byte) 0);
-                decodeMessage(messageBytes);
-                if ((RawMessage.size(messageBytes[0]) == RawMessage.LENGTH) &&
-                        RawMessage.of(powerWindow.position(), messageBytes) != null) {
-                    powerWindow.advanceBy(WINDOWSIZE);
-                    return new RawMessage((powerWindow.position() - WINDOWSIZE) * 100, new ByteString(messageBytes));
+                if(decodeFirstMessage(messageBytes)) {
+                    decodeMessage(messageBytes);
+                    if (RawMessage.of(powerWindow.position(), messageBytes) != null) {
+                        powerWindow.advanceBy(WINDOWSIZE);
+                        return new RawMessage((powerWindow.position() - WINDOWSIZE)
+                                * 100, new ByteString(messageBytes));
+                    }
                 }
             }
             powerWindow.advance();

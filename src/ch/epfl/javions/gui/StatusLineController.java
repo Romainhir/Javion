@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
  */
 public final class StatusLineController {
 
-    public static final String STATUS_STYLE = "status.css";
+    private static final String STATUS_STYLE = "status.css";
     private IntegerProperty numberOfAircrafts;
     private LongProperty messageCount;
     private BorderPane pane;
