@@ -23,6 +23,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * The main class of the program
+ *
+ *  * @author Romain Hirschi (Sciper: 359286)
+ *  * @author Moussab Ibrahim  (Sciper: 363888)
+ */
 public final class Main extends Application {
 
     private static final int ONE_MILLION = 1_000_000;
@@ -91,11 +97,11 @@ public final class Main extends Application {
                         if (m != null) {
                             messageQueue.add(m);
                             long delta = timeStampNs - lastTimeStampNs;
-                            /*if(lastTimeStampNs != 0) Thread.sleep(delta / ONE_MILLION);*/
+                            if(lastTimeStampNs != 0) Thread.sleep(delta / ONE_MILLION);
                             lastTimeStampNs = timeStampNs;
                         }
                     }
-                } catch (IOException  ignored) {}
+                } catch (IOException |InterruptedException ignored) {}
             }
         });
     }
@@ -146,12 +152,10 @@ public final class Main extends Application {
                     asm.purge();
                 }
                 try {
-                    for (int i=0; i<100; i++) {
-                        if (!(messageQueue.isEmpty())) {
-                            Message m = messageQueue.poll();
-                            asm.update(m);
-                            slc.messageCountProperty().set(slc.messageCountProperty().get() + 1);
-                        }
+                    if (!(messageQueue.isEmpty())) {
+                        Message m = messageQueue.poll();
+                        asm.update(m);
+                        slc.messageCountProperty().set(slc.messageCountProperty().get() + 1);
                     }
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);

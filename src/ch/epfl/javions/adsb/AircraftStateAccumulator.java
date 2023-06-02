@@ -9,6 +9,8 @@ import java.util.Objects;
  * his state, with an aircraft state setter (generic, given in parameter).
  *
  * @param <T> (AircraftStateSetter) : the state setter of the aircraft
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public class AircraftStateAccumulator<T extends AircraftStateSetter> {
 

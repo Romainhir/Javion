@@ -3,8 +3,8 @@ package ch.epfl.javions;
 /**
  * Class used to project geographical coordinates based on the WebMercator projection.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class WebMercator {
 

@@ -14,8 +14,8 @@ import java.util.Map;
 /**
  * Class used to manage the state of all aircraft depending on the messages received.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class AircraftStateManager {
 

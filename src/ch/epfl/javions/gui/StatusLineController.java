@@ -5,7 +5,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.collections.SetChangeListener;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -14,8 +13,8 @@ import javafx.scene.text.Text;
  * Class that represent the status line controller, the line that shows how many aircraft are visible and how many messages
  * has been received.
  *
- * @author Romain Hirschi
- * @author Moussab Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class StatusLineController {
 

@@ -11,8 +11,8 @@ import java.util.Objects;
  * @param model                  (String) : the aircraft model
  * @param description            (AircraftDescription) : the aircraft description
  * @param wakeTurbulenceCategory (WakeTurbulenceCategory) : the aircraft wake turbulence category
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public record AircraftData(AircraftRegistration registration,
                            AircraftTypeDesignator typeDesignator,

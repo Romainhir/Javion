@@ -12,8 +12,8 @@ import java.util.zip.ZipFile;
 /**
  * Class used to interact with the "mictronics" database.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class AircraftDatabase {
 

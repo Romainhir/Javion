@@ -20,8 +20,8 @@ import java.util.function.Function;
 /**
  * Class used to control the aircraft table, under the map.
  *
- * @author Romain Hirschi
- * @author Moussab Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class AircraftTableController {
 

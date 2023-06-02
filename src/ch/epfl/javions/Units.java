@@ -3,8 +3,8 @@ package ch.epfl.javions;
 /**
  * Class that represent the different units used.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class Units {
 

@@ -14,8 +14,8 @@ import java.util.Map;
  * Class used to manage all the map tile to draw the full map. It searches the tile in a disk cache, in a map in attribute
  * and also in internet.
  *
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public final class TileManager {
 

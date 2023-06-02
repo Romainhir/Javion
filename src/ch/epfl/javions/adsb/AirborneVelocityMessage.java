@@ -15,8 +15,8 @@ import java.util.Objects;
  * @param icaoAddress    (IcaoAddress) : the ICAO address of the aircraft
  * @param speed          (double) : the speed of the aircraft
  * @param trackOrHeading (double) : the heading/track of the aircraft
- * @author Romain Hirschi
- * @author Moussab Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress, double speed,
                                       double trackOrHeading) implements Message {
@@ -24,7 +24,7 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
     private static final int START_SUBTYPE = 48;
     private static final int SIZE_SUBTYPE = 3;
     private static final int START_XSPEED = 32;
-    private static final int START_YSPEED = 21;
+    private static final int START_SPEED = 21;
     private static final int SIZE_SPEED = 10;
     private static final int START_SIGNX = 42;
     private static final int START_SIGNY = 31;
@@ -97,7 +97,7 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
 
     private static double[] calculateGroundSpeedAndTrack(long payload) {
         int xSpeed = Bits.extractUInt(payload, START_XSPEED, SIZE_SPEED);
-        int ySpeed = Bits.extractUInt(payload, START_YSPEED, SIZE_SPEED);
+        int ySpeed = Bits.extractUInt(payload, START_SPEED, SIZE_SPEED);
         if (xSpeed == 0 || ySpeed == 0) {
             return null;
         }
@@ -123,13 +123,13 @@ public record AirborneVelocityMessage(long timeStampNs, IcaoAddress icaoAddress,
     }
 
     private static double[] calculateAirSpeedAndHeading(long payload) {
-        double speed = Bits.extractUInt(payload, 21, 10);
+        double speed = Bits.extractUInt(payload, START_SPEED, SIZE_SPEED);
 
         double heading = Units.convertFrom(
-                Bits.extractUInt(payload, 32, 10) / Math.scalb(1, 10),
+                Bits.extractUInt(payload, START_XSPEED, SIZE_SPEED) / Math.scalb(1, 10),
                 Units.Angle.TURN);
 
-        if (speed == 0 || Bits.extractUInt(payload, 42, 1) == 0) {
+        if (speed == 0 || Bits.extractUInt(payload, START_SIGNX, 1) == 0) {
             return null;
         }
         speed -= 1;

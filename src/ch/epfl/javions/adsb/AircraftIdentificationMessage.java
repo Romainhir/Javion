@@ -14,8 +14,8 @@ import java.util.Objects;
  * @param icaoAddress (IcaoAddress) : the ICAO address of the aircraft
  * @param category    (int) : the category of the aircraft
  * @param callSign    (CallSign) : the callsign of the aircraft
- * @author Romain Hirschi
- * @author Moussab Tasnim Ibrahim
+ * @author Romain Hirschi (Sciper: 359286)
+ * @author Moussab Ibrahim  (Sciper: 363888)
  */
 public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress, int category,
                                             CallSign callSign) implements Message {
