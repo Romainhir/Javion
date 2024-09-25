@@ -28,7 +28,7 @@ Visualization: Aircraft positions are plotted on a map, providing real-time air 
 Due to the curvature of the Earth, the reception range is limited to a few hundred kilometers. To track aircraft over larger distances, it would be necessary to integrate data from multiple SDRs spread across a wider geographic area. However, this project focuses on processing data from a single SDR without interfacing with external ADS-B data sources.
 
 ## Future Improvements
-Possible future extensions of the project could include:
+#### Possible future extensions of the project could include:
 
 Connecting with online ADS-B aggregators like ADSBHub or flightradar24 for global tracking.
 Optimizing the graphical interface for smoother visualization.
